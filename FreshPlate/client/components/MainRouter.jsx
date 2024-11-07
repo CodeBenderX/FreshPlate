@@ -5,7 +5,7 @@ import Home from './Home'
 import Recipe from './Recipe'
 import Contact from './Contact'
 import LoginForm from './LoginForm'
-import RegistrationForm from './Register'
+import Register from './Register'
 
 export default function MainRouter() {
   return (

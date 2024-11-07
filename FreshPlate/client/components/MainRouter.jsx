@@ -5,18 +5,18 @@ import Home from './Home'
 import Recipe from './Recipe'
 import Contact from './Contact'
 import LoginForm from './LoginForm'
-import RegistrationForm from './RegistrationForm'
+import RegistrationForm from './Register'
 
 export default function MainRouter() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Home />} />
+        <Route>
+          <Route exact path="/" element={<Home />} />
           <Route path="recipe" element={<Recipe />} />
           <Route path="contact" element={<Contact />} />
           <Route path="login" element={<LoginForm />} />
-          <Route path="register" element={<RegistrationForm />} />
+          <Route path="register" element={<Register />} />
         </Route>
       </Routes>
     </Router>

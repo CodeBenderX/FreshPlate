@@ -8,7 +8,9 @@ export default function Layout() {
       <AppBar position="static">
         <Toolbar>
           <Typography>
-            Tasty Recipes
+            <Button component="a" href="/">
+              FreshPlate
+            </Button>
           </Typography>
           <Button component="a" href="/">
             Home
@@ -25,7 +27,7 @@ export default function Layout() {
           <Button component="a" href="/contact">
             Contact
           </Button>
-          <Button component="a" href="/login">
+          <Button component="a" href="/logout">
             Logout
           </Button>
         </Toolbar>

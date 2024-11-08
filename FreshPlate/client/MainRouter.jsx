@@ -1,8 +1,8 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
-import Layout from "../components/Layout.jsx";
-import HomePage from "../components/Home.jsx";
-import Footer from "./Footer.jsx";
+import Layout from "../client/core/Layout.jsx";
+import HomePage from "../client/core/Home.jsx";
+import Footer from "../client/core/Footer.jsx";
 
 export default function MainRouter() {
   return (

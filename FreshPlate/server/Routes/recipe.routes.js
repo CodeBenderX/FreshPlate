@@ -1,6 +1,6 @@
 import express from 'express'
-import recipeCtrl from '../controllers/recipe.controller.js'
-import authCtrl from '../controllers/auth.controller.js'
+import recipeCtrl from '../Controllers/recipe.controller.js'
+import authCtrl from '../Controllers/auth.controller.js'
 
 const router = express.Router()
 

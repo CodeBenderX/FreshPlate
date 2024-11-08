@@ -2,10 +2,10 @@ import mongoose from 'mongoose'
 import crypto from 'crypto'
 //const mongoose = require('mongoose');
 const UserSchema = new mongoose.Schema({
-    username: {
+    name: {
         type: String,
         trim: true,
-        required: 'Username is required'
+        required: 'Name is required'
     },
     email: {
         type: String,

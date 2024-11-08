@@ -5,9 +5,10 @@ import compress from 'compression'
 import cors from 'cors'
 import helmet from 'helmet'
 import Template from '../server/template.js'
-import userRoutes from './routes/user.routes.js'
-import authRoutes from './routes/auth.routes.js'
-import recipeRoutes from './routes/recipe.routes.js'
+import userRoutes from './Routes/user.routes.js'
+import authRoutes from './Routes/auth.routes.js'
+import recipeRoutes from './Routes/recipe.routes.js'
+import contactRoutes from './Routes/contact.routes.js'
 
 
     const app = express()
@@ -17,6 +18,7 @@ import recipeRoutes from './routes/recipe.routes.js'
    app.use('/', userRoutes)
    app.use('/', authRoutes)
    app.use('/', recipeRoutes)
+   app.use('/', contactRoutes)
    app.use(bodyParser.json())
    app.use(bodyParser.urlencoded({ extended: true }))
    app.use(cookieParser())

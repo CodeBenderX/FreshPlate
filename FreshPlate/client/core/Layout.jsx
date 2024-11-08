@@ -1,12 +1,11 @@
 import React from "react";
-import { AppBar, Toolbar, Typography, Button, IconButton } from "@mui/material";
-import HomeIcon from '@mui/icons-material/Home';
+import { AppBar, Toolbar, Typography, Button} from "@mui/material";
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import auth from '../lib/auth-helper';
 import "./Layout.css";
 
 const isActive = (location, path) => {
-  return location.pathname === path ? { color: '#ff4081' } : { color: '#ffffff' };
+  return location.pathname === path ? { color: '#FF6E1C' } : { color: '#000000' };
 };
 
 export default function Layout() {
@@ -22,22 +21,23 @@ export default function Layout() {
               FreshPlate
             </Button>
           </Typography>
-          <IconButton component={Link} to="/" color="inherit" aria-label="Home" style={isActive(location, "/")}>
-            <HomeIcon />
-          </IconButton>
-          <Button component={Link} to="/recipes" style={isActive(location, "/recipes")}>
+          <Button component={Link} to="/" color="inherit" style={isActive(location, "/")}>
+            Home
+          </Button>
+          <Button component={Link} to="/recipes" color="inherit" style={isActive(location, "/recipes")}>
             Recipes
           </Button>
-          <Button component={Link} to="/users" style={isActive(location, "/users")}>
-            Users
+          <Button component={Link} to="/about" color="inherit" style={isActive(location, "/about")}>
+            About Us
           </Button>
           {!auth.isAuthenticated() && (
             <>
-              <Button component={Link} to="/signup" style={isActive(location, "/signup")}>
-                Sign up
-              </Button>
-              <Button component={Link} to="/signin" style={isActive(location, "/signin")}>
+              
+              <Button component={Link} to="/signin" color="inherit" style={isActive(location, "/signin")}>
                 Sign In
+              </Button>
+              <Button component={Link} to="/signup" color="inherit" style={isActive(location, "/signup")}>
+                Register
               </Button>
             </>
           )}

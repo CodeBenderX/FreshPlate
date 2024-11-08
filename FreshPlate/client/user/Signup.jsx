@@ -16,7 +16,7 @@ const useStyles = {
   },
   title: {
     marginTop: 2,
-    color: '#ff4081'
+    color: '#FF6E1C'
   },
   textField: {
     marginLeft: 1,
@@ -70,7 +70,7 @@ export default function Signup() {
     <Card sx={useStyles.card}>
       <CardContent>
         <Typography variant="h6" sx={useStyles.title}>
-          Sign Up
+          Create Account
         </Typography>
         <TextField
           id="name"
@@ -119,6 +119,9 @@ export default function Signup() {
         <Button color="primary" variant="contained" onClick={clickSubmit} sx={useStyles.submit}>
           Submit
         </Button>
+        <Typography component="p" color="#000000">
+          Have an account? <Link to="/signin">Login</Link>
+        </Typography>
       </CardContent>
       {values.open && (
         <Typography component="p" color="primary">

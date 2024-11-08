@@ -5,28 +5,35 @@ import CardContent from '@mui/material/CardContent'
 import CardMedia from '@mui/material/CardMedia'
 import CardActionArea from '@mui/material/CardActionArea'
 import CardActions from '@mui/material/CardActions'
+import image1 from '../src/assets/FriedPorkBelly.png'
+import image2 from '../src/assets/GrilledSquid.png'
+import image3 from '../src/assets/BakedSalmonwithVeg.png'
+
 
 const featuredRecipes = [
   {
     id: "1",
-    title: "Spaghetti Carbonara",
-    prepTime: 10,
-    cookTime: 15,
+    title: "Fried Pork Belly",
+    prepTime: 30,
+    cookTime: 35,
     servings: 4,
+    image: image1,
   },
   {
     id: "2",
-    title: "Chicken Curry",
-    prepTime: 15,
+    title: "Grilled Squid",
+    prepTime: 20,
     cookTime: 30,
-    servings: 6,
+    servings: 2,
+    image: image2,
   },
   {
     id: "3",
-    title: "Vegetable Stir Fry",
-    prepTime: 10,
-    cookTime: 10,
-    servings: 2,
+    title: "Baked Salmon with Vegies",
+    prepTime: 20,
+    cookTime: 30,
+    servings: 5,
+    image: image3,
   },
 ];
 

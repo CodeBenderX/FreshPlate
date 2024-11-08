@@ -34,6 +34,7 @@ export default function Signup() {
     name: '',
     email: '',
     password: '',
+    confirmPassword: '',
     error: '',
     open: false
   });
@@ -45,6 +46,11 @@ export default function Signup() {
   };
 
   const clickSubmit = () => {
+    if (values.password !== values.confirmPassword) {
+      setValues({ ...values, error: "Passwords don't match" });
+      return;
+    }
+
     const user = {
       name: values.name || undefined,
       email: values.email || undefined,
@@ -92,6 +98,16 @@ export default function Signup() {
           sx={useStyles.textField}
           value={values.password}
           onChange={handleChange('password')}
+          margin="normal"
+        />
+        <br />
+        <TextField
+          id="confirmPassword"
+          type="password"
+          label="Confirm Password"
+          sx={useStyles.textField}
+          value={values.confirmPassword}
+          onChange={handleChange('confirmPassword')}
           margin="normal"
         />
         <br />

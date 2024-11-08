@@ -1,33 +1,31 @@
 .app-container {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-  }
-  
-  header {
-    background-color: #f8f9fa;
-    padding: 1rem;
-  }
-  
-  nav ul {
-    list-style-type: none;
-    padding: 0;
-    display: flex;
-    gap: 1rem;
-  }
-  
-  nav ul li a {
-    text-decoration: none;
-    color: #333;
-  }
-  
-  main {
-    flex-grow: 1;
-    padding: 2rem;
-  }
-  
-  footer {
-    background-color: #f8f9fa;
-    padding: 1rem;
-    text-align: center;
-  }
+  width: 100%;
+}
+
+.MuiToolbar-root {
+  display: flex;
+  justify-content: space-between;
+  background-color: whitesmoke;
+}
+
+.MuiTypography-root {
+  flex-grow: 1;
+  color: black;
+}
+
+.MuiButton-root {
+  color: black;
+}
+
+.MuiButton-text {
+  color: black;
+}
+
+.MuiButton-root:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+  color: black;
+}
+
+.MuiAppBar-root {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}

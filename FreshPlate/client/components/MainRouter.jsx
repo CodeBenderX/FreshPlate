@@ -1,24 +1,17 @@
-import React from 'react'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import Layout from './Layout'
-import Home from './Home'
-import Recipe from './Recipe'
-import Contact from './Contact'
-import LoginForm from './LoginForm'
-import Register from './Register'
+import React from "react";
+import { Routes, Route } from "react-router-dom";
+import Layout from "../components/Layout.jsx";
+import HomePage from "../components/Home.jsx";
+import Footer from "./Footer.jsx";
 
 export default function MainRouter() {
   return (
-    <Router>
+    <div>
+      <Layout/>
       <Routes>
-        <Route>
-          <Route exact path="/" element={<Home />} />
-          <Route path="recipe" element={<Recipe />} />
-          <Route path="contact" element={<Contact />} />
-          <Route path="login" element={<LoginForm />} />
-          <Route path="register" element={<Register />} />
-        </Route>
+        <Route path="/" element={<HomePage />} />
       </Routes>
-    </Router>
+      <Footer/>
+    </div>
   )
 }

@@ -1,61 +1,52 @@
-import React, { useState } from 'react'
-import { Button, Card, CardContent, CardActions, Typography, TextField, AppBar, Toolbar, Container, Grid } from '@mui/material'//layout dapat
-import Link from 'next/link'
+import React, { useState } from 'react';
+import { Button, Typography, TextField, Container, Grid2 } from '@mui/material';
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import CardMedia from '@mui/material/CardMedia'
+import CardActionArea from '@mui/material/CardActionArea'
+import CardActions from '@mui/material/CardActions'
 
 const featuredRecipes = [
   {
-    id: '1',
-    title: 'Spaghetti Carbonara',
+    id: "1",
+    title: "Spaghetti Carbonara",
     prepTime: 10,
     cookTime: 15,
-    servings: 4
+    servings: 4,
   },
   {
-    id: '2',
-    title: 'Chicken Curry',
+    id: "2",
+    title: "Chicken Curry",
     prepTime: 15,
     cookTime: 30,
-    servings: 6
+    servings: 6,
   },
   {
-    id: '3',
-    title: 'Vegetable Stir Fry',
+    id: "3",
+    title: "Vegetable Stir Fry",
     prepTime: 10,
     cookTime: 10,
-    servings: 2
-  }
-]
+    servings: 2,
+  },
+];
 
 export default function HomePage() {
-  const [searchQuery, setSearchQuery] = useState('')
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handleSearch = (e) => {
-    e.preventDefault()
-    console.log('Searching for:', searchQuery)
-  }
+    e.preventDefault();
+    console.log("Searching for:", searchQuery);
+  };
 
   return (
     <div>
-      <AppBar position="static">
-        <Toolbar>
-          <Typography variant="h6" component={Link} href="/" sx={{ flexGrow: 1 }}>
-            FreshPlate
-          </Typography>
-          <Button color="inherit" component={Link} href="/">Home</Button>
-          <Button color="inherit" component={Link} href="/about">About</Button>
-          <Button color="inherit" component={Link} href="/recipes">Recipes</Button>
-          <Button color="inherit" component={Link} href="/contact">Contact</Button>
-          <Button color="inherit" component={Link} href="/login">Login</Button>
-        </Toolbar>
-      </AppBar>
-
-      <Container component="main">
+          <Container component="main">
         <section>
           <Typography variant="h2" component="h1" gutterBottom>
-            Fresh Ideas, Fresh Flavors
+            Discover Delicious Recipes
           </Typography>
           <Typography variant="h5" component="p" gutterBottom>
-            Discover, share, and indulge in a world of flavours that elevate your cooking experience.
+            Find and share the best recipes from around the world
           </Typography>
           <form onSubmit={handleSearch}>
             <TextField
@@ -76,53 +67,92 @@ export default function HomePage() {
           <Typography variant="h4" component="h2" gutterBottom>
             Featured Recipes
           </Typography>
-          <Grid container spacing={3}>
+          <Grid2 container spacing={3}>
             {featuredRecipes.map((recipe) => (
-              <Grid item xs={12} sm={6} md={4} key={recipe.id}>
-                <Card>
-                  <CardContent>
-                    <Typography variant="h5" component="h3" gutterBottom>
-                      {recipe.title}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      Prep: {recipe.prepTime} min
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      Cook: {recipe.cookTime} min
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      Serves: {recipe.servings}
-                    </Typography>
-                  </CardContent>
+              <Grid2 item xs={12} sm={6} md={4} key={recipe.id}>
+                <Card sx={{ maxWidth: 345 }}>
+                  <CardActionArea>
+                    <CardMedia
+                      component="img"
+                      height="140"
+                      image={recipe.image}
+                      alt={recipe.title}
+                    />
+                    <CardContent>
+                      <Typography gutterBottom variant="h5" component="div">
+                        {recipe.title}
+                      </Typography>
+                      <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                        {recipe.description}
+                      </Typography>
+                      <Typography variant="body2" sx={{ color: 'text.secondary', mt: 1 }}>
+                        Prep: {recipe.prepTime} min | Cook: {recipe.cookTime} min | Serves: {recipe.servings}
+                      </Typography>
+                    </CardContent>
+                  </CardActionArea>
                   <CardActions>
-                    <Button size="small" component={Link} href={`/recipes/${recipe.id}`}>
+                    <Button size="small" color="primary" component="a" href={`/recipes/${recipe.id}`}>
                       View Recipe
                     </Button>
                   </CardActions>
                 </Card>
-              </Grid>
+              </Grid2>
             ))}
-          </Grid>
+          </Grid2>
         </section>
-
-        <section>
-          <Typography variant="h4" component="h2" gutterBottom>
-            Join Our Cooking Community
-          </Typography>
-          <Typography variant="body1" gutterBottom>
-            Share your recipes, get inspired, and connect with food lovers
-          </Typography>
-          <Button variant="contained" color="primary" component={Link} href="/signup">
-            Sign Up Now
-          </Button>
-        </section>
-      </Container>
-
-      <Container component="footer" sx={{ mt: 4, py: 3 }}>
-        <Typography variant="body2" color="text.secondary" align="center">
-          &copy; {new Date().getFullYear()} Tasty Recipes. All rights reserved.
-        </Typography>
       </Container>
     </div>
-  )
+  );
 }
+
+
+// Home.jsx
+// import React, { useState } from 'react';
+// import { Button, Card, CardContent, Typography, TextField, Container, Grid2 } from '@mui/material';
+
+// export default function HomePage() {
+//   const [searchQuery, setSearchQuery] = useState('');
+
+//   const handleSearch = (e) => {
+//     e.preventDefault();
+//     console.log('Searching for:', searchQuery);
+//   };
+
+//   return (
+//     <Container>
+//       <Typography variant="h2" gutterBottom>Welcome to the Recipe App</Typography>
+//       <form onSubmit={handleSearch}>
+//         <TextField
+//           label="Search for a recipe"
+//           variant="outlined"
+//           value={searchQuery}
+//           onChange={(e) => setSearchQuery(e.target.value)}
+//           fullWidth
+//           margin="normal"
+//         />
+//         <Button type="submit" variant="contained" color="primary">Search</Button>
+//       </form>
+
+//       {/* Example of a grid displaying some cards */}
+//       <Grid2 container spacing={3} style={{ marginTop: '20px' }}>
+//         <Grid2 item xs={12} sm={6} md={4}>
+//           <Card>
+//             <CardContent>
+//               <Typography variant="h5">Recipe 1</Typography>
+//               <Typography variant="body2">Description of Recipe 1</Typography>
+//             </CardContent>
+//           </Card>
+//         </Grid2>
+//         <Grid2 item xs={12} sm={6} md={4}>
+//           <Card>
+//             <CardContent>
+//               <Typography variant="h5">Recipe 2</Typography>
+//               <Typography variant="body2">Description of Recipe 2</Typography>
+//             </CardContent>
+//           </Card>
+//         </Grid2>
+//         {/* Add more Grid items as needed */}
+//       </Grid2>
+//     </Container>
+//   );
+// }

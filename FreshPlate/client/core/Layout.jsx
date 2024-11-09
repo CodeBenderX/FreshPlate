@@ -16,9 +16,9 @@ export default function Layout() {
     <div className="app-container">
       <AppBar position="static">
         <Toolbar>
-          <Typography variant="h6" color="inherit" sx={{ flexGrow: 1 }}>
+          <Typography variant="h6" color="#FF6E1C" sx={{ flexGrow: 1 }}>
             <Button component={Link} to="/" color="inherit">
-              FreshPlate
+              <img src="../src/assets/FreshPlate-logo.png" alt="FreshPlate-Logo" height={20}/>
             </Button>
           </Typography>
           <Button component={Link} to="/" color="inherit" style={isActive(location, "/")}>
@@ -70,7 +70,7 @@ export default function Layout() {
                   auth.clearJWT(() => navigate('/'));
                 }}
               >
-                Sign out
+                Logout
               </Button>
             </>
           )}

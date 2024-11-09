@@ -131,7 +131,7 @@ export default function Signin() {
           Register
         </Button>
         <Typography component="p" color="#000000">
-          Don't have an account? <Link to="/register">Join Now</Link>
+          Don't have an account? <Link to="/signup">Join Now</Link>
         </Typography>
       </CardContent>
     </Card>

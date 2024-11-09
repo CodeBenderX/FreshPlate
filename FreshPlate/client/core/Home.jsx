@@ -149,16 +149,6 @@ export default function HomePage() {
                         </Typography>
                       </CardContent>
                     </CardActionArea>
-                    <CardActions>
-                      <Button
-                        size="small"
-                        color="primary"
-                        component="a"
-                        href={`/recipes/${recipe.id}`}
-                      >
-                        View Recipe
-                      </Button>
-                    </CardActions>
                   </Card>
                 </Grid2>
               ))}

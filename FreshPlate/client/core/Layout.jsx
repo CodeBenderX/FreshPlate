@@ -86,7 +86,7 @@ export default function Layout() {
                 style={isActive(location, "/account")}
               >
                 Account
-              </Button>
+              {/* </Button>
               <Button
                 component={Link}
                 to="/about"
@@ -99,10 +99,11 @@ export default function Layout() {
                 to="/contact"
                 style={isActive(location, "/contact")}
               >
-                Contact
+                Contact */}
               </Button>
               <Button
                 color="inherit"
+                style={isActive(location, "/logout")}
                 onClick={() => {
                   auth.clearJWT(() => navigate("/"));
                 }}

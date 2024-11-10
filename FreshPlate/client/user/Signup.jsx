@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, CardContent, TextField, Typography, Button } from '@mui/material';
+import { Card, CardContent, TextField, Typography, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import { create } from './api-user';
 
@@ -38,14 +38,39 @@ export default function Signup() {
     error: '',
     open: false
   });
-
+  const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = name => event => {
     setValues({ ...values, [name]: event.target.value });
   };
 
+  const handleClose = () => {
+    setValues({ ...values, open: false });
+    navigate('/signin');
+  };
+
   const clickSubmit = () => {
+    if (!values.name || !values.email || !values.password || !values.confirmPassword) {
+      setValues({ ...values, error: "All fields are required" });
+      return;
+    }
+
+    if (/\d/.test(values.name)) {
+      setValues({ ...values, error: "Name should not contain numbers" });
+      return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) {
+      setValues({ ...values, error: "Invalid email format" });
+      return;
+    }
+
+    if (values.password.length < 8) {
+      setValues({ ...values, error: "Password must be at least 8 characters long" });
+      return;
+    }
+
     if (values.password !== values.confirmPassword) {
       setValues({ ...values, error: "Passwords don't match" });
       return;
@@ -57,16 +82,18 @@ export default function Signup() {
       password: values.password || undefined
     };
 
-    create(user).then((data) => {
-      if (data.error) {
-        setValues({ ...values, error: data.error });
-      } else {
-        setValues({ ...values, error: '', open: true });
-      }
-    });
+    create(user).then(data => {
+        if (data.error) {
+          setValues({ ...values, error: data.error });
+        } else {
+          setValues({ ...values, error: '' });
+          setOpen(true);
+          //navigate('/signin'); // Redirect on successful signup
+        }
+      })
   };
-
   return (
+    <div>
     <Card sx={useStyles.card}>
       <CardContent>
         <Typography variant="h6" sx={useStyles.title}>
@@ -123,11 +150,32 @@ export default function Signup() {
           Have an account? <Link to="/signin">Login</Link>
         </Typography>
       </CardContent>
-      {values.open && (
+      </Card>
+      {/* {values.open && (
         <Typography component="p" color="primary">
           New account successfully created. <Link to="/signin">Sign In</Link>
         </Typography>
-      )}
-    </Card>
+      )} */}
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Account Created Successfully"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Your new account has been successfully created. Click OK to proceed to the sign-in page.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary" autoFocus>
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </div>
   );
 }

@@ -2,6 +2,9 @@ import express from 'express'
 import recipeCtrl from '../Controllers/recipe.controller.js'
 import authCtrl from '../Controllers/auth.controller.js'
 
+console.log('recipeCtrl:', recipeCtrl);  // Add this log
+console.log('authCtrl:', authCtrl);  // Add this log
+
 const router = express.Router()
 
 router.route('/api/recipes')

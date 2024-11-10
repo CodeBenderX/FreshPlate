@@ -48,7 +48,7 @@ export default function Signin() {
   const location = useLocation();
 
   const clickRegister = () => {
-    navigate("/register");
+    navigate("/signup");
   };
 
   const clickSubmit = () => {
@@ -77,6 +77,12 @@ export default function Signin() {
       pathname: "/",
     },
   };
+
+  const { redirectToReferrer } = values
+  if (redirectToReferrer) {
+    return <Navigate to={from} />;
+
+  }
 
   if (values.redirectToReferrer) {
     return <Navigate to={from} />;

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Card, CardContent, TextField, Typography, Button } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
-import { create } from './api-user.js';
+import { create } from './api-user';
 
 const useStyles = {
   card: {

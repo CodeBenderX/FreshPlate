@@ -208,9 +208,9 @@ export default function Layout() {
               </Button>
               <Button
                 component={Link}
-                to="/recipes"
+                to="/recipelist"
                 color="inherit"
-                style={isActive(location, "/recipes")}
+                style={isActive(location, "/recipelist")}
               >
                 Recipes
               </Button>

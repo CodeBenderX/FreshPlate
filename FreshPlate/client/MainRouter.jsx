@@ -7,6 +7,10 @@ import Signin from "./lib/Signin.jsx";
 import Signup from "./user/Signup.jsx";
 import MemberHome from "./core/MemberHome.jsx";
 import MyAccount from "./user/UserAccount.jsx";
+import AboutPage from "./components/About.jsx";
+import Recipe from "./recipe/Recipe.jsx";
+import AddRecipePage from "./recipe/AddRecipe.jsx";
+import RecipeList from "./recipe/RecipeList.jsx";
 
 export default function MainRouter() {
   return (
@@ -15,6 +19,10 @@ export default function MainRouter() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/member" element={<MemberHome />} />
+        <Route path="/recipe" element={<Recipe />} />
+        <Route path="/addrecipe" element={<AddRecipePage />} />
+        <Route path="/recipelist" element={<RecipeList />} />
+        <Route path="/about" element={<AboutPage />} />
         <Route path="/account" element={<MyAccount />} />
         <Route path="/signin" element={<Signin />} />
         <Route path="/signup" element={<Signup />} />

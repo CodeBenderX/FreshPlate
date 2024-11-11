@@ -8,6 +8,9 @@ import CardActions from "@mui/material/CardActions";
 import image1 from "../src/assets/FriedPorkBelly.png";
 import image2 from "../src/assets/GrilledSquid.png";
 import image3 from "../src/assets/BakedSalmonwithVeg.png";
+import image4 from "../src/assets/BakedHam.png";
+import image5 from "../src/assets/ShrimpPasta.png";
+import image6 from "../src/assets/StrawberryCake.png";
 import burger from "../src/assets/BurgerHero1.png";
 
 const featuredRecipes = [
@@ -34,6 +37,30 @@ const featuredRecipes = [
     cookTime: 30,
     servings: 5,
     image: image3,
+  },
+  {
+    id: "4",
+    title: "Baked Ham",
+    prepTime: 10,
+    cookTime: 45,
+    servings: 8,
+    image: image4,
+  },
+  {
+    id: "5",
+    title: "Shrimp Pasta",
+    prepTime: 20,
+    cookTime: 45,
+    servings: 6,
+    image: image5,
+  },
+  {
+    id: "6",
+    title: "Strawberry Cake",
+    prepTime: 40,
+    cookTime: 60,
+    servings: 10,
+    image: image6,
   },
 ];
 

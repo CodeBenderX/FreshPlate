@@ -8,7 +8,7 @@ import CardActions from "@mui/material/CardActions";
 import image1 from "../src/assets/FriedPorkBelly.png";
 import image2 from "../src/assets/GrilledSquid.png";
 import image3 from "../src/assets/BakedSalmonwithVeg.png";
-import burger from "../src/assets/BurgerHero1.png";
+// import burger from "../src/assets/BurgerHero1.png";
 
 const featuredRecipes = [
   {

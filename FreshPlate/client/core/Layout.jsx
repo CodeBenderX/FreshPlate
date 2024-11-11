@@ -86,8 +86,16 @@ export default function Layout() {
                 style={isActive(location, "/account")}
               >
                 Account
-              {/* </Button>
+              </Button>
               <Button
+                component={Link}
+                to="/recipe"
+                color="inherit"
+                style={isActive(location, "/recipe")}
+              >
+                Recipes
+              </Button>
+              {/* <Button
                 component={Link}
                 to="/about"
                 style={isActive(location, "/about")}
@@ -99,8 +107,8 @@ export default function Layout() {
                 to="/contact"
                 style={isActive(location, "/contact")}
               >
-                Contact */}
-              </Button>
+                Contact
+              </Button> */}
               <Button
                 color="inherit"
                 style={isActive(location, "/logout")}

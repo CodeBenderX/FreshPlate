@@ -74,7 +74,7 @@ export default function Signin() {
 
   const { from } = location.state || {
     from: {
-      pathname: "/",
+      pathname: "/member",
     },
   };
 

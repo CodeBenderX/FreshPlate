@@ -138,9 +138,9 @@ const UserAccount = () => {
           <Typography variant="h5" component="div">
             Welcome, {user?.name || 'User'}
           </Typography>
-          <Typography variant="body2" color="text.secondary">
+          {/* <Typography variant="body2" color="text.secondary">
             Your ID: {user?._id || 'No ID available'}
-          </Typography>
+          </Typography> */}
         </CardContent>
       </Card>
 
@@ -232,102 +232,6 @@ const UserAccount = () => {
       {/* Update */}
       {isUpdating ? 'Updating...' : 'Update'}
     </Button>
-          {/* <form onSubmit={handleUpdate}>
-            <TextField
-              fullWidth
-              label="Name"
-              name="name"
-              value={updateData.name || user?.name || ''}
-              onChange={handleChange}
-              margin="normal"
-            />
-            <TextField
-              fullWidth
-              label="Email"
-              name="email"
-              type="email"
-              value={updateData.email || user?.email || ''}
-              onChange={handleChange}
-              margin="normal"
-            />
-            <Button
-              variant="contained"
-              type="submit"
-              fullWidth
-              disabled={isUpdating}
-              sx={{ marginTop: 2 }}
-            >
-              {isUpdating ? 'Updating...' : 'Update'}
-            </Button>
-          </form> */}
-          {/* <FormControl fullWidth margin="normal">
-            <InputLabel id="update-type-label">Select Information to Update</InputLabel>
-            <Select
-              labelId="update-type-label"
-              value={updateType}
-              onChange={handleUpdateTypeChange}
-              fullWidth
-            >
-              <MenuItem value="name">Name</MenuItem>
-              <MenuItem value="email">Email</MenuItem>
-              <MenuItem value="password">Password</MenuItem>
-            </Select>
-          </FormControl>
-
-          <form onSubmit={handleUpdate}>
-            {updateType === 'name' && (
-              <TextField
-                fullWidth
-                label="New Name"
-                name="name"
-                value={updateData.name}
-                onChange={handleChange}
-                margin="normal"
-              />
-            )}
-            {updateType === 'email' && (
-              <TextField
-                fullWidth
-                label="New Email"
-                name="email"
-                type="email"
-                value={updateData.email}
-                onChange={handleChange}
-                margin="normal"
-              />
-            )}
-            {updateType === 'password' && (
-              <>
-                <TextField
-                  fullWidth
-                  label="New Password"
-                  name="newPassword"
-                  type="password"
-                  value={updateData.newPassword}
-                  onChange={handleChange}
-                  margin="normal"
-                />
-                <TextField
-                  fullWidth
-                  label="Confirm Password"
-                  name="confirmPassword"
-                  type="password"
-                  value={updateData.confirmPassword}
-                  onChange={handleChange}
-                  margin="normal"
-                />
-              </>
-            )}
-            <Button
-              variant="contained"
-              type="submit"
-              fullWidth
-              disabled={isUpdating || !updateType}
-              sx={{ marginTop: 2 }}
-            >
-              {isUpdating ? 'Updating...' : 'Update'}
-            </Button>
-          </form> */}
         </CardContent>
       </Card>
 

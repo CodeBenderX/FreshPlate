@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from 'react-router-dom'
 import { Button, Typography, TextField, Container, Grid2 } from "@mui/material";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -111,6 +112,7 @@ export default function HomePage() {
               <Typography variant="body1" sx={{ color: "#4A4A4A" }}>
                 Share your recipes, get inspired, and connect with food lovers.
               </Typography>
+              <Link to="/signup">
               <Button
                 variant="contained"
                 sx={{
@@ -124,6 +126,7 @@ export default function HomePage() {
               >
                 Sign up now!
               </Button>
+              </Link>
             </CardContent>
             <CardMedia
               component="img"
@@ -186,54 +189,3 @@ export default function HomePage() {
     </div>
   );
 }
-
-// Home.jsx
-// import React, { useState } from 'react';
-// import { Button, Card, CardContent, Typography, TextField, Container, Grid2 } from '@mui/material';
-
-// export default function HomePage() {
-//   const [searchQuery, setSearchQuery] = useState('');
-
-//   const handleSearch = (e) => {
-//     e.preventDefault();
-//     console.log('Searching for:', searchQuery);
-//   };
-
-//   return (
-//     <Container>
-//       <Typography variant="h2" gutterBottom>Welcome to the Recipe App</Typography>
-//       <form onSubmit={handleSearch}>
-//         <TextField
-//           label="Search for a recipe"
-//           variant="outlined"
-//           value={searchQuery}
-//           onChange={(e) => setSearchQuery(e.target.value)}
-//           fullWidth
-//           margin="normal"
-//         />
-//         <Button type="submit" variant="contained" color="primary">Search</Button>
-//       </form>
-
-//       {/* Example of a grid displaying some cards */}
-//       <Grid2 container spacing={3} style={{ marginTop: '20px' }}>
-//         <Grid2 item xs={12} sm={6} md={4}>
-//           <Card>
-//             <CardContent>
-//               <Typography variant="h5">Recipe 1</Typography>
-//               <Typography variant="body2">Description of Recipe 1</Typography>
-//             </CardContent>
-//           </Card>
-//         </Grid2>
-//         <Grid2 item xs={12} sm={6} md={4}>
-//           <Card>
-//             <CardContent>
-//               <Typography variant="h5">Recipe 2</Typography>
-//               <Typography variant="body2">Description of Recipe 2</Typography>
-//             </CardContent>
-//           </Card>
-//         </Grid2>
-//         {/* Add more Grid items as needed */}
-//       </Grid2>
-//     </Container>
-//   );
-// }

@@ -1,149 +1,296 @@
-//creation of recipes
-import React from "react";
+import React, { useState, useEffect  } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Container,
   Typography,
   Card,
   CardContent,
   TextField,
-  Grid2,
   Button,
   Box,
   InputAdornment,
-  IconButton,
+  Snackbar,
+  Alert,
+  CircularProgress,
+  Grid2,
 } from "@mui/material";
 import { CloudUpload } from "@mui/icons-material";
+import { create } from './api-recipe'; 
+import auth from '../lib/auth-helper.js';
 
 const AddRecipePage = () => {
+  const navigate = useNavigate();
+  const [values, setValues] = useState({
+    title: "",
+    ingredients: "",
+    instructions: "",
+    prepTime: "",
+    cookTime: "",
+    servings: "",
+    //image: null,
+  });
+  const [errors, setErrors] = useState({});
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    checkAuthentication();
+  }, []);
+
+  const checkAuthentication = () => {
+    const authStatus = auth.isAuthenticated();
+    console.log("Authentication status:", authStatus);
+    if (!authStatus) {
+      setError("You must be logged in to create a recipe.");
+      setIsAuthenticated(false);
+    } else {
+      setIsAuthenticated(true);
+    }
+  };
+
+  const handleChange = (name) => (event) => {
+    const value = name === 'image' ? event.target.files?.[0] || null : event.target.value;
+    setValues({ ...values, [name]: value });
+    if (errors[name]) {
+      setErrors({ ...errors, [name]: "" });
+    }
+    console.log(`Field ${name} updated:`, value);
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!values.title.trim()) newErrors.title = "Title is required";
+    if (!values.instructions.trim()) newErrors.instructions = "Instructions are required";
+    if (!values.ingredients.trim()) newErrors.ingredients = "Ingredients are required";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log("Form submitted", values); // Debug log
+
+    if (!isAuthenticated) {
+      setError("You must be logged in to create a recipe.");
+      return;
+    }
+
+    if (!validateForm()) {
+      setError("Please fill in all required fields.");
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+
+    try {
+      const jwt = auth.isAuthenticated();
+      console.log("JWT token:", jwt.token); // Debug log
+
+      const recipeData = {
+        title: values.title,
+        ingredients: values.ingredients,
+        instructions: values.instructions,
+        prepTime: values.prepTime,
+        cookTime: values.cookTime,
+        servings: values.servings,
+      };
+
+      console.log("Recipe data:", recipeData); // Debug log
+
+      // const formData = new FormData();
+      // Object.entries(recipeData).forEach(([key, value]) => {
+      //   if (value !== null && value !== "") {
+      //     formData.append(key, value);
+      //   }
+      // });
+
+      // if (values.image) {
+      //   formData.append('image', values.image);
+      // }
+
+      // console.log("FormData entries:"); // Debug log
+      // for (let [key, value] of formData.entries()) {
+      //   console.log(key, value);
+      // }
+
+      const result = await create({ t: jwt.token }, recipeData);
+      console.log("API response:", result); // Debug log
+
+      if (result.error) {
+        throw new Error(result.error);
+      }
+
+      console.log('Recipe created successfully:', result);
+      setSuccess(true);
+      setTimeout(() => {
+        navigate("/recipelist");
+      }, 1000);
+    } catch (err) {
+      console.error('Error creating recipe:', err);
+      if (err.message.includes("jwt malformed") || err.message.includes("Unauthorized")) {
+        setError("Your session has expired. Please log in again.");
+        auth.clearJWT(() => {
+          setIsAuthenticated(false);
+        });
+      } else {
+        setError(err.message || "Failed to create recipe. Please try again.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (!isAuthenticated) {
+    return (
+      <Container component="main" maxWidth="sm" sx={{ py: 4 }}>
+        <Typography variant="h5" component="h2" align="center" sx={{ mb: 2 }}>
+          Authentication Required
+        </Typography>
+        <Button
+          variant="contained"
+          color="primary"
+          fullWidth
+          onClick={() => navigate("/login")}
+        >
+          Go to Login
+        </Button>
+      </Container>
+    );
+  }
+
   return (
-    <Container
-      component="main"
-      maxWidth="sm"
-      sx={{ paddingTop: 4, paddingBottom: 4 }}
-    >
-      {/* Page Title */}
-      <Typography
-        variant="h3"
-        align="center"
-        color="#FF6E1C"
-        sx={{ fontWeight: "bold", marginBottom: 4 }}
-      >
+    <Container component="main" maxWidth="sm" sx={{ py: 4 }}>
+      <Typography variant="h3" align="center" color="#FF6E1C" sx={{ fontWeight: "bold", mb: 4 }}>
         Recipes
       </Typography>
 
-      {/* Card for Form */}
-      <Card sx={{ padding: 4, backgroundColor: "#fff" }}>
+      <Card sx={{ p: 4, bgcolor: "#fff" }}>
         <CardContent>
-          <Typography
-            variant="h5"
-            component="h2"
-            align="center"
-            sx={{ fontWeight: "bold", marginBottom: 3 }}
-          >
+          <Typography variant="h5" component="h2" align="center" sx={{ fontWeight: "bold", mb: 3 }}>
             Add new Recipe
           </Typography>
 
-          {/* Recipe Title */}
-          <TextField
-            label="Recipe Title*"
-            variant="outlined"
-            fullWidth
-            sx={{ marginBottom: 2 }}
-          />
-
-          {/* Ingredients */}
-          <TextField
-            label="Ingredients*"
-            variant="outlined"
-            fullWidth
-            multiline
-            rows={3}
-            sx={{ marginBottom: 2 }}
-          />
-
-          {/* Instructions */}
-          <TextField
-            label="Instructions*"
-            variant="outlined"
-            fullWidth
-            multiline
-            rows={4}
-            sx={{ marginBottom: 2 }}
-          />
-
-          {/* Prep Time, Cook Time, Servings */}
-          <Grid2 container spacing={2} sx={{ marginBottom: 2 }}>
-            <Grid2 item xs={4}>
-              <TextField
-                label="Prep Time"
-                type="number"
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">Minutes</InputAdornment>
-                  ),
-                }}
-                variant="outlined"
-                fullWidth
-              />
-            </Grid2>
-            <Grid2 item xs={4}>
-              <TextField
-                label="Cook Time"
-                type="number"
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">Minutes</InputAdornment>
-                  ),
-                }}
-                variant="outlined"
-                fullWidth
-              />
-            </Grid2>
-            <Grid2 item xs={4}>
-              <TextField
-                label="Servings"
-                type="number"
-                variant="outlined"
-                fullWidth
-              />
-            </Grid2>
-          </Grid2>
-
-          {/* Image Upload */}
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              marginBottom: 3,
-            }}
-          >
-            <Button
+          <form onSubmit={handleSubmit}>
+            <TextField
+              label="Recipe Title*"
               variant="outlined"
-              component="label"
-              startIcon={<CloudUpload />}
               fullWidth
-            >
-              Upload an image
-              <input type="file" hidden />
-            </Button>
-          </Box>
+              sx={{ mb: 2 }}
+              value={values.title}
+              onChange={handleChange("title")}
+              required
+              error={!!errors.title}
+              helperText={errors.title}
+            />
 
-          {/* Action Buttons */}
-          <Grid2 container spacing={2}>
-            <Grid2 item xs={6}>
-              <Button variant="contained" color="primary" fullWidth>
-                Add Recipe
-              </Button>
+            <TextField
+              label="Ingredients*"
+              variant="outlined"
+              fullWidth
+              multiline
+              rows={3}
+              sx={{ mb: 2 }}
+              value={values.ingredients}
+              onChange={handleChange("ingredients")}
+              required
+              error={!!errors.ingredients}
+              helperText={errors.ingredients}
+            />
+
+            <TextField
+              label="Instructions*"
+              variant="outlined"
+              fullWidth
+              multiline
+              rows={4}
+              sx={{ mb: 2 }}
+              value={values.instructions}
+              onChange={handleChange("instructions")}
+              required
+            />
+
+            <Grid2 container spacing={2} sx={{ mb: 2 }}>
+              <Grid2 xs={4}>
+                <TextField
+                  label="Prep Time"
+                  type="number"
+                  InputProps={{
+                    endAdornment: <InputAdornment position="end">Minutes</InputAdornment>,
+                  }}
+                  variant="outlined"
+                  fullWidth
+                  value={values.prepTime}
+                  onChange={handleChange("prepTime")}
+                />
+              </Grid2>
+              <Grid2 xs={4}>
+                <TextField
+                  label="Cook Time"
+                  type="number"
+                  InputProps={{
+                    endAdornment: <InputAdornment position="end">Minutes</InputAdornment>,
+                  }}
+                  variant="outlined"
+                  fullWidth
+                  value={values.cookTime}
+                  onChange={handleChange("cookTime")}
+                />
+              </Grid2>
+              <Grid2 xs={4}>
+                <TextField
+                  label="Servings"
+                  type="number"
+                  variant="outlined"
+                  fullWidth
+                  value={values.servings}
+                  onChange={handleChange("servings")}
+                />
+              </Grid2>
             </Grid2>
-            <Grid2 item xs={6}>
-              <Button variant="outlined" color="secondary" fullWidth>
-                Cancel
+
+            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", mb: 3 }}>
+              <Button variant="outlined" component="label" startIcon={<CloudUpload />} fullWidth>
+                Upload an image
+                <input type="file" hidden onChange={handleChange("image")} />
               </Button>
+            </Box>
+
+            <Grid2 container spacing={2}>
+              <Grid2 xs={6}>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                  disabled={loading}
+                >
+                  {loading ? <CircularProgress size={24} /> : "Add Recipe"}
+                </Button>
+              </Grid2>
+              <Grid2 xs={6}>
+                <Button variant="outlined" color="secondary" fullWidth onClick={() => navigate("/recipes")}>
+                  Cancel
+                </Button>
+              </Grid2>
             </Grid2>
-          </Grid2>
+          </form>
         </CardContent>
       </Card>
+
+      <Snackbar open={success} autoHideDuration={6000} onClose={() => setSuccess(false)}>
+        <Alert onClose={() => setSuccess(false)} severity="success">
+          Recipe added successfully!
+        </Alert>
+      </Snackbar>
+
+      <Snackbar open={!!error} autoHideDuration={6000} onClose={() => setError("")}>
+        <Alert onClose={() => setError("")} severity="error">
+          {error}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 };

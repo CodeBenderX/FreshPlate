@@ -72,7 +72,7 @@ export default function MemberHome() {
 
         <section>
           <Typography variant="h4" component="h2" gutterBottom>
-            Sign up to view the recipes!
+            Featured Recipes
           </Typography>
           <Card>
             <Grid2 container spacing={3}>

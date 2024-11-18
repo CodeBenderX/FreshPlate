@@ -13,11 +13,11 @@ import { Add, Edit, Delete, ChevronRight } from '@mui/icons-material'
 
 export default function RecipeList() {
   const recipes = [
-    { id: 1, title: 'Chicken with Creamy Mushroom Sauce' },
-    { id: 2, title: 'Spaghetti Carbonara' },
-    { id: 3, title: 'How to make Beef Bulgogi' },
-    { id: 4, title: 'How to make Beef Bulgogi' },
-    { id: 5, title: 'How to make Beef Bulgogi' },
+    { id: 1, title: 'Fried Pork Belly' },
+    { id: 2, title: 'Grilled Squid' },
+    { id: 3, title: 'Baked Salmon with Veggies' },
+    { id: 4, title: 'Baked Ham' },
+    { id: 5, title: 'Shrimp Pasta' },
   ]
 
   return (

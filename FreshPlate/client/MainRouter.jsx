@@ -11,6 +11,7 @@ import AboutPage from "./components/About.jsx";
 import Recipe from "./recipe/Recipe.jsx";
 import AddRecipePage from "./recipe/AddRecipe.jsx";
 import RecipeList from "./recipe/RecipeList.jsx";
+import ContactUsPage from "./components/Contact.jsx";
 
 export default function MainRouter() {
   return (
@@ -26,6 +27,7 @@ export default function MainRouter() {
         <Route path="/account" element={<MyAccount />} />
         <Route path="/signin" element={<Signin />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/contact" element={<ContactUsPage />} />
       </Routes>
       <Footer/>
     </div>

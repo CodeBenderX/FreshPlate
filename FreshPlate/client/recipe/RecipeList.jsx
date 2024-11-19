@@ -69,9 +69,9 @@ export default function RecipeList() {
       }
 
       const data = await response.json()
-      //const userRecipes = data.filter(recipe => recipe.creator === jwt.user.name) //this is to filter the recipes that will show what the signed user created
+      const userRecipes = data.filter(recipe => recipe.creator === jwt.user.name) //this is to filter the recipes that will show what the signed user created
       console.log('Fetched recipes:', data)
-      setRecipes(data)
+      setRecipes(userRecipes)
       setTotalPages(Math.ceil(data.length / itemsPerPage))
       setError(null)
     } catch (err) {

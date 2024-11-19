@@ -20,6 +20,7 @@ import {
 } from "@mui/material";
 import { Add, Edit, Delete, ChevronRight } from "@mui/icons-material";
 import auth from "../lib/auth-helper";
+import { Hand } from "lucide-react";
 
 export default function RecipeList() {
   const [recipes, setRecipes] = useState([]);
@@ -42,6 +43,10 @@ export default function RecipeList() {
 
   const handleEditRecipe = (recipeId) => {
     navigate(`/editrecipe?id=${recipeId}`)
+  }
+
+  const handleViewRecipe = (recipeId) =>{
+    navigate(`/viewrecipe?id=${recipeId}`)
   }
 
   const fetchRecipes = useCallback(async () => {
@@ -219,6 +224,7 @@ export default function RecipeList() {
                   variant="outlined"
                   endIcon={<ChevronRight />}
                   sx={{ borderRadius: "4px" }}
+                  onClick={() => handleViewRecipe(recipe._id)}
                 >
                   View Recipe
                 </Button>

@@ -1,79 +1,112 @@
-import Recipe from '../models/recipe.model.js';
+import Recipe from '../Models/recipe.model.js'
+import errorHandler from '../controllers/error.controller.js'
 
 const createRecipe = async (req, res) => {
   try {
-    if (!req.user || !req.user.username) {
-        return res.status(401).json({ error: 'User not authenticated or username not available' });
-      }
     const recipe = new Recipe({
       ...req.body,
-      creator: req.user.username  // Set the creator to the logged-in user's username
-    });
-    await recipe.save();
-    res.status(201).json(recipe);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
+      creator: req.auth.name  // Use the authenticated user's name
+    })
+    await recipe.save()
+    return res.status(201).json(recipe)
+  } catch (err) {
+    return res.status(400).json({
+      error: errorHandler.getErrorMessage(err)
+    })
   }
 };
 
 const getAllRecipes = async (req, res) => {
   try {
-    const recipes = await Recipe.find();
-    res.json(recipes);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-const getRecipeById = async (req, res) => {
-  try {
-    const recipe = await Recipe.findById(req.params.id);
-    if (!recipe) {
-      return res.status(404).json({ error: 'Recipe not found' });
-    }
-    res.json(recipe);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-const updateRecipe = async (req, res) => {
-  try {
-    const recipe = await Recipe.findOne({ _id: req.params.id, creator: req.user.username });
-    if (!recipe) {
-      return res.status(404).json({ error: 'Recipe not found or you are not authorized to update it' });
-    }
-    Object.assign(recipe, req.body);
-    await recipe.save();
-    res.json(recipe);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-};
-
-const deleteRecipe = async (req, res) => {
-  try {
-    const recipe = await Recipe.findOneAndDelete({ _id: req.params.id, creator: req.user.username });
-    if (!recipe) {
-      return res.status(404).json({ error: 'Recipe not found or you are not authorized to delete it' });
-    }
-    res.json({ message: 'Recipe deleted successfully' });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+    let recipes = await Recipe.find().select('title ingredients instructions creator preptime cooktime servings created updated')
+    res.json(recipes)
+  } catch (err) {
+    return res.status(400).json({
+      error: errorHandler.getErrorMessage(err)
+    })
   }
 };
 
 const recipeByID = async (req, res, next, id) => {
   try {
-    const recipe = await Recipe.findById(id);
-    if (!recipe) {
-      return res.status(404).json({ error: "Recipe not found" });
-    }
-    req.recipe = recipe;
-    next();
+    let recipe = await Recipe.findById(id)
+    if (!recipe)
+      return res.status(400).json({
+        error: "Recipe not found"
+      })
+    req.recipe = recipe
+    next()
   } catch (err) {
-    return res.status(400).json({ error: "Could not retrieve recipe" });
+    return res.status(400).json({
+      error: "Could not retrieve recipe"
+    })
+  }
+}
+
+const updateRecipe = async (req, res) => {
+  try {
+    let recipe = req.recipe
+    const updatableFields = ['title', 'ingredients', 'instructions', 'preptime', 'cooktime', 'servings']
+    updatableFields.forEach((field) => {
+      if (req.body[field] !== undefined) {
+        recipe[field] = req.body[field]
+      }
+    })
+    recipe.updated = Date.now()
+    await recipe.save()
+    res.json(recipe)
+  } catch (err) {
+    return res.status(400).json({
+      error: errorHandler.getErrorMessage(err)
+    })
   }
 };
 
-export default { createRecipe, getAllRecipes, getRecipeById, updateRecipe, deleteRecipe, recipeByID};
+const deleteRecipe = async (req, res) => {
+  try {
+    let recipe = req.recipe
+    let deletedRecipe = await Recipe.findByIdAndDelete(recipe._id)
+    if (!deletedRecipe) {
+      return res.status(404).json({
+        error: "Recipe not found"
+      })
+    }
+    res.json({ message: "Recipe deleted successfully", deletedRecipe })
+  } catch (err) {
+    return res.status(400).json({
+      error: errorHandler.getErrorMessage(err)
+    })
+  }
+};
+
+const deleteAll = async (req, res) => {
+  try {
+    const result = await Recipe.deleteMany({ creator: req.auth.name })
+    if (result.deletedCount === 0) {
+      return res.status(404).json({
+        error: "No recipes found for this user"
+      })
+    }
+    res.json({ message: `${result.deletedCount} recipes deleted successfully` })
+  } catch (err) {
+    return res.status(500).json({
+      error: errorHandler.getErrorMessage(err)
+    })
+  }
+}
+
+const read = (req, res) => {
+  return res.json(req.recipe)
+}
+
+const isCreator = (req, res, next) => {
+  const authorized = req.recipe && req.auth && req.recipe.creator === req.auth.name
+  if (!authorized) {
+    return res.status(403).json({
+      error: "User is not authorized"
+    })
+  }
+  next()
+}
+
+export default { createRecipe, getAllRecipes, updateRecipe, deleteRecipe, deleteAll, recipeByID, isCreator, read};

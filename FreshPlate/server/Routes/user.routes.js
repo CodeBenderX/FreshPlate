@@ -1,6 +1,6 @@
 import express from 'express'
-import userCtrl from '../controllers/user.controller.js'
-import authCtrl from '../controllers/auth.controller.js'
+import userCtrl from '../Controllers/user.controller.js'
+import authCtrl from '../Controllers/auth.controller.js'
 const router = express.Router()
 router.route('/api/users').post(userCtrl.create)
 router.route('/api/users').get(userCtrl.list)

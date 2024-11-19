@@ -1,23 +1,23 @@
-import User from '../models/user.model.js'
+import User from '../Models/user.model.js'
 import jwt from 'jsonwebtoken'
 //import expressJwt from 'express-jwt'
 import { expressjwt } from "express-jwt";
 import config from '../config/config.js'
 const signin = async (req, res) => {
     try {
-        let user = await User.findOne({ "username": req.body.username }) 
+        let user = await User.findOne({ "email": req.body.email }) 
         if (!user)
         return res.status('401').json({ error: "User not found" }) 
         if (!user.authenticate(req.body.password)) {
-        return res.status('401').send({ error: "Username and password don't match." })
+        return res.status('401').send({ error: "Email and password don't match." })
         }
-        const token = jwt.sign({ _id: user._id, username: user.username}, config.jwtSecret) 
+        const token = jwt.sign({ _id: user._id, name: user.name, email: user.email  }, config.jwtSecret) 
         res.cookie('t', token, { expire: new Date() + 9999 }) 
         return res.json({
         token, 
         user: {
         _id: user._id, 
-        username: user.username,
+        name: user.name,
         email: user.email 
         }
         })
@@ -40,10 +40,10 @@ const requireSignin = expressjwt({
     })
     
     const setUser = async (req, res, next) => {
-        if (req.auth && req.auth._id && req.auth.username) {
+        if (req.auth && req.auth._id && req.auth.name) {
             req.user = {
                 _id: req.auth._id,
-                username: req.auth.username
+                name: req.auth.name
             }
             next()
         } else {

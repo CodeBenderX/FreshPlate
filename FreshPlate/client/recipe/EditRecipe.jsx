@@ -299,7 +299,7 @@ export default function EditRecipe() {
               </Button>
               <Button
                 fullWidth
-                onClick={() => navigate('/')}
+                onClick={() => navigate('/recipelist')}
                 sx={{
                   border: '1px solid #ddd',
                   color: '#666',

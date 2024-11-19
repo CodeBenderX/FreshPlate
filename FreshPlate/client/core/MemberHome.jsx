@@ -1,5 +1,5 @@
 // import React, { useState } from "react";
-// import { Button, Typography, TextField, Container, Grid22 } from "@mui/material";
+// import { Button, Typography, TextField, Container, Grid222 } from "@mui/material";
 // import Card from "@mui/material/Card";
 // import CardContent from "@mui/material/CardContent";
 // import CardMedia from "@mui/material/CardMedia";
@@ -75,9 +75,9 @@
 //             Featured Recipes
 //           </Typography>
 //           <Card>
-//             <Grid22 container spacing={3}>
+//             <Grid222 container spacing={3}>
 //               {featuredRecipes.map((recipe) => (
-//                 <Grid22 item xs={12} sm={6} md={4} key={recipe.id}>
+//                 <Grid222 item xs={12} sm={6} md={4} key={recipe.id}>
 //                   <Card sx={{ maxWidth: 345 }}>
 //                     <CardActionArea>
 //                       <CardMedia
@@ -116,9 +116,9 @@
 //                       </Button>
 //                     </CardActions>
 //                   </Card>
-//                 </Grid22>
+//                 </Grid222>
 //               ))}
-//             </Grid22>
+//             </Grid222>
 //           </Card>
 //         </section>
 //       </Container>
@@ -128,7 +128,7 @@
 
 
 // import React, { useState, useEffect } from "react";
-// import { Button, Typography, TextField, Container, Grid22 } from "@mui/material";
+// import { Button, Typography, TextField, Container, Grid222 } from "@mui/material";
 // import Card from "@mui/material/Card";
 // import CardContent from "@mui/material/CardContent";
 // import CardMedia from "@mui/material/CardMedia";
@@ -194,9 +194,9 @@
 //             Featured Recipes
 //           </Typography>
 //           <Card>
-//             <Grid22 container spacing={3}>
+//             <Grid222 container spacing={3}>
 //               {featuredRecipes.map((recipe) => (
-//                 <Grid22 item xs={12} sm={6} md={4} key={recipe.id}>
+//                 <Grid222 item xs={12} sm={6} md={4} key={recipe.id}>
 //                   <Card sx={{ maxWidth: 345 }}>
 //                     <CardActionArea>
 //                       <CardMedia
@@ -235,9 +235,9 @@
 //                       </Button>
 //                     </CardActions>
 //                   </Card>
-//                 </Grid22>
+//                 </Grid222>
 //               ))}
-//             </Grid22>
+//             </Grid222>
 //           </Card>
 //         </section>
 //       </Container>
@@ -246,7 +246,7 @@
 // }
 
 // import React, { useState, useEffect } from "react";
-// import { Button, Typography, TextField, Container, Grid22, CircularProgress } from "@mui/material";
+// import { Button, Typography, TextField, Container, Grid222, CircularProgress } from "@mui/material";
 // import Card from "@mui/material/Card";
 // import CardContent from "@mui/material/CardContent";
 // import CardMedia from "@mui/material/CardMedia";
@@ -370,9 +370,9 @@
 //             Featured Recipes
 //           </Typography>
 //           <Card>
-//             <Grid22 container spacing={3}>
+//             <Grid222 container spacing={3}>
 //               {featuredRecipes.map((recipe) => (
-//                 <Grid22 item xs={12} sm={6} md={4} key={recipe._id}>
+//                 <Grid222 item xs={12} sm={6} md={4} key={recipe._id}>
 //                   <Card sx={{ maxWidth: 345 }}>
 //                     <CardActionArea>
 //                       <CardMedia
@@ -411,9 +411,9 @@
 //                       </Button>
 //                     </CardActions>
 //                   </Card>
-//                 </Grid22>
+//                 </Grid222>
 //               ))}
-//             </Grid22>
+//             </Grid222>
 //           </Card>
 //         </section>
 //       </Container>
@@ -422,6 +422,7 @@
 // }
 
 import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from 'react-router-dom'
 import { Button, Typography, TextField, Container, Grid2, CircularProgress } from "@mui/material";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -430,6 +431,7 @@ import CardActionArea from "@mui/material/CardActionArea";
 import CardActions from "@mui/material/CardActions";
 import auth from "../lib/auth-helper";
 import defaultRecipeImage from "../src/assets/defaultFoodImage.png";
+
 
 const list = async (credentials, signal) => {
   try {
@@ -453,6 +455,8 @@ export default function MemberHome() {
   const [featuredRecipes, setFeaturedRecipes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -509,6 +513,12 @@ export default function MemberHome() {
         </Typography>
       </Container>
     );
+  }
+
+  
+
+  const handleViewRecipe = (recipeId) => {
+    navigate(`/viewrecipe?id=${recipeId}`)
   }
 
   return (
@@ -576,7 +586,7 @@ export default function MemberHome() {
                         size="small"
                         color="primary"
                         component="a"
-                        href={`/recipes/${recipe._id}`}
+                        onClick={() => handleViewRecipe(recipe._id)}
                       >
                         View Recipe
                       </Button>

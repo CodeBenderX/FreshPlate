@@ -44,6 +44,10 @@ export default function RecipeList() {
     navigate(`/editrecipe?id=${recipeId}`)
   }
 
+  const handleViewRecipe = (recipeId) => {
+    navigate(`/viewrecipe?id=${recipeId}`)
+  }
+
   const fetchRecipes = useCallback(async () => {
     try {
       setLoading(true)
@@ -66,7 +70,7 @@ export default function RecipeList() {
 
       const data = await response.json()
       //const userRecipes = data.filter(recipe => recipe.creator === jwt.user.name) //this is to filter the recipes that will show what the signed user created
-      
+      console.log('Fetched recipes:', data)
       setRecipes(data)
       setTotalPages(Math.ceil(data.length / itemsPerPage))
       setError(null)
@@ -190,7 +194,7 @@ export default function RecipeList() {
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
           {currentRecipes.map((recipe) => (
             <Card
-              key={recipe.id}
+              key={recipe._id}
               sx={{
                 p: 2,
                 display: "flex",
@@ -208,6 +212,7 @@ export default function RecipeList() {
                   variant="outlined"
                   endIcon={<ChevronRight />}
                   sx={{ borderRadius: "4px" }}
+                  onClick={() => handleViewRecipe(recipe._id)}
                 >
                   View Recipe
                 </Button>

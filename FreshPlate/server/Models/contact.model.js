@@ -1,13 +1,17 @@
 import mongoose from 'mongoose';
 
 const contactSchema = new mongoose.Schema({
-  Name: {
+  name: {
     type: String,
+    trim: true,
     required: 'Name is required'
   },
   email: {
     type: String,
-    required: 'Email Address is required'
+    trim: true,
+    unique: 'Email already exists',
+    match: [/.+\@.+\..+/, 'Please fill a valid email address'],
+    required: 'Email is required'
   },
   message: {
     type: [String],

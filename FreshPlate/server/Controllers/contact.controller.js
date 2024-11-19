@@ -9,17 +9,17 @@ const create = async (req, res) => {
         })
     } catch (err) {
         return res.status(400).json({
-            error: errorHandler.getErrorMessage(err)
+            error: err.message || "An error occurred while saving the contact."
         })
     }
 }
 const list = async (req, res) => {
     try {
-        let users = await User.find().select('name email updated created')
-        res.json(users)
+        let contact = await Contact.find().select('name email updated created')
+        res.json(contact)
     } catch (err) {
         return res.status(400).json({
-            error: errorHandler.getErrorMessage(err)
+            error: err.message || "An error occurred while retrieving contacts."
         })
     }
 }

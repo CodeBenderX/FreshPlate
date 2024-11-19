@@ -17,19 +17,32 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-} from '@mui/material'
-import { Add, Edit, Delete, ChevronRight } from '@mui/icons-material'
-import auth from '../lib/auth-helper'
+} from "@mui/material";
+import { Add, Edit, Delete, ChevronRight } from "@mui/icons-material";
+import auth from "../lib/auth-helper";
 
 export default function RecipeList() {
-  const [recipes, setRecipes] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-  const [currentPage, setCurrentPage] = useState(1)
-  const [totalPages, setTotalPages] = useState(1)
-  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'info' })
-  const [deleteDialog, setDeleteDialog] = useState({ open: false, recipeId: null })
-  const itemsPerPage = 5
+  const [recipes, setRecipes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "info",
+  });
+  const [deleteDialog, setDeleteDialog] = useState({
+    open: false,
+    recipeId: null,
+  });
+  const itemsPerPage = 5;
+
+  const navigate = useNavigate();
+
+  const handleEditRecipe = (recipeId) => {
+    navigate(`/editrecipe?id=${recipeId}`)
+  }
 
   const fetchRecipes = useCallback(async () => {
     try {
@@ -174,50 +187,51 @@ export default function RecipeList() {
           You haven't created any recipes yet. Click 'Add New Recipe' to get started!
         </Typography>
       ) : (
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-        {currentRecipes.map((recipe) => (
-          <Card
-            key={recipe.id}
-            sx={{
-              p: 2,
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              border: '1px solid #e0e0e0',
-              boxShadow: 'none',
-            }}
-          >
-            <Typography variant="h6" component="h2">
-              {recipe.title}
-            </Typography>
-            <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-              <Link to="/recipe" style={{ textDecoration: 'none' }}>
-              <Button
-                variant="outlined"
-                endIcon={<ChevronRight />}
-                sx={{ borderRadius: '4px' }}
-              >
-                View Recipe
-              </Button>
-              </Link>
-              <IconButton
-                size="small"
-                sx={{ border: '1px solid #e0e0e0', borderRadius: '4px' }}
-              >
-                <Edit fontSize="small" />
-              </IconButton>
-              <IconButton
-                size="small"
-                sx={{ border: '1px solid #e0e0e0', borderRadius: '4px' }}
-                onClick={() => handleOpenDeleteDialog(recipe)}
-              >
-                <Delete fontSize="small" />
-              </IconButton>
-            </Box>
-          </Card>
-        ))}
-      </Box>
-       )}
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          {currentRecipes.map((recipe) => (
+            <Card
+              key={recipe.id}
+              sx={{
+                p: 2,
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                border: "1px solid #e0e0e0",
+                boxShadow: "none",
+              }}
+            >
+              <Typography variant="h6" component="h2">
+                {recipe.title}
+              </Typography>
+              <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+                <Button
+                  variant="outlined"
+                  endIcon={<ChevronRight />}
+                  sx={{ borderRadius: "4px" }}
+                >
+                  View Recipe
+                </Button>
+                {" "}
+                <IconButton
+                  size="small"
+                  sx={{ border: "1px solid #e0e0e0", borderRadius: "4px" }}
+                  onClick={() => handleEditRecipe(recipe._id)}
+                >
+                  <Edit fontSize="small" />
+                </IconButton>
+                
+                <IconButton
+                  size="small"
+                  sx={{ border: "1px solid #e0e0e0", borderRadius: "4px" }}
+                  onClick={() => handleOpenDeleteDialog(recipe)}
+                >
+                  <Delete fontSize="small" />
+                </IconButton>
+              </Box>
+            </Card>
+          ))}
+        </Box>
+      )}
       {recipes.length > itemsPerPage && (
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
           <Pagination

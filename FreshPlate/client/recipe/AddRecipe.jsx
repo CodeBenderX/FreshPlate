@@ -212,44 +212,60 @@ const AddRecipePage = () => {
               required
             />
 
-            <Grid2 container spacing={2} sx={{ mb: 2 }}>
-              <Grid2 xs={4}>
-                <TextField
-                  label="Prep Time"
-                  type="number"
-                  InputProps={{
-                    endAdornment: <InputAdornment position="end">Minutes</InputAdornment>,
-                  }}
-                  variant="outlined"
-                  fullWidth
-                  value={values.prepTime}
-                  onChange={handleChange("prepTime")}
-                />
-              </Grid2>
-              <Grid2 xs={4}>
-                <TextField
-                  label="Cook Time"
-                  type="number"
-                  InputProps={{
-                    endAdornment: <InputAdornment position="end">Minutes</InputAdornment>,
-                  }}
-                  variant="outlined"
-                  fullWidth
-                  value={values.cookTime}
-                  onChange={handleChange("cookTime")}
-                />
-              </Grid2>
-              <Grid2 xs={4}>
-                <TextField
-                  label="Servings"
-                  type="number"
-                  variant="outlined"
-                  fullWidth
-                  value={values.servings}
-                  onChange={handleChange("servings")}
-                />
-              </Grid2>
-            </Grid2>
+<Box sx={{ 
+      display: 'flex', 
+      gap: 4,
+      mb: 2,
+      '& .MuiOutlinedInput-root': {
+        backgroundColor: '#fff'
+      }
+    }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 1 }}>
+        <Typography variant="body2" color="text.secondary">Prep Time</Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <TextField
+            type="number"
+            size="small"
+            value={values.prepTime}
+            onChange={handleChange("prepTime")}
+            sx={{ width: '150px' }}
+            inputProps={{ min: 0 }}
+            InputProps={{
+              endAdornment: <InputAdornment position="end">Minutes</InputAdornment>,
+            }}
+          />
+        </Box>
+      </Box>
+
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 1 }}>
+        <Typography variant="body2" color="text.secondary">Cook Time</Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <TextField
+            type="number"
+            size="small"
+            value={values.cookTime}
+            onChange={handleChange("cookTime")}
+            sx={{ width: '150px' }}
+            inputProps={{ min: 0 }}
+            InputProps={{
+              endAdornment: <InputAdornment position="end">Minutes</InputAdornment>,
+            }}
+          />
+        </Box>
+      </Box>
+
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 1 }}>
+        <Typography variant="body2" color="text.secondary">Servings</Typography>
+        <TextField
+          type="number"
+          size="small"
+          value={values.servings}
+          onChange={handleChange("servings")}
+          sx={{ width: '90px' }}
+          inputProps={{ min: 0 }}
+        />
+      </Box>
+    </Box>
 
             <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", mb: 3 }}>
               <Button variant="outlined" component="label" startIcon={<CloudUpload />} fullWidth>

@@ -114,7 +114,7 @@ export default function EditRecipe() {
       }
 
       setNotification({ open: true, message: 'Recipe updated successfully', severity: 'success' });
-      setTimeout(() => navigate('/'), 2000);
+      setTimeout(() => navigate('/recipelist'), 2000);
     } catch (error) {
       console.error('Error updating recipe:', error);
       setNotification({ open: true, message: 'Failed to update recipe', severity: 'error' });

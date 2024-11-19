@@ -14,7 +14,7 @@ import {
 } from '@mui/material'
 import { AccessTime, Person, Close, Edit, Delete } from '@mui/icons-material'
 
-export default function Recipe() {
+export default function EditRecipe() {
   const [recipes, setRecipes] = useState([])
 
   return (

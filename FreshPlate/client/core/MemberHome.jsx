@@ -422,6 +422,7 @@
 // }
 
 import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from 'react-router-dom'
 import { Button, Typography, TextField, Container, Grid2, CircularProgress } from "@mui/material";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -430,6 +431,7 @@ import CardActionArea from "@mui/material/CardActionArea";
 import CardActions from "@mui/material/CardActions";
 import auth from "../lib/auth-helper";
 import defaultRecipeImage from "../src/assets/defaultFoodImage.png";
+
 
 const list = async (credentials, signal) => {
   try {
@@ -453,6 +455,8 @@ export default function MemberHome() {
   const [featuredRecipes, setFeaturedRecipes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -509,6 +513,12 @@ export default function MemberHome() {
         </Typography>
       </Container>
     );
+  }
+
+  
+
+  const handleViewRecipe = (recipeId) => {
+    navigate(`/viewrecipe?id=${recipeId}`)
   }
 
   return (
@@ -576,7 +586,7 @@ export default function MemberHome() {
                         size="small"
                         color="primary"
                         component="a"
-                        href={`/recipes/${recipe._id}`}
+                        onClick={() => handleViewRecipe(recipe._id)}
                       >
                         View Recipe
                       </Button>

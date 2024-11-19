@@ -1,4 +1,3 @@
-//View recipe by id
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { 
@@ -9,9 +8,15 @@ import {
   Chip,
   CircularProgress,
   Alert,
-  Dialog
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from '@mui/material';
-import { X, Edit, Trash2, Clock, Users } from 'lucide-react';
+import CloseIcon from '@mui/icons-material/Close';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 import auth from "../lib/auth-helper";
 
 export default function ViewRecipe() {
@@ -64,7 +69,19 @@ export default function ViewRecipe() {
     fetchRecipe();
   }, [recipeId]);
 
-  const handleDelete = async () => {
+  const handleClose = () => {
+    navigate('/recipelist');
+  };
+
+  const handleEdit = () => {
+    navigate(`/editrecipe?id=${recipeId}`);
+  };
+
+  const handleDelete = () => {
+    setDeleteDialog(true);
+  };
+
+  const confirmDelete = async () => {
     try {
       const jwt = auth.isAuthenticated();
       const response = await fetch(`/api/recipes/${recipeId}`, {
@@ -80,7 +97,7 @@ export default function ViewRecipe() {
         throw new Error('Failed to delete recipe');
       }
 
-      navigate('/');
+      navigate('/recipelist');
     } catch (error) {
       console.error('Error deleting recipe:', error);
       setError("Failed to delete recipe. Please try again later.");
@@ -132,14 +149,14 @@ export default function ViewRecipe() {
         }}
       >
         <IconButton 
-          onClick={() => navigate('/')}
+          onClick={handleClose}
           sx={{ 
             position: 'absolute',
             right: 8,
             top: 8
           }}
         >
-          <X size={20} />
+          <CloseIcon />
         </IconButton>
 
         <Typography variant="h4" sx={{ mb: 2, pr: 4 }}>
@@ -151,19 +168,16 @@ export default function ViewRecipe() {
             Posted by: {recipe.creator}
           </Typography>
           
-          <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap', mb: 2 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Clock size={16} />
-              <Typography>Prep: {recipe.prepTime} mins</Typography>
-            </Box>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Clock size={16} />
-              <Typography>Cook: {recipe.cookTime} mins</Typography>
-            </Box>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Users size={16} />
-              <Typography>Serves: {recipe.servings}</Typography>
-            </Box>
+          <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+            <Typography color="text.secondary">
+              Prep: {recipe.preptime} mins
+            </Typography>
+            <Typography color="text.secondary">
+              Cook: {recipe.cooktime} mins
+            </Typography>
+            <Typography color="text.secondary">
+              Serves: {recipe.servings}
+            </Typography>
           </Box>
 
           <Chip 
@@ -178,49 +192,70 @@ export default function ViewRecipe() {
 
         <Box sx={{ mb: 4 }}>
           <Typography variant="h6" sx={{ mb: 2 }}>Ingredients</Typography>
-          <Box component="ul" sx={{ pl: 2 }}>
-            {recipe.ingredients.split('\n').map((ingredient, index) => (
-              <Typography component="li" key={index} sx={{ mb: 1 }}>
-                {ingredient}
-              </Typography>
-            ))}
-          </Box>
+          {recipe.ingredients ? (
+            <Box component="ul" sx={{ pl: 2, listStyleType: 'disc' }}>
+              {Array.isArray(recipe.ingredients) 
+                ? recipe.ingredients.map((ingredient, index) => (
+                    <Typography component="li" key={index} sx={{ mb: 1 }}>
+                      {ingredient}
+                    </Typography>
+                  ))
+                : typeof recipe.ingredients === 'string'
+                  ? recipe.ingredients.split('\n').map((ingredient, index) => (
+                      <Typography component="li" key={index} sx={{ mb: 1 }}>
+                        {ingredient.trim()}
+                      </Typography>
+                    ))
+                  : <Typography>No ingredients available</Typography>
+              }
+            </Box>
+          ) : (
+            <Typography>No ingredients available</Typography>
+          )}
         </Box>
 
         <Box sx={{ mb: 4 }}>
           <Typography variant="h6" sx={{ mb: 2 }}>Instructions</Typography>
-          <Typography color="text.secondary" sx={{ mb: 2 }}>Steps:</Typography>
-          <Box component="ol" sx={{ pl: 2 }}>
-            {recipe.instructions.split('\n').map((instruction, index) => (
-              <Typography component="li" key={index} sx={{ mb: 1 }}>
-                {instruction}
-              </Typography>
-            ))}
-          </Box>
+          <Typography sx={{ mb: 2 }}>Steps:</Typography>
+          {recipe.instructions && (
+            <Box component="ol" sx={{ pl: 2 }}>
+              {recipe.instructions.split('\n').map((instruction, index) => (
+                <Typography component="li" key={index} sx={{ mb: 1 }}>
+                  {instruction.trim()}
+                </Typography>
+              ))}
+            </Box>
+          )}
         </Box>
 
         <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
           <Button
-            startIcon={<Edit size={16} />}
-            onClick={() => navigate(`/editrecipe?id=${recipe._id}`)}
-            sx={{ 
-              color: '#666',
-              borderColor: '#ddd',
-              '&:hover': { borderColor: '#999' }
+            variant="contained"
+            startIcon={<EditIcon />}
+            onClick={handleEdit}
+            sx={{
+              bgcolor: '#333',
+              color: 'white',
+              '&:hover': {
+                bgcolor: '#444'
+              }
             }}
           >
-            Edit recipe
+            Edit Recipe
           </Button>
           <Button
-            startIcon={<Trash2 size={16} />}
-            onClick={() => setDeleteDialog(true)}
-            sx={{ 
+            variant="outlined"
+            startIcon={<DeleteIcon />}
+            onClick={handleDelete}
+            sx={{
               color: '#666',
               borderColor: '#ddd',
-              '&:hover': { borderColor: '#999' }
+              '&:hover': {
+                bgcolor: '#f5f5f5'
+              }
             }}
           >
-            Delete recipe
+            Delete Recipe
           </Button>
         </Box>
       </Box>
@@ -229,27 +264,16 @@ export default function ViewRecipe() {
         open={deleteDialog}
         onClose={() => setDeleteDialog(false)}
       >
-        <Box sx={{ p: 3 }}>
-          <Typography variant="h6" sx={{ mb: 2 }}>Delete Recipe</Typography>
-          <Typography sx={{ mb: 3 }}>
+        <DialogTitle>Delete Recipe</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
             Are you sure you want to delete this recipe? This action cannot be undone.
-          </Typography>
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
-            <Button onClick={() => setDeleteDialog(false)}>
-              Cancel
-            </Button>
-            <Button 
-              onClick={handleDelete}
-              sx={{ 
-                bgcolor: '#dc3545',
-                color: 'white',
-                '&:hover': { bgcolor: '#c82333' }
-              }}
-            >
-              Delete
-            </Button>
-          </Box>
-        </Box>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteDialog(false)}>Cancel</Button>
+          <Button onClick={confirmDelete} color="error">Delete</Button>
+        </DialogActions>
       </Dialog>
     </Box>
   );

@@ -12,6 +12,7 @@ import Recipe from "./recipe/Recipe.jsx";
 import AddRecipePage from "./recipe/AddRecipe.jsx";
 import RecipeList from "./recipe/RecipeList.jsx";
 import ContactUsPage from "./components/Contact.jsx";
+import EditRecipe from "./recipe/EditRecipe.jsx";
 
 export default function MainRouter() {
   return (
@@ -22,6 +23,7 @@ export default function MainRouter() {
         <Route path="/member" element={<MemberHome />} />
         <Route path="/recipe" element={<Recipe />} />
         <Route path="/addrecipe" element={<AddRecipePage />} />
+        <Route path="/editrecipe" element={<EditRecipe />} />
         <Route path="/recipelist" element={<RecipeList />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/account" element={<MyAccount />} />

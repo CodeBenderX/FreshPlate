@@ -515,7 +515,7 @@
 //     );
 //   }
 
-  
+
 
 //   const handleViewRecipe = (recipeId) => {
 //     navigate(`/viewrecipe?id=${recipeId}`)
@@ -604,11 +604,9 @@
 
 
 
-
-
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from 'react-router-dom'
-import { Button, Typography, TextField, Container, CircularProgress, IconButton, Grid, Card, CardContent, CardMedia, CardActionArea } from "@mui/material";
+import { useNavigate } from 'react-router-dom';
+import { Button, Typography, TextField, Container, CircularProgress, IconButton, Grid, Card, CardContent, CardMedia } from "@mui/material";
 import { ChevronLeft, ChevronRight } from '@mui/icons-material';
 import auth from "../lib/auth-helper";
 import defaultRecipeImage from "../src/assets/defaultFoodImage.png";
@@ -629,68 +627,20 @@ const list = async (credentials, signal) => {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + credentials.t
       }
-    })
-    return await response.json()
+    });
+    return await response.json();
   } catch (err) {
-    console.log(err)
+    console.log(err);
   }
-}
+};
 
 const defaultRecipes = [
-  {
-    id: "1",
-    title: "Fried Pork Belly",
-    preptime: 30,
-    cooktime: 35,
-    servings: 4,
-    image: image1,
-    isDefault: true,
-  },
-  {
-    id: "2",
-    title: "Grilled Squid",
-    preptime: 20,
-    cooktime: 30,
-    servings: 2,
-    image: image2,
-    isDefault: true,
-  },
-  {
-    id: "3",
-    title: "Baked Salmon with Vegies",
-    preptime: 20,
-    cooktime: 30,
-    servings: 5,
-    image: image3,
-    isDefault: true,
-  },
-  {
-    id: "4",
-    title: "Baked Ham",
-    preptime: 10,
-    cooktime: 45,
-    servings: 8,
-    image: image4,
-    isDefault: true,
-  },
-  {
-    id: "5",
-    title: "Shrimp Pasta",
-    preptime: 20,
-    cooktime: 45,
-    servings: 6,
-    image: image5,
-    isDefault: true,
-  },
-  {
-    id: "6",
-    title: "Strawberry Cake",
-    preptime: 40,
-    cooktime: 60,
-    servings: 10,
-    image: image6,
-    isDefault: true,
-  },
+  { id: "1", title: "Fried Pork Belly", preptime: 30, cooktime: 35, servings: 4, image: image1, isDefault: true },
+  { id: "2", title: "Grilled Squid", preptime: 20, cooktime: 30, servings: 2, image: image2, isDefault: true },
+  { id: "3", title: "Baked Salmon with Vegies", preptime: 20, cooktime: 30, servings: 5, image: image3, isDefault: true },
+  { id: "4", title: "Baked Ham", preptime: 10, cooktime: 45, servings: 8, image: image4, isDefault: true },
+  { id: "5", title: "Shrimp Pasta", preptime: 20, cooktime: 45, servings: 6, image: image5, isDefault: true },
+  { id: "6", title: "Strawberry Cake", preptime: 40, cooktime: 60, servings: 10, image: image6, isDefault: true },
 ];
 
 const RecipeCarousel = ({ featuredRecipes, handleViewRecipe }) => {
@@ -814,6 +764,7 @@ export default function MemberHome() {
   const [searchQuery, setSearchQuery] = useState("");
   const [featuredRecipes, setFeaturedRecipes] = useState([]);
   const [allRecipes, setAllRecipes] = useState([]);
+  const [filteredRecipes, setFilteredRecipes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -847,7 +798,9 @@ export default function MemberHome() {
         }));
         const sortedRecipes = dbRecipes.sort((a, b) => new Date(b.created) - new Date(a.created));
         setFeaturedRecipes(sortedRecipes.slice(0, 8));
-        setAllRecipes([...defaultRecipes, ...dbRecipes]);
+        const allRecipesList = [...defaultRecipes, ...dbRecipes];
+        setAllRecipes(allRecipesList);
+        setFilteredRecipes(allRecipesList);
       }
     } catch (error) {
       setError("Could not load recipes");
@@ -858,7 +811,21 @@ export default function MemberHome() {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    console.log("Searching for:", searchQuery);
+    const filtered = allRecipes.filter(recipe => 
+      recipe.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      recipe.description?.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setFilteredRecipes(filtered);
+  };
+
+  const handleSearchInputChange = (e) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+    if (query === "") {
+      setFilteredRecipes(allRecipes);
+    } else {
+      handleSearch(e);
+    }
   };
 
   const handleViewRecipe = (recipe) => {
@@ -903,7 +870,7 @@ export default function MemberHome() {
               type="search"
               placeholder="Search recipes..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={handleSearchInputChange}
               fullWidth
               margin="normal"
             />
@@ -922,10 +889,10 @@ export default function MemberHome() {
 
         <section style={{ marginTop: '2rem' }}>
           <Typography variant="h4" component="h2" gutterBottom>
-            All Recipes
+            {searchQuery ? 'Search Results' : 'All Recipes'}
           </Typography>
           <Grid container spacing={3}>
-            {allRecipes.map((recipe) => (
+            {filteredRecipes.map((recipe) => (
               <Grid item xs={12} sm={6} md={4} key={recipe.id || recipe._id}>
                 <Card sx={{ height: 'auto' }}>
                   <CardMedia
@@ -954,6 +921,11 @@ export default function MemberHome() {
               </Grid>
             ))}
           </Grid>
+          {filteredRecipes.length === 0 && (
+            <Typography variant="body1" align="center" style={{ marginTop: '2rem' }}>
+              No recipes found matching your search.
+            </Typography>
+          )}
         </section>
       </Container>
     </div>

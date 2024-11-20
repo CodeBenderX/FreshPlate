@@ -31,8 +31,8 @@ export default function EditRecipe() {
     title: '',
     ingredients: '',
     instructions: '',
-    prepTime: '',
-    cookTime: '',
+    preptime: '',
+    cooktime: '',
     servings: ''
   });
   const [loading, setLoading] = useState(true);
@@ -215,9 +215,9 @@ export default function EditRecipe() {
                 <Typography sx={{ mb: 1, color: '#666' }}>Prep Time</Typography>
                 <StyledTextField
                   fullWidth
-                  name="prepTime"
+                  name="preptime"
                   type="number"
-                  value={recipe.prepTime}
+                  value={recipe.preptime}
                   onChange={handleChange}
                   variant="outlined"
                   size="small"
@@ -231,9 +231,9 @@ export default function EditRecipe() {
                 <Typography sx={{ mb: 1, color: '#666' }}>Cook Time</Typography>
                 <StyledTextField
                   fullWidth
-                  name="cookTime"
+                  name="cooktime"
                   type="number"
-                  value={recipe.cookTime}
+                  value={recipe.cooktime}
                   onChange={handleChange}
                   variant="outlined"
                   size="small"

@@ -1,5 +1,5 @@
 // import React, { useState } from "react";
-// import { Button, Typography, TextField, Container, Grid } from "@mui/material";
+// import { Button, Typography, TextField, Container, grid } from "@mui/material";
 // import Card from "@mui/material/Card";
 // import CardContent from "@mui/material/CardContent";
 // import CardMedia from "@mui/material/CardMedia";
@@ -14,24 +14,24 @@
 //   {
 //     id: "1",
 //     title: "Fried Pork Belly",
-//     preptime: 30,
-//     cooktime: 35,
+//     prepTime: 30,
+//     cookTime: 35,
 //     servings: 4,
 //     image: image1,
 //   },
 //   {
 //     id: "2",
 //     title: "Grilled Squid",
-//     preptime: 20,
-//     cooktime: 30,
+//     prepTime: 20,
+//     cookTime: 30,
 //     servings: 2,
 //     image: image2,
 //   },
 //   {
 //     id: "3",
 //     title: "Baked Salmon with Vegies",
-//     preptime: 20,
-//     cooktime: 30,
+//     prepTime: 20,
+//     cookTime: 30,
 //     servings: 5,
 //     image: image3,
 //   },
@@ -75,9 +75,9 @@
 //             Featured Recipes
 //           </Typography>
 //           <Card>
-//             <Grid container spacing={3}>
+//             <grid container spacing={3}>
 //               {featuredRecipes.map((recipe) => (
-//                 <Grid item xs={12} sm={6} md={4} key={recipe.id}>
+//                 <grid item xs={12} sm={6} md={4} key={recipe.id}>
 //                   <Card sx={{ maxWidth: 345 }}>
 //                     <CardActionArea>
 //                       <CardMedia
@@ -100,7 +100,7 @@
 //                           variant="body2"
 //                           sx={{ color: "text.secondary", mt: 1 }}
 //                         >
-//                           Prep: {recipe.preptime} min | Cook: {recipe.cooktime}{" "}
+//                           Prep: {recipe.prepTime} min | Cook: {recipe.cookTime}{" "}
 //                           min | Serves: {recipe.servings}
 //                         </Typography>
 //                       </CardContent>
@@ -116,9 +116,9 @@
 //                       </Button>
 //                     </CardActions>
 //                   </Card>
-//                 </Grid>
+//                 </grid>
 //               ))}
-//             </Grid>
+//             </grid>
 //           </Card>
 //         </section>
 //       </Container>
@@ -128,7 +128,7 @@
 
 
 // import React, { useState, useEffect } from "react";
-// import { Button, Typography, TextField, Container, Grid } from "@mui/material";
+// import { Button, Typography, TextField, Container, grid } from "@mui/material";
 // import Card from "@mui/material/Card";
 // import CardContent from "@mui/material/CardContent";
 // import CardMedia from "@mui/material/CardMedia";
@@ -194,9 +194,9 @@
 //             Featured Recipes
 //           </Typography>
 //           <Card>
-//             <Grid container spacing={3}>
+//             <grid container spacing={3}>
 //               {featuredRecipes.map((recipe) => (
-//                 <Grid item xs={12} sm={6} md={4} key={recipe.id}>
+//                 <grid item xs={12} sm={6} md={4} key={recipe.id}>
 //                   <Card sx={{ maxWidth: 345 }}>
 //                     <CardActionArea>
 //                       <CardMedia
@@ -219,7 +219,7 @@
 //                           variant="body2"
 //                           sx={{ color: "text.secondary", mt: 1 }}
 //                         >
-//                           Prep: {recipe.preptime} min | Cook: {recipe.cooktime}{" "}
+//                           Prep: {recipe.prepTime} min | Cook: {recipe.cookTime}{" "}
 //                           min | Serves: {recipe.servings}
 //                         </Typography>
 //                       </CardContent>
@@ -235,9 +235,9 @@
 //                       </Button>
 //                     </CardActions>
 //                   </Card>
-//                 </Grid>
+//                 </grid>
 //               ))}
-//             </Grid>
+//             </grid>
 //           </Card>
 //         </section>
 //       </Container>
@@ -246,7 +246,7 @@
 // }
 
 // import React, { useState, useEffect } from "react";
-// import { Button, Typography, TextField, Container, Grid, CircularProgress } from "@mui/material";
+// import { Button, Typography, TextField, Container, grid, CircularProgress } from "@mui/material";
 // import Card from "@mui/material/Card";
 // import CardContent from "@mui/material/CardContent";
 // import CardMedia from "@mui/material/CardMedia";
@@ -370,9 +370,9 @@
 //             Featured Recipes
 //           </Typography>
 //           <Card>
-//             <Grid container spacing={3}>
+//             <grid container spacing={3}>
 //               {featuredRecipes.map((recipe) => (
-//                 <Grid item xs={12} sm={6} md={4} key={recipe._id}>
+//                 <grid item xs={12} sm={6} md={4} key={recipe._id}>
 //                   <Card sx={{ maxWidth: 345 }}>
 //                     <CardActionArea>
 //                       <CardMedia
@@ -395,7 +395,7 @@
 //                           variant="body2"
 //                           sx={{ color: "text.secondary", mt: 1 }}
 //                         >
-//                           Prep: {recipe.preptime} min | Cook: {recipe.cooktime}{" "}
+//                           Prep: {recipe.prepTime} min | Cook: {recipe.cookTime}{" "}
 //                           min | Serves: {recipe.servings}
 //                         </Typography>
 //                       </CardContent>
@@ -411,9 +411,9 @@
 //                       </Button>
 //                     </CardActions>
 //                   </Card>
-//                 </Grid>
+//                 </grid>
 //               ))}
-//             </Grid>
+//             </grid>
 //           </Card>
 //         </section>
 //       </Container>
@@ -423,7 +423,7 @@
 
 // import React, { useState, useEffect } from "react";
 // import { Link, useNavigate } from 'react-router-dom'
-// import { Button, Typography, TextField, Container, Grid, CircularProgress } from "@mui/material";
+// import { Button, Typography, TextField, Container, grid, CircularProgress } from "@mui/material";
 // import Card from "@mui/material/Card";
 // import CardContent from "@mui/material/CardContent";
 // import CardMedia from "@mui/material/CardMedia";
@@ -551,9 +551,9 @@
 //             Recently Added Recipes
 //           </Typography>
 //           <Card>
-//             <Grid container spacing={3}>
+//             <grid container spacing={3}>
 //               {featuredRecipes.map((recipe) => (
-//                 <Grid item xs={12} sm={6} md={4} key={recipe._id}>
+//                 <grid item xs={12} sm={6} md={4} key={recipe._id}>
 //                   <Card sx={{ maxWidth: 345 }}>
 //                     <CardActionArea>
 //                       <CardMedia
@@ -576,7 +576,7 @@
 //                           variant="body2"
 //                           sx={{ color: "text.secondary", mt: 1 }}
 //                         >
-//                           Prep: {recipe.preptime} min | Cook: {recipe.cooktime}{" "}
+//                           Prep: {recipe.prepTime} min | Cook: {recipe.cookTime}{" "}
 //                           min | Serves: {recipe.servings}
 //                         </Typography>
 //                       </CardContent>
@@ -592,9 +592,9 @@
 //                       </Button>
 //                     </CardActions>
 //                   </Card>
-//                 </Grid>
+//                 </grid>
 //               ))}
-//             </Grid>
+//             </grid>
 //           </Card>
 //         </section>
 //       </Container>
@@ -608,7 +608,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from 'react-router-dom'
-import { Button, Typography, TextField, Container, CircularProgress, IconButton, Grid, Card, CardContent, CardMedia, CardActionArea } from "@mui/material";
+import { Button, Typography, TextField, Container, CircularProgress, IconButton, grid, Card, CardContent, CardMedia, CardActionArea } from "@mui/material";
 import { ChevronLeft, ChevronRight } from '@mui/icons-material';
 import auth from "../lib/auth-helper";
 import defaultRecipeImage from "../src/assets/defaultFoodImage.png";
@@ -640,8 +640,8 @@ const defaultRecipes = [
   {
     id: "1",
     title: "Fried Pork Belly",
-    preptime: 30,
-    cooktime: 35,
+    prepTime: 30,
+    cookTime: 35,
     servings: 4,
     image: image1,
     isDefault: true,
@@ -649,8 +649,8 @@ const defaultRecipes = [
   {
     id: "2",
     title: "Grilled Squid",
-    preptime: 20,
-    cooktime: 30,
+    prepTime: 20,
+    cookTime: 30,
     servings: 2,
     image: image2,
     isDefault: true,
@@ -658,8 +658,8 @@ const defaultRecipes = [
   {
     id: "3",
     title: "Baked Salmon with Vegies",
-    preptime: 20,
-    cooktime: 30,
+    prepTime: 20,
+    cookTime: 30,
     servings: 5,
     image: image3,
     isDefault: true,
@@ -667,8 +667,8 @@ const defaultRecipes = [
   {
     id: "4",
     title: "Baked Ham",
-    preptime: 10,
-    cooktime: 45,
+    prepTime: 10,
+    cookTime: 45,
     servings: 8,
     image: image4,
     isDefault: true,
@@ -676,8 +676,8 @@ const defaultRecipes = [
   {
     id: "5",
     title: "Shrimp Pasta",
-    preptime: 20,
-    cooktime: 45,
+    prepTime: 20,
+    cookTime: 45,
     servings: 6,
     image: image5,
     isDefault: true,
@@ -685,8 +685,8 @@ const defaultRecipes = [
   {
     id: "6",
     title: "Strawberry Cake",
-    preptime: 40,
-    cooktime: 60,
+    prepTime: 40,
+    cookTime: 60,
     servings: 10,
     image: image6,
     isDefault: true,
@@ -772,7 +772,7 @@ const RecipeCarousel = ({ featuredRecipes, handleViewRecipe }) => {
                   {recipe.title}
                 </Typography>
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                  Prep: {recipe.preptime} min | Cook: {recipe.cooktime} min | Serves: {recipe.servings}
+                  Prep: {recipe.prepTime} min | Cook: {recipe.cookTime} min | Serves: {recipe.servings}
                 </Typography>
                 <Button 
                   variant="contained" 
@@ -924,9 +924,9 @@ export default function MemberHome() {
           <Typography variant="h4" component="h2" gutterBottom>
             All Recipes
           </Typography>
-          <Grid container spacing={3}>
+          <grid container spacing={3}>
             {allRecipes.map((recipe) => (
-              <Grid item xs={12} sm={6} md={4} key={recipe.id || recipe._id}>
+              <grid item xs={12} sm={6} md={4} key={recipe.id || recipe._id}>
                 <Card sx={{ height: 'auto' }}>
                   <CardMedia
                     component="img"
@@ -939,7 +939,7 @@ export default function MemberHome() {
                       {recipe.title}
                     </Typography>
                     <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                      Prep: {recipe.preptime} min | Cook: {recipe.cooktime} min | Serves: {recipe.servings}
+                      Prep: {recipe.prepTime} min | Cook: {recipe.cookTime} min | Serves: {recipe.servings}
                     </Typography>
                     <Button 
                       variant="contained" 
@@ -951,9 +951,9 @@ export default function MemberHome() {
                     </Button>
                   </CardContent>
                 </Card>
-              </Grid>
+              </grid>
             ))}
-          </Grid>
+          </grid>
         </section>
       </Container>
     </div>

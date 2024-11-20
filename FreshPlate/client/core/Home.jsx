@@ -18,48 +18,48 @@ const featuredRecipes = [
   {
     id: "1",
     title: "Fried Pork Belly",
-    prepTime: 30,
-    cookTime: 35,
+    preptime: 30,
+    cooktime: 35,
     servings: 4,
     image: image1,
   },
   {
     id: "2",
     title: "Grilled Squid",
-    prepTime: 20,
-    cookTime: 30,
+    preptime: 20,
+    cooktime: 30,
     servings: 2,
     image: image2,
   },
   {
     id: "3",
     title: "Baked Salmon with Vegies",
-    prepTime: 20,
-    cookTime: 30,
+    preptime: 20,
+    cooktime: 30,
     servings: 5,
     image: image3,
   },
   {
     id: "4",
     title: "Baked Ham",
-    prepTime: 10,
-    cookTime: 45,
+    preptime: 10,
+    cooktime: 45,
     servings: 8,
     image: image4,
   },
   {
     id: "5",
     title: "Shrimp Pasta",
-    prepTime: 20,
-    cookTime: 45,
+    preptime: 20,
+    cooktime: 45,
     servings: 6,
     image: image5,
   },
   {
     id: "6",
     title: "Strawberry Cake",
-    prepTime: 40,
-    cookTime: 60,
+    preptime: 40,
+    cooktime: 60,
     servings: 10,
     image: image6,
   },
@@ -174,7 +174,7 @@ export default function HomePage() {
                           variant="body2"
                           sx={{ color: "text.secondary", mt: 1 }}
                         >
-                          Prep: {recipe.prepTime} min | Cook: {recipe.cookTime}{" "}
+                          Prep: {recipe.preptime} min | Cook: {recipe.cooktime}{" "}
                           min | Serves: {recipe.servings}
                         </Typography>
                       </CardContent>

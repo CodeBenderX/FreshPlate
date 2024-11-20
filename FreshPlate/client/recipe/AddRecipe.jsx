@@ -24,8 +24,8 @@ const AddRecipePage = () => {
     title: "",
     ingredients: "",
     instructions: "",
-    prepTime: "",
-    cookTime: "",
+    preptime: "",
+    cooktime: "",
     servings: "",
     //image: null,
   });
@@ -93,8 +93,8 @@ const AddRecipePage = () => {
         title: values.title,
         ingredients: values.ingredients,
         instructions: values.instructions,
-        prepTime: values.prepTime,
-        cookTime: values.cookTime,
+        preptime: values.preptime,
+        cooktime: values.cooktime,
         servings: values.servings,
       };
 
@@ -226,8 +226,8 @@ const AddRecipePage = () => {
           <TextField
             type="number"
             size="small"
-            value={values.prepTime}
-            onChange={handleChange("prepTime")}
+            value={values.preptime}
+            onChange={handleChange("preptime")}
             sx={{ width: '150px' }}
             inputProps={{ min: 0 }}
             InputProps={{
@@ -243,8 +243,8 @@ const AddRecipePage = () => {
           <TextField
             type="number"
             size="small"
-            value={values.cookTime}
-            onChange={handleChange("cookTime")}
+            value={values.cooktime}
+            onChange={handleChange("cooktime")}
             sx={{ width: '150px' }}
             inputProps={{ min: 0 }}
             InputProps={{
@@ -287,7 +287,7 @@ const AddRecipePage = () => {
                 </Button>
               </Grid2>
               <Grid2 xs={6}>
-                <Button variant="outlined" color="secondary" fullWidth onClick={() => navigate("/recipes")}>
+                <Button variant="outlined" color="secondary" fullWidth onClick={() => navigate("/recipelist")}>
                   Cancel
                 </Button>
               </Grid2>

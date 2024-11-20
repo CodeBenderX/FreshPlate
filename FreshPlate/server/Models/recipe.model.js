@@ -6,7 +6,7 @@ const recipeSchema = new mongoose.Schema({
     required: 'Title is required'
   },
   ingredients: {
-    type: [String],
+    type: String,
     required: 'At least one ingredient is required'
   },
   instructions: {

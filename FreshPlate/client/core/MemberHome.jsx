@@ -1,5 +1,5 @@
 // import React, { useState } from "react";
-// import { Button, Typography, TextField, Container, Grid222 } from "@mui/material";
+// import { Button, Typography, TextField, Container, GRID2 } from "@mui/material";
 // import Card from "@mui/material/Card";
 // import CardContent from "@mui/material/CardContent";
 // import CardMedia from "@mui/material/CardMedia";
@@ -75,9 +75,9 @@
 //             Featured Recipes
 //           </Typography>
 //           <Card>
-//             <Grid222 container spacing={3}>
+//             <GRID2 container spacing={3}>
 //               {featuredRecipes.map((recipe) => (
-//                 <Grid222 item xs={12} sm={6} md={4} key={recipe.id}>
+//                 <GRID2 item xs={12} sm={6} md={4} key={recipe.id}>
 //                   <Card sx={{ maxWidth: 345 }}>
 //                     <CardActionArea>
 //                       <CardMedia
@@ -116,9 +116,9 @@
 //                       </Button>
 //                     </CardActions>
 //                   </Card>
-//                 </Grid222>
+//                 </GRID2>
 //               ))}
-//             </Grid222>
+//             </GRID2>
 //           </Card>
 //         </section>
 //       </Container>
@@ -128,7 +128,7 @@
 
 
 // import React, { useState, useEffect } from "react";
-// import { Button, Typography, TextField, Container, Grid222 } from "@mui/material";
+// import { Button, Typography, TextField, Container, GRID2 } from "@mui/material";
 // import Card from "@mui/material/Card";
 // import CardContent from "@mui/material/CardContent";
 // import CardMedia from "@mui/material/CardMedia";
@@ -194,9 +194,9 @@
 //             Featured Recipes
 //           </Typography>
 //           <Card>
-//             <Grid222 container spacing={3}>
+//             <GRID2 container spacing={3}>
 //               {featuredRecipes.map((recipe) => (
-//                 <Grid222 item xs={12} sm={6} md={4} key={recipe.id}>
+//                 <GRID2 item xs={12} sm={6} md={4} key={recipe.id}>
 //                   <Card sx={{ maxWidth: 345 }}>
 //                     <CardActionArea>
 //                       <CardMedia
@@ -235,9 +235,9 @@
 //                       </Button>
 //                     </CardActions>
 //                   </Card>
-//                 </Grid222>
+//                 </GRID2>
 //               ))}
-//             </Grid222>
+//             </GRID2>
 //           </Card>
 //         </section>
 //       </Container>
@@ -246,7 +246,7 @@
 // }
 
 // import React, { useState, useEffect } from "react";
-// import { Button, Typography, TextField, Container, Grid222, CircularProgress } from "@mui/material";
+// import { Button, Typography, TextField, Container, GRID2, CircularProgress } from "@mui/material";
 // import Card from "@mui/material/Card";
 // import CardContent from "@mui/material/CardContent";
 // import CardMedia from "@mui/material/CardMedia";
@@ -370,9 +370,9 @@
 //             Featured Recipes
 //           </Typography>
 //           <Card>
-//             <Grid222 container spacing={3}>
+//             <GRID2 container spacing={3}>
 //               {featuredRecipes.map((recipe) => (
-//                 <Grid222 item xs={12} sm={6} md={4} key={recipe._id}>
+//                 <GRID2 item xs={12} sm={6} md={4} key={recipe._id}>
 //                   <Card sx={{ maxWidth: 345 }}>
 //                     <CardActionArea>
 //                       <CardMedia
@@ -411,9 +411,9 @@
 //                       </Button>
 //                     </CardActions>
 //                   </Card>
-//                 </Grid222>
+//                 </GRID2>
 //               ))}
-//             </Grid222>
+//             </GRID2>
 //           </Card>
 //         </section>
 //       </Container>
@@ -423,7 +423,7 @@
 
 // import React, { useState, useEffect } from "react";
 // import { Link, useNavigate } from 'react-router-dom'
-// import { Button, Typography, TextField, Container, Grid2, CircularProgress } from "@mui/material";
+// import { Button, Typography, TextField, Container, GRID2, CircularProgress } from "@mui/material";
 // import Card from "@mui/material/Card";
 // import CardContent from "@mui/material/CardContent";
 // import CardMedia from "@mui/material/CardMedia";
@@ -551,9 +551,9 @@
 //             Recently Added Recipes
 //           </Typography>
 //           <Card>
-//             <Grid2 container spacing={3}>
+//             <GRID2 container spacing={3}>
 //               {featuredRecipes.map((recipe) => (
-//                 <Grid2 item xs={12} sm={6} md={4} key={recipe._id}>
+//                 <GRID2 item xs={12} sm={6} md={4} key={recipe._id}>
 //                   <Card sx={{ maxWidth: 345 }}>
 //                     <CardActionArea>
 //                       <CardMedia
@@ -592,9 +592,9 @@
 //                       </Button>
 //                     </CardActions>
 //                   </Card>
-//                 </Grid2>
+//                 </GRID2>
 //               ))}
-//             </Grid2>
+//             </GRID2>
 //           </Card>
 //         </section>
 //       </Container>
@@ -608,7 +608,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from 'react-router-dom'
-import { Button, Typography, TextField, Container, CircularProgress, IconButton, Grid, Card, CardContent, CardMedia, CardActionArea } from "@mui/material";
+import { Button, Typography, TextField, Container, CircularProgress, IconButton, GRID2, Card, CardContent, CardMedia, CardActionArea } from "@mui/material";
 import { ChevronLeft, ChevronRight } from '@mui/icons-material';
 import auth from "../lib/auth-helper";
 import defaultRecipeImage from "../src/assets/defaultFoodImage.png";
@@ -845,11 +845,8 @@ export default function MemberHome() {
           image: recipe.image || defaultRecipeImage,
           isDefault: false
         }));
-        // Sort recipes by date added (assuming there's a 'dateAdded' field)
-        const sortedRecipes = dbRecipes.sort((a, b) => new Date(b.dateAdded) - new Date(a.dateAdded));
-        // Take the 8 most recent recipes
+        const sortedRecipes = dbRecipes.sort((a, b) => new Date(b.created) - new Date(a.created));
         setFeaturedRecipes(sortedRecipes.slice(0, 8));
-        // Set all recipes, with default recipes first, then all database recipes
         setAllRecipes([...defaultRecipes, ...dbRecipes]);
       }
     } catch (error) {
@@ -927,9 +924,9 @@ export default function MemberHome() {
           <Typography variant="h4" component="h2" gutterBottom>
             All Recipes
           </Typography>
-          <Grid container spacing={3}>
+          <GRID2 container spacing={3}>
             {allRecipes.map((recipe) => (
-              <Grid item xs={12} sm={6} md={4} key={recipe.id || recipe._id}>
+              <GRID2 item xs={12} sm={6} md={4} key={recipe.id || recipe._id}>
                 <Card sx={{ height: 'auto' }}>
                   <CardMedia
                     component="img"
@@ -954,9 +951,9 @@ export default function MemberHome() {
                     </Button>
                   </CardContent>
                 </Card>
-              </Grid>
+              </GRID2>
             ))}
-          </Grid>
+          </GRID2>
         </section>
       </Container>
     </div>

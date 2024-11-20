@@ -140,7 +140,8 @@ export default function Layout() {
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" color="#FF6E1C" sx={{ flexGrow: 1 }}>
-            <Button component={Link} to="/" color="inherit">
+            <Button component={Link} to={auth.isAuthenticated() ? "/member" : "/"} 
+              color="inherit">
               <img src={logo} alt="FreshPlate-Logo" height={20} />
             </Button>
           </Typography>

@@ -189,13 +189,13 @@ export default function ViewRecipe() {
 
           <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
             <Typography color="text.secondary">
-              Prep: {recipe.preptime} mins
+              Prep: {recipe.preptime || '-'} mins
             </Typography>
             <Typography color="text.secondary" >
-              Cook: {recipe.cooktime} mins
+              Cook: {recipe.cooktime || '-'} mins
             </Typography>
             <Typography color="text.secondary" >
-              Serves: {recipe.servings}
+              Serves: {recipe.servings || '-'}
             </Typography>
           </Box>
 

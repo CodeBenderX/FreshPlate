@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { 
+import {
+  ThemeProvider,
+  createTheme,
   Box,
   Typography,
   Button,
@@ -19,12 +21,27 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import auth from "../lib/auth-helper";
 
+const theme = createTheme({
+  typography: {
+    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+  },
+});
+
+const RenderTextWithLineBreaks = ({ text }) => {
+  return text.split('\n').map((line, index) => (
+    <React.Fragment key={index}>
+      {line}
+      <br />
+    </React.Fragment>
+  ));
+};
+
 export default function ViewRecipe() {
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [deleteDialog, setDeleteDialog] = useState(false);
-  
+
   const navigate = useNavigate();
   const location = useLocation();
   const recipeId = new URLSearchParams(location.search).get('id');
@@ -107,9 +124,11 @@ export default function ViewRecipe() {
 
   if (loading) {
     return (
+      <ThemeProvider theme={theme}>
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
         <CircularProgress />
       </Box>
+      </ThemeProvider>
     );
   }
 
@@ -125,20 +144,20 @@ export default function ViewRecipe() {
 
   return (
     <Box sx={{ maxWidth: '100%', bgcolor: '#fff9f5', minHeight: '100vh', py: 4 }}>
-      <Typography 
-        variant="h1" 
-        sx={{ 
-          textAlign: 'center', 
-          color: '#ff4400', 
+      <Typography
+        variant="h1"
+        sx={{
+          textAlign: 'center',
+          color: '#ff4400',
           fontSize: '2.5rem',
-          mb: 4 
+          mb: 4
         }}
       >
         Recipes
       </Typography>
 
-      <Box 
-        sx={{ 
+      <Box
+        sx={{
           maxWidth: 800,
           mx: 'auto',
           bgcolor: 'white',
@@ -148,9 +167,9 @@ export default function ViewRecipe() {
           p: 3
         }}
       >
-        <IconButton 
+        <IconButton
           onClick={handleClose}
-          sx={{ 
+          sx={{
             position: 'absolute',
             right: 8,
             top: 8
@@ -167,47 +186,34 @@ export default function ViewRecipe() {
           <Typography color="text.secondary" sx={{ mb: 2 }}>
             Posted by: {recipe.creator}
           </Typography>
-          
+
           <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
             <Typography color="text.secondary">
               Prep: {recipe.preptime} mins
             </Typography>
-            <Typography color="text.secondary">
+            <Typography color="text.secondary" >
               Cook: {recipe.cooktime} mins
             </Typography>
-            <Typography color="text.secondary">
+            <Typography color="text.secondary" >
               Serves: {recipe.servings}
             </Typography>
           </Box>
 
-          <Chip 
-            label="Medium" 
-            sx={{ 
+          <Chip
+            label="Medium"
+            sx={{
               bgcolor: '#ffd700',
               color: '#000',
               fontWeight: 500
-            }} 
+            }}
           />
         </Box>
 
         <Box sx={{ mb: 4 }}>
-          <Typography variant="h6" sx={{ mb: 2 }}>Ingredients</Typography>
+          <Typography variant="h6" sx={{ mb: 2}}>Ingredients</Typography>
           {recipe.ingredients ? (
-            <Box component="ul" sx={{ pl: 2, listStyleType: 'disc' }}>
-              {Array.isArray(recipe.ingredients) 
-                ? recipe.ingredients.map((ingredient, index) => (
-                    <Typography component="li" key={index} sx={{ mb: 1 }}>
-                      {ingredient}
-                    </Typography>
-                  ))
-                : typeof recipe.ingredients === 'string'
-                  ? recipe.ingredients.split('\n').map((ingredient, index) => (
-                      <Typography component="li" key={index} sx={{ mb: 1 }}>
-                        {ingredient.trim()}
-                      </Typography>
-                    ))
-                  : <Typography>No ingredients available</Typography>
-              }
+            <Box sx={{ pl: 2 }}>
+              <RenderTextWithLineBreaks text={recipe.ingredients} />
             </Box>
           ) : (
             <Typography>No ingredients available</Typography>
@@ -215,16 +221,13 @@ export default function ViewRecipe() {
         </Box>
 
         <Box sx={{ mb: 4 }}>
-          <Typography variant="h6" sx={{ mb: 2 }}>Instructions</Typography>
-          <Typography sx={{ mb: 2 }}>Steps:</Typography>
-          {recipe.instructions && (
-            <Box component="ol" sx={{ pl: 2 }}>
-              {recipe.instructions.split('\n').map((instruction, index) => (
-                <Typography component="li" key={index} sx={{ mb: 1 }}>
-                  {instruction.trim()}
-                </Typography>
-              ))}
+          <Typography variant="h6" sx={{ mb: 2}}>Instructions</Typography>
+          {recipe.instructions ? (
+            <Box sx={{ pl: 2 }}>
+              <RenderTextWithLineBreaks text={recipe.instructions} />
             </Box>
+          ) : (
+            <Typography>No instructions available</Typography>
           )}
         </Box>
 

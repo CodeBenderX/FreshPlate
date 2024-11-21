@@ -1,31 +1,40 @@
 import React from "react";
-import { Typography, Container, Grid, Box } from "@mui/material";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
+import { Typography, Grid, Box } from "@mui/material";
 import CardMedia from "@mui/material/CardMedia";
 import communityMeal from "../src/assets/communityMeal.png";
 import cookingTogether from "../src/assets/cookingTogether.png";
 import familyCookingTogether from "../src/assets/familyCookingTogether.png";
+import logo from "../src/assets/FreshPlate-logo.png"; // Import FreshPlate logo
 
 export default function AboutPage() {
   return (
-    <Container component="main" sx={{ marginTop: 4 }}>
+    <Box sx={{ width: "100%", backgroundColor: "#FFF5EB", padding: 4 }}> {/* Full-page layout */}
+      {/* Logo Above Heading */}
+      <Box sx={{ textAlign: "center", marginBottom: 2 }}>
+        <img src={logo} alt="FreshPlate Logo" style={{ width: 120 }} /> 
+      </Box>
+
       {/* About FreshPlate Heading */}
-      <Typography variant="h3" component="h1" gutterBottom align="center">
+      <Typography variant="h3" component="h1" gutterBottom align="center" sx={{ color: "#FF7043" }}>
         About FreshPlate
       </Typography>
 
       <Box sx={{ maxWidth: 800, margin: "auto", textAlign: "center", marginBottom: 4 }}>
         <Typography variant="body1" sx={{ color: "#4A4A4A" }}>
-          Welcome to FreshPlate – your ultimate destination for all things cooking! Whether you're a seasoned chef or a beginner in the kitchen, we’re here to inspire your culinary creativity and help you make fresh, delicious meals from the comfort of your home.
+          <strong>Welcome to FreshPlate</strong> – your ultimate destination for all things cooking! Whether you're a seasoned chef
+          or a beginner in the kitchen, we’re here to inspire your culinary creativity and help you make fresh, delicious
+          meals from the comfort of your home.
         </Typography>
       </Box>
 
       {/* About FreshPlate Section */}
-      <Grid container spacing={4}>
+      <Grid container spacing={4} sx={{ paddingX: 4 }}>
         <Grid item xs={12} md={6}>
           <Typography variant="body1" sx={{ color: "#4A4A4A" }}>
-            At FreshPlate, we believe that food should be fresh, fun, and easy to create. That's why we’ve built a space where you can explore a wide variety of recipes, share your own culinary creations, and discover new ideas to elevate your cooking game. Our mission is to bring people together through the joy of food, one recipe at a time.
+            At FreshPlate, we believe that food should be fresh, fun, and easy to create. That's why we’ve built a space
+            where you can explore a wide variety of recipes, share your own culinary creations, and discover new ideas
+            to elevate your cooking game. Our mission is to bring people together through the joy of food, one recipe at
+            a time.
           </Typography>
         </Grid>
         <Grid item xs={12} md={6}>
@@ -37,13 +46,18 @@ export default function AboutPage() {
         </Grid>
         <Grid item xs={12} md={6}>
           <Typography variant="body1" sx={{ color: "#4A4A4A" }}>
-            FreshPlate was born out of a love for home cooking and the desire to make it easier for people to share and discover great food. What started as a small idea to organize and share our favorite recipes quickly grew into a platform where cooks of all levels could contribute, learn, and grow together.
+            FreshPlate was born out of a love for home cooking and the desire to make it easier for people to share and
+            discover great food. What started as a small idea to organize and share our favorite recipes quickly grew
+            into a platform where cooks of all levels could contribute, learn, and grow together.
           </Typography>
         </Grid>
 
         <Grid item xs={12} md={6}>
           <Typography variant="body1" sx={{ color: "#4A4A4A" }}>
-            We’re passionate about fostering a positive and supportive environment where everyone—from novice cooks to experienced chefs—can feel confident experimenting with new flavors, techniques, and ingredients. The kitchen is a place for everyone to explore and express themselves, and FreshPlate is here to guide you along the way.
+            We’re passionate about fostering a positive and supportive environment where everyone—from novice cooks to
+            experienced chefs—can feel confident experimenting with new flavors, techniques, and ingredients. The
+            kitchen is a place for everyone to explore and express themselves, and FreshPlate is here to guide you along
+            the way.
           </Typography>
         </Grid>
         <Grid item xs={12} md={6}>
@@ -53,49 +67,47 @@ export default function AboutPage() {
 
       {/* Meet the Team Section */}
       <Box sx={{ marginTop: 6 }}>
-        <Typography variant="h4" component="h2" align="center" gutterBottom>
+        <Typography variant="h4" component="h2" align="center" gutterBottom sx={{ color: "#FF7043" }}>
           Meet the Team
         </Typography>
-        <Typography variant="h5" align="center" gutterBottom>
+        <Typography variant="h5" align="center" gutterBottom sx={{ color: "#4A4A4A" }}>
           Pseudo Squad
         </Typography>
 
-        <Grid container spacing={2} justifyContent="center" sx={{ marginTop: 3 }}>
+        <Grid container spacing={2} justifyContent="center" sx={{ marginTop: 3, paddingX: 4 }}>
           {[
-            { name: "Angelo Tiquio", role: "Lead Frontend Developer" },
-            { name: "Lorenzo Menil", role: "Lead Backend Developer" },
-            { name: "Bianca Salunga", role: "QA/UI Designer" },
-            { name: "Ovovwere Umavwodo", role: "Frontend Developer" },
+            { name: "Angelo Tiquio", role: "Lead Frontend Developer", image: "angelo-tiquio.png" },
+            { name: "Lorenzo Menil", role: "Lead Backend Developer", image: "lorenzo-menil.png" },
+            { name: "Bianca Salunga", role: "QA/UI Designer", image: "bianca-salunga.png" },
+            { name: "Ovovwere Umavwodo", role: "Frontend Developer", image: "ovovwere-umavwodo.png" },
           ].map((member, index) => (
             <Grid item xs={12} sm={6} md={3} key={index}>
-              <Card sx={{ textAlign: "center", padding: 2, boxShadow: "none", backgroundColor: "#f9f9f9" }}>
+              <Box sx={{ textAlign: "center", padding: 2, backgroundColor: "#f9f9f9", borderRadius: 2 }}>
                 <Box
                   sx={{
                     width: 100,
                     height: 100,
                     borderRadius: "50%",
-                    backgroundColor: "#e0e0e0",
+                    overflow: "hidden",
                     margin: "auto",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
                     marginBottom: 2,
                   }}
                 >
-                  {/* Placeholder for team member's image */}
-                  <Typography variant="h6" color="text.secondary">
-                    Image
-                  </Typography>
+                  <img
+                    src={`../src/assets/${member.image}`}
+                    alt={`${member.name}`}
+                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  />
                 </Box>
                 <Typography variant="h6">{member.name}</Typography>
                 <Typography variant="body2" color="text.secondary">
                   {member.role}
                 </Typography>
-              </Card>
+              </Box>
             </Grid>
           ))}
         </Grid>
       </Box>
-    </Container>
+    </Box>
   );
 }

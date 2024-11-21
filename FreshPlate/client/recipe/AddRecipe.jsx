@@ -93,9 +93,9 @@ const AddRecipePage = () => {
         title: values.title,
         ingredients: values.ingredients,
         instructions: values.instructions,
-        preptime: values.preptime,
-        cooktime: values.cooktime,
-        servings: values.servings,
+        preptime: parseInt(values.preptime, 10),
+        cooktime: parseInt(values.cooktime, 10),
+        servings: parseInt(values.servings, 10),
       };
 
       console.log("Recipe data:", recipeData); // Debug log

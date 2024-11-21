@@ -143,7 +143,7 @@ export default function ViewRecipe() {
   if (!recipe) return null;
 
   return (
-    <Box sx={{ maxWidth: '100%', bgcolor: '#fff9f5', minHeight: '100vh', py: 4 }}>
+    <Box sx={{ maxWidth: '100%', bgcolor: '#fff1e7', minHeight: '100vh', py: 4 }}>
       <Typography
         variant="h1"
         sx={{

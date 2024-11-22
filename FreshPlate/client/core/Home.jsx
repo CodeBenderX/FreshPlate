@@ -1,6 +1,13 @@
 import React, { useState } from "react";
-import { Link } from 'react-router-dom'
-import { Button, Typography, TextField, Container, Grid2 } from "@mui/material";
+import { Link } from "react-router-dom";
+import {
+  Button,
+  Box,
+  Typography,
+  TextField,
+  Container,
+  Grid2,
+} from "@mui/material";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
@@ -74,8 +81,8 @@ export default function HomePage() {
   };
 
   return (
-    <div>
-      <Container component="main">
+    <div style={{backgroundColor:'#fff4ea'}}>
+      <Container component="main" >
         <section>
           <Typography variant="h2" component="h1" gutterBottom>
             Discover Delicious Recipes
@@ -113,29 +120,29 @@ export default function HomePage() {
                 Share your recipes, get inspired, and connect with food lovers.
               </Typography>
               <Link to="/signup">
-              <Button
-                variant="contained"
-                sx={{
-                  mt: 2,
-                  backgroundColor: "#1A1A1A",
-                  color: "white",
-                  "&:hover": {
-                    backgroundColor: "#333333",
-                  },
-                }}
-              >
-                Sign up now!
-              </Button>
+                <Button
+                  variant="contained"
+                  sx={{
+                    mt: 2,
+                    backgroundColor: "#1A1A1A",
+                    color: "white",
+                    "&:hover": {
+                      backgroundColor: "#333333",
+                    },
+                  }}
+                >
+                  Sign up now!
+                </Button>
               </Link>
             </CardContent>
             <CardMedia
               component="img"
               sx={{
-                width: "50%",
+                width: "35%",
                 objectFit: "cover",
                 objectPosition: "center",
-                borderTopLeftRadius: "100% 100%",
-                borderBottomLeftRadius: "100% 100%",
+                borderTopLeftRadius: "22% 70%",
+                borderBottomLeftRadius: "22% 70%",
                 transform: "scaleX(1.2)",
               }}
               image={burger}
@@ -148,42 +155,99 @@ export default function HomePage() {
           <Typography variant="h4" component="h2" gutterBottom>
             Sign up to view the recipes!
           </Typography>
-          <Card>
-            <Grid2 container spacing={3}>
-              {featuredRecipes.map((recipe) => (
-                <Grid2 item xs={12} sm={6} md={4} key={recipe.id}>
-                  <Card sx={{ maxWidth: 345 }}>
-                    <CardActionArea>
-                      <CardMedia
-                        component="img"
-                        height="140"
-                        image={recipe.image}
-                        alt={recipe.title}
-                      />
-                      <CardContent>
-                        <Typography gutterBottom variant="h5" component="div">
+          <Container maxWidth="lg" sx={{ py: 4 }}>
+            <Grid2
+              container
+              spacing={4}
+              justifyContent="center"
+              alignItems="stretch"
+            >
+              {featuredRecipes && featuredRecipes.length > 0 ? (
+                featuredRecipes.map((recipe) => (
+                  <Grid2
+                    item
+                    xs={12}
+                    sm={6}
+                    md={4}
+                    key={recipe.id || recipe._id}
+                  >
+                    <Card
+                      sx={{
+                        width: "100%",
+                        height: "100%",
+                        display: "flex",
+                        flexDirection: "column",
+                        borderRadius: "16px",
+                        overflow: "hidden",
+                        boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                        bgcolor: "background.paper",
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          width: 335,
+                          height: 150, // Fixed height for all images
+                          position: "relative",
+                        }}
+                      >
+                        <Box
+                          component="img"
+                          src={recipe.image}
+                          alt={recipe.title}
+                          sx={{
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover",
+                          }}
+                        />
+                      </Box>
+                      <CardContent
+                        sx={{
+                          flexGrow: 1,
+                          p: 3,
+                          bgcolor: "white",
+                        }}
+                      >
+                        <Typography
+                          variant="h5"
+                          component="h2"
+                          sx={{
+                            fontSize: "1.5rem",
+                            fontWeight: 700,
+                            mb: 2,
+                            color: "text.primary",
+                          }}
+                        >
                           {recipe.title}
                         </Typography>
                         <Typography
                           variant="body2"
-                          sx={{ color: "text.secondary" }}
+                          color="text.secondary"
+                          sx={{
+                            fontSize: "0.875rem",
+                            "& span": {
+                              mx: 0.5,
+                              color: "text.secondary",
+                            },
+                          }}
                         >
-                          {recipe.description}
-                        </Typography>
-                        <Typography
-                          variant="body2"
-                          sx={{ color: "text.secondary", mt: 1 }}
-                        >
-                          Prep: {recipe.preptime} min | Cook: {recipe.cooktime}{" "}
-                          min | Serves: {recipe.servings}
+                          Prep: {recipe.preptime} min <span>|</span> Cook:{" "}
+                          {recipe.cooktime} min <span>|</span> Serves:{" "}
+                          {recipe.servings}
                         </Typography>
                       </CardContent>
-                    </CardActionArea>
-                  </Card>
+                    </Card>
+                  </Grid2>
+                ))
+              ) : (
+                <Grid2 item xs={12}>
+                  <Typography variant="body1" align="center">
+                    No recipes available at the moment.
+                  </Typography>
                 </Grid2>
-              ))}
+              )}
             </Grid2>
-          </Card>
+          </Container>
         </section>
       </Container>
     </div>

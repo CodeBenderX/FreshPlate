@@ -127,7 +127,7 @@ import logo from "../src/assets/FreshPlate-logo.png";
 
 const isActive = (location, path) => {
   return location.pathname === path
-    ? { color: "#FF6E1C" }
+    ? { backgroundColor: "#FF6E1C" }
     : { color: "#000000" };
 };
 
@@ -136,7 +136,7 @@ export default function Layout() {
   const location = useLocation();
 
   return (
-    <div className="app-container">
+    <div className="app-container" style={{backgroundColor:'#000000'}}>
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" color="#FF6E1C" sx={{ flexGrow: 1 }}>

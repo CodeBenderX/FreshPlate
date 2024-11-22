@@ -1334,7 +1334,6 @@ const RecipeCarousel = ({ featuredRecipes, handleViewRecipe }) => {
         style={{
           display: "flex",
           overflowX: "auto",
-          backgroundColor: "#f2f0ef",
           scrollbarWidth: "none",
           msOverflowStyle: "none",
           "&::-webkit-scrollbar": { display: "none" },
@@ -1371,7 +1370,7 @@ const RecipeCarousel = ({ featuredRecipes, handleViewRecipe }) => {
                   <Typography
                     variant="body2"
                     color="text.secondary"
-                    sx={{ mb: 1 }}
+                    sx={{ mb: 1  }}
                   >
                     Prep: {recipe.preptime} min | Cook: {recipe.cooktime} min |
                     Serves: {recipe.servings}
@@ -1381,6 +1380,14 @@ const RecipeCarousel = ({ featuredRecipes, handleViewRecipe }) => {
                     color="primary"
                     onClick={() => handleViewRecipe(recipe)}
                     fullWidth
+                    sx={{
+                      mt: 2,
+                      border: "1px solid #000000",
+                      backgroundColor: "#000000",
+                      "&:hover": {
+                        backgroundColor: "#FFFFFF",
+                      },
+                    }}
                   >
                     VIEW RECIPE
                   </Button>
@@ -1546,8 +1553,8 @@ export default function MemberHome() {
   });
 
   return (
-    <div style={{backgroundColor: '#FFF4EA'}}>
-      <Container component="main">
+    <div style={{ backgroundColor: "#FFF4EA" }}>
+      <Container component="main" maxWidth="lg" sx={{ width: "80%" }}>
         <section>
           <Typography variant="h2" component="h1" gutterBottom>
             Discover Delicious Recipes
@@ -1564,7 +1571,19 @@ export default function MemberHome() {
               fullWidth
               margin="normal"
             />
-            <Button type="submit" variant="contained" color="primary">
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              sx={{
+                mt: 2,
+                border: "1px solid #000000",
+                backgroundColor: "#000000",
+                "&:hover": {
+                  backgroundColor: "#FFFFFF",
+                },
+              }}
+            >
               Search
             </Button>
           </form>
@@ -1572,7 +1591,7 @@ export default function MemberHome() {
 
         <section>
           <Typography variant="h4" component="h2" gutterBottom>
-            Recently Added Recipes
+            Latest Recipes
           </Typography>
           <RecipeCarousel
             featuredRecipes={featuredRecipes}
@@ -1586,15 +1605,15 @@ export default function MemberHome() {
           </Typography>
           <Grid container spacing={3}>
             {filteredRecipes.slice(0, displayCount).map((recipe) => (
-              <Grid item xs={12} sm={6} md={4} key={recipe.id || recipe._id}>
-                <Card sx={{ height: "auto" }}>
+              <Grid item xs={12} sm={6} md={3} key={recipe.id || recipe._id}>
+                <Card sx={{ height: 400 }}>
                   <CardMedia
                     component="img"
                     height="200"
                     image={recipe.image}
                     alt={recipe.title}
                   />
-                  <CardContent sx={{ p: 2 }}>
+                  <CardContent sx={{ p: 2, background: "#FFFFFF" }}>
                     <Typography
                       gutterBottom
                       variant="h6"
@@ -1613,14 +1632,15 @@ export default function MemberHome() {
                     </Typography>
                     <Button
                       variant="contained"
-                      color="#000000"
+                      color="primary"
                       onClick={() => handleViewRecipe(recipe)}
                       fullWidth
                       sx={{
                         mt: 2,
-                        backgroundColor: "#ffc067",
+                        border: "1px solid #000000",
+                        backgroundColor: "#000000",
                         "&:hover": {
-                          backgroundColor: "#FF6E1C",
+                          backgroundColor: "#FFFFFF",
                         },
                       }}
                     >
@@ -1634,14 +1654,15 @@ export default function MemberHome() {
           {displayCount < filteredRecipes.length && ( // Load More button
             <Button
               variant="contained"
-              color="#000000"
-              onClick={() => setDisplayCount((prevCount) => prevCount + 8)}
+              color="primary"
+              onClick={() => handleViewRecipe(recipe)}
               fullWidth
               sx={{
                 mt: 2,
-                backgroundColor: "#ffc067",
+                border: "1px solid #000000",
+                backgroundColor: "#000000",
                 "&:hover": {
-                  backgroundColor: "#FF6E1C",
+                  backgroundColor: "#FFFFFF",
                 },
               }}
             >

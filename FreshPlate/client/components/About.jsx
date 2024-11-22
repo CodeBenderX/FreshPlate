@@ -27,43 +27,80 @@ export default function AboutPage() {
         </Typography>
       </Box>
 
-      {/* About FreshPlate Section */}
-      <Grid container spacing={4} sx={{ paddingX: 4 }}>
-        <Grid item xs={12} md={6}>
-          <Typography variant="body1" sx={{ color: "#4A4A4A" }}>
-            At FreshPlate, we believe that food should be fresh, fun, and easy to create. That's why we’ve built a space
-            where you can explore a wide variety of recipes, share your own culinary creations, and discover new ideas
-            to elevate your cooking game. Our mission is to bring people together through the joy of food, one recipe at
-            a time.
-          </Typography>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <CardMedia component="img" image={communityMeal} alt="Community Meal" sx={{ borderRadius: "8px" }} />
-        </Grid>
+{/* About FreshPlate Section */}
+<Grid container spacing={4} sx={{ paddingX: 4, alignItems: "center" }}>
+  <Grid 
+    item 
+    xs={12} 
+    md={6} 
+    sx={{ display: "flex", flexDirection: "column", justifyContent: "center", padding: "8px",  }}
+  >
+    <Typography variant="body1" sx={{ color: "#4A4A4A" }}>
+      At FreshPlate, we believe that food should be fresh, fun, and easy to create. That's why we’ve built a space
+      where you can explore a wide variety of recipes, share your own culinary creations, and discover new ideas
+      to elevate your cooking game.
+    </Typography>
+    <br></br>
+    <Typography variant="body1" sx={{ color: "#4A4A4A" }}>
+      Our mission is to bring people together through the joy of food, one
+      recipe at a time.
+    </Typography>
+  </Grid>
+  <Grid item xs={12} md={6} sx={{ display: "flex", justifyContent: "center", padding: "8px" }}>
+    <CardMedia 
+      component="img" 
+      image={communityMeal} 
+      alt="Community Meal" 
+      sx={{ borderRadius: "8px", maxWidth: "80%", height: "auto" }} 
+    />
+  </Grid>
 
-        <Grid item xs={12} md={6}>
-          <CardMedia component="img" image={cookingTogether} alt="Cooking Together" sx={{ borderRadius: "8px" }} />
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <Typography variant="body1" sx={{ color: "#4A4A4A" }}>
-            FreshPlate was born out of a love for home cooking and the desire to make it easier for people to share and
-            discover great food. What started as a small idea to organize and share our favorite recipes quickly grew
-            into a platform where cooks of all levels could contribute, learn, and grow together.
-          </Typography>
-        </Grid>
+  <Grid item xs={12} md={6} sx={{ display: "flex", justifyContent: "center", padding: "8px" }}>
+    <CardMedia 
+      component="img" 
+      image={cookingTogether} 
+      alt="Cooking Together" 
+      sx={{ borderRadius: "8px", maxWidth: "80%", height: "auto" }} 
+    />
+  </Grid>
+  <Grid 
+    item 
+    xs={12} 
+    md={6} 
+    sx={{ display: "flex", flexDirection: "column", justifyContent: "center", padding: "8px" }}
+  >
+    <Typography variant="body1" sx={{ color: "#4A4A4A" }}>
+      FreshPlate was born out of a love for home cooking and the desire to make it easier for people to share and
+      discover great food. What started as a small idea to organize and share our favorite recipes quickly grew
+      into a platform where cooks of all levels could contribute, learn, and grow together.
+    </Typography>
+  </Grid>
 
-        <Grid item xs={12} md={6}>
-          <Typography variant="body1" sx={{ color: "#4A4A4A" }}>
-            We’re passionate about fostering a positive and supportive environment where everyone—from novice cooks to
-            experienced chefs—can feel confident experimenting with new flavors, techniques, and ingredients. The
-            kitchen is a place for everyone to explore and express themselves, and FreshPlate is here to guide you along
-            the way.
-          </Typography>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <CardMedia component="img" image={familyCookingTogether} alt="Family Cooking Together" sx={{ borderRadius: "8px" }} />
-        </Grid>
-      </Grid>
+  <Grid 
+    item 
+    xs={12} 
+    md={6} 
+    sx={{ display: "flex", flexDirection: "column", justifyContent: "center", padding: "8px" }}
+  >
+    <Typography variant="body1" sx={{ color: "#4A4A4A" }}>
+      We’re passionate about fostering a positive and supportive environment where everyone—from novice cooks to
+      experienced chefs—can feel confident experimenting with new flavors, techniques, and ingredients. 
+    </Typography>
+    <br></br>
+    <Typography variant="body1" sx={{ color: "#4A4A4A" }}>
+    The kitchen is a place for everyone to explore and express themselves, and FreshPlate is here to guide you along the way. 
+    </Typography>
+  </Grid>
+  <Grid item xs={12} md={6} sx={{ display: "flex", justifyContent: "center", padding: "8px" }}>
+    <CardMedia 
+      component="img" 
+      image={familyCookingTogether} 
+      alt="Family Cooking Together" 
+      sx={{ borderRadius: "8px", maxWidth: "80%", height: "auto" }} 
+    />
+  </Grid>
+</Grid>
+
 
       {/* Meet the Team Section */}
       <Box sx={{ marginTop: 6 }}>

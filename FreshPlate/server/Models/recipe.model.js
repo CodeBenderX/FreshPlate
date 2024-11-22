@@ -26,6 +26,9 @@ const recipeSchema = new mongoose.Schema({
   servings: {
     type: Number,
   },
+  image: {
+    type: String
+  },
   created: {
     type: Date,
     default: Date.now

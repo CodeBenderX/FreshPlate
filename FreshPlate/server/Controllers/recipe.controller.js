@@ -1,20 +1,50 @@
 import Recipe from '../Models/recipe.model.js'
-import errorHandler from '../controllers/error.controller.js'
+import errorHandler from '../Controllers/error.controller.js'
+import fs from 'fs'
+import path from 'path'
+import { fileURLToPath } from 'url'
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 
 const createRecipe = async (req, res) => {
-  try {
-    const recipe = new Recipe({
-      ...req.body,
-      creator: req.auth.name  // Use the authenticated user's name
-    })
-    await recipe.save()
-    return res.status(201).json(recipe)
-  } catch (err) {
-    return res.status(400).json({
-      error: errorHandler.getErrorMessage(err)
-    })
+  const recipe = new Recipe(req.body)
+    recipe.creator = req.auth.name 
+    
+    try {
+    if (req.body.image) {
+      const base64Data = req.body.image.replace(/^data:image\/\w+;base64,/, "");
+      const buffer = Buffer.from(base64Data, 'base64');
+      if (buffer.length > 5 * 1024 * 1024) {
+        return res.status(400).json({
+          error: "Image size should not exceed 5MB"
+        });
+      }
+      const fileName = `${recipe._id}.jpg`;
+      const uploadsDir = path.join(__dirname, '..', 'public', 'uploads');
+
+      if (!fs.existsSync(uploadsDir)) {
+        fs.mkdirSync(uploadsDir, { recursive: true });
+      }
+  
+      const filePath = path.join(uploadsDir, fileName);
+
+        fs.writeFileSync(filePath, buffer);
+        recipe.image = `/uploads/${fileName}`;
+      } 
+
+      await recipe.save()
+      return res.status(200).json({
+        message: "Successfully created recipe!",
+        recipe: recipe
+      })
+    } catch (err) {
+      return res.status(400).json({
+        error: errorHandler.getErrorMessage(err)
+      })
+    }
   }
-};
 
 const getAllRecipes = async (req, res) => {
   try {
@@ -66,6 +96,16 @@ const deleteRecipe = async (req, res) => {
   try {
     let recipe = req.recipe
     let deletedRecipe = await Recipe.findByIdAndDelete(recipe._id)
+    if (deletedRecipe.image) {
+      const imagePath = path.join(__dirname, '..', 'public', 'uploads', deletedRecipe.image);
+      fs.unlink(imagePath, (err) => {
+        if (err) {
+          console.error('Error deleting image file:', err);
+        } else {
+          console.log('Image file deleted successfully');
+        }
+      });
+    }
     if (!deletedRecipe) {
       return res.status(404).json({
         error: "Recipe not found"

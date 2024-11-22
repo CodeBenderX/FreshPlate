@@ -83,5 +83,20 @@ const create = async (credentials, recipe) => {
       console.log(err)
     }
   }
+
+  const uploadImage = async (credentials, formData) => {
+    try {
+      let response = await fetch('/api/upload', {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer ' + credentials.t
+        },
+        body: formData
+      });
+      return await response.json();
+    } catch(err) {
+      console.log(err);
+    }
+  };
   
-  export { create, list, read, update, remove }
+  export { create, list, read, update, remove, uploadImage }

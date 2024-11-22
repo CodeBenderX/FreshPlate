@@ -1236,7 +1236,7 @@
 //   );
 // }
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Button,
@@ -1272,156 +1272,6 @@ const list = async (credentials, signal) => {
   }
 };
 
-const RecipeCarousel = ({ featuredRecipes, handleViewRecipe }) => {
-  const [scrollPosition, setScrollPosition] = useState(0);
-  const [canScrollRight, setCanScrollRight] = useState(true);
-  const scrollContainerRef = useRef(null);
-
-  const scroll = (direction) => {
-    const container = scrollContainerRef.current;
-    if (container) {
-      const scrollAmount = direction === "left" ? -300 : 300;
-      container.scrollBy({ left: scrollAmount, behavior: "smooth" });
-      setScrollPosition(container.scrollLeft + scrollAmount);
-      setCanScrollRight(
-        container.scrollLeft + container.clientWidth < container.scrollWidth
-      );
-    }
-  };
-
-  useEffect(() => {
-    const container = scrollContainerRef.current;
-    if (container) {
-      const handleScroll = () => {
-        setScrollPosition(container.scrollLeft);
-      };
-      container.addEventListener("scroll", handleScroll);
-      return () => container.removeEventListener("scroll", handleScroll);
-    }
-  }, []);
-
-  useEffect(() => {
-    const container = scrollContainerRef.current;
-    if (container) {
-      setCanScrollRight(container.scrollWidth > container.clientWidth);
-    }
-  }, [featuredRecipes]);
-
-  const canScrollLeft = scrollPosition > 0;
-
-  return (
-    <div
-      style={{ position: "relative", overflow: "hidden", padding: "0 40px" }}
-    >
-      <IconButton
-        sx={{
-          position: "absolute",
-          left: 8,
-          top: "50%",
-          transform: "translateY(-50%)",
-          zIndex: 1,
-          backgroundColor: "background.paper",
-          boxShadow: 2,
-          "&:hover": { backgroundColor: "action.hover" },
-          display: canScrollLeft ? "flex" : "none",
-        }}
-        onClick={() => scroll("left")}
-        disabled={!canScrollLeft}
-      >
-        <ChevronLeft />
-      </IconButton>
-      <div
-        ref={scrollContainerRef}
-        style={{
-          display: "flex",
-          overflowX: "auto",
-          scrollbarWidth: "none",
-          msOverflowStyle: "none",
-          "&::-webkit-scrollbar": { display: "none" },
-          scrollBehavior: "smooth",
-        }}
-      >
-        {featuredRecipes && featuredRecipes.length > 0 ? (
-          featuredRecipes.map((recipe) => (
-            <div
-              key={recipe.id || recipe._id}
-              style={{
-                minWidth: 300,
-                maxWidth: 300,
-                margin: "8px",
-                flexShrink: 0,
-              }}
-            >
-              <Card sx={{ height: "auto", backgroundColor: "#f2f0ef" }}>
-                <CardMedia
-                  component="img"
-                  height="200"
-                  image={recipe.image}
-                  alt={recipe.title}
-                />
-                <CardContent sx={{ p: 2 }}>
-                  <Typography
-                    gutterBottom
-                    variant="h6"
-                    component="div"
-                    sx={{ mb: 1 }}
-                  >
-                    {recipe.title}
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    sx={{ mb: 1  }}
-                  >
-                    Prep: {recipe.preptime} min | Cook: {recipe.cooktime} min |
-                    Serves: {recipe.servings}
-                  </Typography>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => handleViewRecipe(recipe)}
-                    fullWidth
-                    sx={{
-                      mt: 2,
-                      border: "1px solid #000000",
-                      backgroundColor: "#000000",
-                      "&:hover": {
-                        backgroundColor: "#FFFFFF",
-                      },
-                    }}
-                  >
-                    VIEW RECIPE
-                  </Button>
-                </CardContent>
-              </Card>
-            </div>
-          ))
-        ) : (
-          <Typography variant="body1" style={{ padding: "16px" }}>
-            No recipes available.
-          </Typography>
-        )}
-      </div>
-      <IconButton
-        sx={{
-          position: "absolute",
-          right: 8,
-          top: "50%",
-          transform: "translateY(-50%)",
-          zIndex: 1,
-          backgroundColor: "background.paper",
-          boxShadow: 2,
-          "&:hover": { backgroundColor: "action.hover" },
-          display: canScrollRight ? "flex" : "none",
-        }}
-        onClick={() => scroll("right")}
-        disabled={!canScrollRight}
-      >
-        <ChevronRight />
-      </IconButton>
-    </div>
-  );
-};
 
 export default function MemberHome() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -1431,8 +1281,26 @@ export default function MemberHome() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [displayCount, setDisplayCount] = useState(8); // New state variable
+  const [debug, setDebug] = useState(true);
 
   const navigate = useNavigate();
+
+  const getImageUrl = useCallback((recipe) => {
+    if (debug) console.log('Getting image URL for recipe:', recipe.title, recipe._id);
+    
+    let imageUrl;
+    if (recipe.image && recipe.image.startsWith('http')) {
+      imageUrl = recipe.image;
+    } else if (recipe.image) {
+      imageUrl = `http://localhost:3000/uploads/${recipe._id}.jpg`;
+    } else {
+      //imageUrl = `http://localhost:3000/uploads/${recipe._id}.jpg`;
+      imageUrl = defaultRecipeImage;
+    }
+    if (debug) console.log('Final image URL:', imageUrl);
+    return imageUrl;
+   
+  }, [debug]);
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -1531,6 +1399,158 @@ export default function MemberHome() {
       </Container>
     );
   }
+
+const RecipeCarousel = ({ featuredRecipes, handleViewRecipe }) => {
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+  const scrollContainerRef = useRef(null);
+
+  const scroll = (direction) => {
+    const container = scrollContainerRef.current;
+    if (container) {
+      const scrollAmount = direction === "left" ? -300 : 300;
+      container.scrollBy({ left: scrollAmount, behavior: "smooth" });
+      setScrollPosition(container.scrollLeft + scrollAmount);
+      setCanScrollRight(
+        container.scrollLeft + container.clientWidth < container.scrollWidth
+      );
+    }
+  };
+
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (container) {
+      const handleScroll = () => {
+        setScrollPosition(container.scrollLeft);
+      };
+      container.addEventListener("scroll", handleScroll);
+      return () => container.removeEventListener("scroll", handleScroll);
+    }
+  }, []);
+
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (container) {
+      setCanScrollRight(container.scrollWidth > container.clientWidth);
+    }
+  }, [featuredRecipes]);
+
+  const canScrollLeft = scrollPosition > 0;
+
+  return (
+    <div
+      style={{ position: "relative", overflow: "hidden", padding: "0 40px" }}
+    >
+      <IconButton
+        sx={{
+          position: "absolute",
+          left: 8,
+          top: "50%",
+          transform: "translateY(-50%)",
+          zIndex: 1,
+          backgroundColor: "background.paper",
+          boxShadow: 2,
+          "&:hover": { backgroundColor: "action.hover" },
+          display: canScrollLeft ? "flex" : "none",
+        }}
+        onClick={() => scroll("left")}
+        disabled={!canScrollLeft}
+      >
+        <ChevronLeft />
+      </IconButton>
+      <div
+        ref={scrollContainerRef}
+        style={{
+          display: "flex",
+          overflowX: "auto",
+          scrollbarWidth: "none",
+          msOverflowStyle: "none",
+          "&::-webkit-scrollbar": { display: "none" },
+          scrollBehavior: "smooth",
+        }}
+      >
+        {featuredRecipes && featuredRecipes.length > 0 ? (
+          featuredRecipes.map((recipe) => (
+            <div
+              key={recipe.id || recipe._id}
+              style={{
+                minWidth: 300,
+                maxWidth: 300,
+                margin: "8px",
+                flexShrink: 0,
+              }}
+            >
+              <Card sx={{ height: "auto", backgroundColor: "#f2f0ef" }}>
+                <CardMedia
+                  component="img"
+                  height="200"
+                  image={getImageUrl(recipe)}
+                  alt={recipe.title}
+                  onError={() => handleImageError(recipe._id)}
+                />
+                <CardContent sx={{ p: 2 }}>
+                  <Typography
+                    gutterBottom
+                    variant="h6"
+                    component="div"
+                    sx={{ mb: 1 }}
+                  >
+                    {recipe.title}
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ mb: 1  }}
+                  >
+                    Prep: {recipe.preptime} min | Cook: {recipe.cooktime} min |
+                    Serves: {recipe.servings}
+                  </Typography>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => handleViewRecipe(recipe)}
+                    fullWidth
+                    sx={{
+                      mt: 2,
+                      border: "1px solid #000000",
+                      backgroundColor: "#000000",
+                      "&:hover": {
+                        backgroundColor: "#FFFFFF",
+                      },
+                    }}
+                  >
+                    VIEW RECIPE
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+          ))
+        ) : (
+          <Typography variant="body1" style={{ padding: "16px" }}>
+            No recipes available.
+          </Typography>
+        )}
+      </div>
+      <IconButton
+        sx={{
+          position: "absolute",
+          right: 8,
+          top: "50%",
+          transform: "translateY(-50%)",
+          zIndex: 1,
+          backgroundColor: "background.paper",
+          boxShadow: 2,
+          "&:hover": { backgroundColor: "action.hover" },
+          display: canScrollRight ? "flex" : "none",
+        }}
+        onClick={() => scroll("right")}
+        disabled={!canScrollRight}
+      >
+        <ChevronRight />
+      </IconButton>
+    </div>
+  );
+};
 
   if (!filteredRecipes || filteredRecipes.length === 0) {
     console.log("No recipes available");

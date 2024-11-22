@@ -17,6 +17,7 @@ import {
 import { CloudUpload } from "@mui/icons-material";
 import { create } from './api-recipe'; 
 import auth from '../lib/auth-helper.js';
+import imageCompression from 'browser-image-compression';
 
 const AddRecipePage = () => {
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ const AddRecipePage = () => {
     preptime: "",
     cooktime: "",
     servings: "",
-    //image: null,
+    image: null,
   });
   const [errors, setErrors] = useState({});
   const [error, setError] = useState("");
@@ -50,14 +51,41 @@ const AddRecipePage = () => {
     }
   };
 
-  const handleChange = (name) => (event) => {
-    const value = name === 'image' ? event.target.files?.[0] || null : event.target.value;
-    setValues({ ...values, [name]: value });
+  const handleChange = (name) => async (event) => {
+    if (name === 'image') {
+      const file = event.target.files[0];
+      if (file) {
+        try {
+          const compressedFile = await compressImage(file);
+          setValues({ ...values, [name]: compressedFile });
+        } catch (err) {
+          console.error("Error compressing image:", err);
+          setError("Error processing image. Please try a different file.");
+        }
+      }
+    } else {
+      const value = event.target.value;
+      setValues({ ...values, [name]: value });
+    }
     if (errors[name]) {
       setErrors({ ...errors, [name]: "" });
     }
-    console.log(`Field ${name} updated:`, value);
   };
+
+  const compressImage = async (imageFile) => {
+    const options = {
+      maxSizeMB: 5, // Compress to 100KB
+      maxWidthOrHeight: 1920,
+      useWebWorker: true
+    }
+    try {
+      const compressedFile = await imageCompression(imageFile, options);
+      return compressedFile;
+    } catch (error) {
+      console.log(error);
+      throw new Error("Image compression failed");
+    }
+  }
 
   const validateForm = () => {
     const newErrors = {};
@@ -87,7 +115,19 @@ const AddRecipePage = () => {
 
     try {
       const jwt = auth.isAuthenticated();
-      console.log("JWT token:", jwt.token); // Debug log
+      if (!jwt) {
+        throw new Error('You must be logged in to create a recipe.');
+      }
+
+      let imageData = null;
+      if (values.image) {
+        const reader = new FileReader();
+        imageData = await new Promise((resolve, reject) => {
+          reader.onload = (event) => resolve(event.target.result);
+          reader.onerror = (error) => reject(error);
+          reader.readAsDataURL(values.image);
+        });
+      }
 
       const recipeData = {
         title: values.title,
@@ -96,48 +136,17 @@ const AddRecipePage = () => {
         preptime: parseInt(values.preptime, 10),
         cooktime: parseInt(values.cooktime, 10),
         servings: parseInt(values.servings, 10),
+        image: imageData,
       };
 
-      console.log("Recipe data:", recipeData); // Debug log
-
-      // const formData = new FormData();
-      // Object.entries(recipeData).forEach(([key, value]) => {
-      //   if (value !== null && value !== "") {
-      //     formData.append(key, value);
-      //   }
-      // });
-
-      // if (values.image) {
-      //   formData.append('image', values.image);
-      // }
-
-      // console.log("FormData entries:"); // Debug log
-      // for (let [key, value] of formData.entries()) {
-      //   console.log(key, value);
-      // }
-
       const result = await create({ t: jwt.token }, recipeData);
-      console.log("API response:", result); // Debug log
-
       if (result.error) {
         throw new Error(result.error);
       }
 
-      console.log('Recipe created successfully:', result);
-      setSuccess(true);
-      setTimeout(() => {
-        navigate("/recipelist");
-      }, 1000);
+      navigate('/recipelist');
     } catch (err) {
-      console.error('Error creating recipe:', err);
-      if (err.message.includes("jwt malformed") || err.message.includes("Unauthorized")) {
-        setError("Your session has expired. Please log in again.");
-        auth.clearJWT(() => {
-          setIsAuthenticated(false);
-        });
-      } else {
-        setError(err.message || "Failed to create recipe. Please try again.");
-      }
+      setError(err.message || 'An error occurred. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -286,6 +295,11 @@ const AddRecipePage = () => {
                   {loading ? <CircularProgress size={24} /> : "Add Recipe"}
                 </Button>
               </Grid2>
+              {values.image && (
+        <Typography variant="body2" align="center" sx={{ mb: 2 }}>
+          Selected file: {values.image.name} (Compressed size: {(values.image.size / 1024).toFixed(2)} KB)
+        </Typography>
+      )}
               <Grid2 xs={6}>
                 <Button variant="outlined" color="secondary" fullWidth onClick={() => navigate("/recipelist")}>
                   Cancel

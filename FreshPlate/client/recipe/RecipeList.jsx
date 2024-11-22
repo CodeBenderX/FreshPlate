@@ -17,9 +17,33 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Avatar
 } from "@mui/material";
-import { Add, Edit, Delete, ChevronRight } from "@mui/icons-material";
+import { Add, Edit, Delete, ChevronRight, BrokenImage } from "@mui/icons-material";
 import auth from "../lib/auth-helper";
+
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error("Error caught by ErrorBoundary:", error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return <h1>Something went wrong. Please try refreshing the page.</h1>;
+    }
+
+    return this.props.children;
+  }
+}
 
 export default function RecipeList() {
   const [recipes, setRecipes] = useState([]);
@@ -36,6 +60,7 @@ export default function RecipeList() {
     open: false,
     recipeId: null,
   });
+  const [debug, setDebug] = useState(true);
   const itemsPerPage = 5;
 
   const navigate = useNavigate();
@@ -138,6 +163,33 @@ export default function RecipeList() {
   const indexOfFirstRecipe = indexOfLastRecipe - itemsPerPage
   const currentRecipes = recipes.slice(indexOfFirstRecipe, indexOfLastRecipe)
 
+  const getImageUrl = useCallback((recipe) => {
+    if (debug) console.log('Getting image URL for recipe:', recipe.title, recipe._id);
+    
+    let imageUrl;
+    if (recipe.image && recipe.image.startsWith('http')) {
+      imageUrl = recipe.image;
+    } else if (recipe.image) {
+      imageUrl = `http://localhost:3000/uploads/${recipe.image}`;
+    } else {
+      imageUrl = `http://localhost:3000/uploads/${recipe._id}.jpg`;
+    }
+  
+    if (debug) console.log('Using image URL:', imageUrl);
+    return imageUrl;
+  }, [debug]);
+
+  const handleImageError = (recipeId) => {
+    console.error(`Failed to load image for recipe: ${recipeId}`);
+    setRecipes(prevRecipes => 
+      prevRecipes.map(recipe => 
+        recipe._id === recipeId 
+          ? { ...recipe, imageError: true } 
+          : recipe
+      )
+    );
+  };
+
   if (loading) {
     return (
       <Container maxWidth="md" sx={{ py: 4, textAlign: 'center' }}>
@@ -204,9 +256,29 @@ export default function RecipeList() {
                 boxShadow: "none",
               }}
             >
+              <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                {recipe.imageError ? (
+                  <Avatar
+                    sx={{ width: 60, height: 60, bgcolor: 'grey.300' }}
+                    variant="rounded"
+                  >
+                    <BrokenImage />
+                  </Avatar>
+                ) : (
+                  <Avatar
+                    src={getImageUrl(recipe)}
+                    alt={recipe.title}
+                    sx={{ width: 60, height: 60 }}
+                    variant="rounded"
+                    imgProps={{
+                      onError: () => handleImageError(recipe._id)
+                    }}
+                  />
+                )}
               <Typography variant="h6" component="h2">
                 {recipe.title}
               </Typography>
+              </Box>
               <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
                 <Button
                   variant="outlined"
@@ -216,7 +288,6 @@ export default function RecipeList() {
                 >
                   View Recipe
                 </Button>
-                {" "}
                 <IconButton
                   size="small"
                   sx={{ border: "1px solid #e0e0e0", borderRadius: "4px" }}

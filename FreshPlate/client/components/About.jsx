@@ -76,10 +76,10 @@ export default function AboutPage() {
 
         <Grid container spacing={2} justifyContent="center" sx={{ marginTop: 3, paddingX: 4 }}>
           {[
-            { name: "Angelo Tiquio", role: "Lead Frontend Developer", image: "angelo-tiquio.png" },
-            { name: "Lorenzo Menil", role: "Lead Backend Developer", image: "lorenzo-menil.png" },
-            { name: "Bianca Salunga", role: "QA/UI Designer", image: "bianca-salunga.png" },
-            { name: "Ovovwere Umavwodo", role: "Frontend Developer", image: "ovovwere-umavwodo.png" },
+            { name: "Angelo Tiquio", role: "Lead Frontend Developer", image: "AboutUs-Angelo.jpg" },
+            { name: "Lorenzo Menil", role: "Lead Backend Developer", image: "Aboutus-Lorenzo.jpg" },
+            { name: "Bianca Salunga", role: "QA/UI Designer", image: "Aboutus-Bianca.jpeg" },
+            { name: "Ovovwere Umavwodo", role: "Frontend Developer", image: "Aboutus-Ovo.jpg" },
           ].map((member, index) => (
             <Grid item xs={12} sm={6} md={3} key={index}>
               <Box sx={{ textAlign: "center", padding: 2, backgroundColor: "#f9f9f9", borderRadius: 2 }}>

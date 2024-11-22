@@ -126,7 +126,6 @@
 //   );
 // }
 
-
 // import React, { useState, useEffect } from "react";
 // import { Button, Typography, TextField, Container, Grid } from "@mui/material";
 // import Card from "@mui/material/Card";
@@ -432,7 +431,6 @@
 // import auth from "../lib/auth-helper";
 // import defaultRecipeImage from "../src/assets/defaultFoodImage.png";
 
-
 // const list = async (credentials, signal) => {
 //   try {
 //     let response = await fetch('/api/recipes/', {
@@ -514,8 +512,6 @@
 //       </Container>
 //     );
 //   }
-
-
 
 //   const handleViewRecipe = (recipeId) => {
 //     navigate(`/viewrecipe?id=${recipeId}`)
@@ -601,8 +597,6 @@
 //     </div>
 //   );
 // }
-
-
 
 // import React, { useState, useEffect, useRef } from "react";
 // import { useNavigate } from 'react-router-dom';
@@ -724,9 +718,9 @@
 //                 <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
 //                   Prep: {recipe.preptime} min | Cook: {recipe.cooktime} min | Serves: {recipe.servings}
 //                 </Typography>
-//                 <Button 
-//                   variant="contained" 
-//                   color="primary" 
+//                 <Button
+//                   variant="contained"
+//                   color="primary"
 //                   onClick={() => handleViewRecipe(recipe)}
 //                   fullWidth
 //                 >
@@ -811,7 +805,7 @@
 
 //   const handleSearch = (e) => {
 //     e.preventDefault();
-//     const filtered = allRecipes.filter(recipe => 
+//     const filtered = allRecipes.filter(recipe =>
 //       recipe.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
 //       recipe.description?.toLowerCase().includes(searchQuery.toLowerCase())
 //     );
@@ -908,9 +902,9 @@
 //                     <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
 //                       Prep: {recipe.preptime} min | Cook: {recipe.cooktime} min | Serves: {recipe.servings}
 //                     </Typography>
-//                     <Button 
-//                       variant="contained" 
-//                       color="primary" 
+//                     <Button
+//                       variant="contained"
+//                       color="primary"
 //                       onClick={() => handleViewRecipe(recipe)}
 //                       fullWidth
 //                     >
@@ -932,29 +926,344 @@
 //   );
 // }
 
-
-
-
 //try for upload
 
+// import React, { useState, useEffect, useRef } from "react";
+// import { useNavigate } from 'react-router-dom';
+// import { Button, Typography, TextField, Container, CircularProgress, IconButton, Grid, Card, CardContent, CardMedia } from "@mui/material";
+// import { ChevronLeft, ChevronRight } from '@mui/icons-material';
+// import auth from "../lib/auth-helper";
+// import defaultRecipeImage from "../src/assets/defaultFoodImage.png";
+
+// const list = async (credentials, signal) => {
+//   try {
+//     let response = await fetch('/api/recipes/', {
+//       method: 'GET',
+//       signal: signal,
+//       headers: {
+//         'Accept': 'application/json',
+//         'Content-Type': 'application/json',
+//         'Authorization': 'Bearer ' + credentials.t
+//       }
+//     });
+//     return await response.json();
+//   } catch (err) {
+//     console.log(err);
+//   }
+// };
+
+// const RecipeCarousel = ({ featuredRecipes, handleViewRecipe }) => {
+//   const [scrollPosition, setScrollPosition] = useState(0);
+//   const [canScrollRight, setCanScrollRight] = useState(true);
+//   const scrollContainerRef = useRef(null);
+
+//   const scroll = (direction) => {
+//     const container = scrollContainerRef.current;
+//     if (container) {
+//       const scrollAmount = direction === 'left' ? -300 : 300;
+//       container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+//       setScrollPosition(container.scrollLeft + scrollAmount);
+//       setCanScrollRight(container.scrollLeft + container.clientWidth < container.scrollWidth);
+//     }
+//   };
+
+//   useEffect(() => {
+//     const container = scrollContainerRef.current;
+//     if (container) {
+//       const handleScroll = () => {
+//         setScrollPosition(container.scrollLeft);
+//       };
+//       container.addEventListener('scroll', handleScroll);
+//       return () => container.removeEventListener('scroll', handleScroll);
+//     }
+//   }, []);
+
+//   useEffect(() => {
+//     const container = scrollContainerRef.current;
+//     if (container) {
+//       setCanScrollRight(container.scrollWidth > container.clientWidth);
+//     }
+//   }, [featuredRecipes]);
+
+//   const canScrollLeft = scrollPosition > 0;
+
+//   return (
+//     <div style={{ position: 'relative', overflow: 'hidden', padding: '0 40px' }}>
+//       <IconButton
+//         sx={{
+//           position: 'absolute',
+//           left: 8,
+//           top: '50%',
+//           transform: 'translateY(-50%)',
+//           zIndex: 1,
+//           backgroundColor: 'background.paper',
+//           boxShadow: 2,
+//           '&:hover': { backgroundColor: 'action.hover' },
+//           display: canScrollLeft ? 'flex' : 'none',
+//         }}
+//         onClick={() => scroll('left')}
+//         disabled={!canScrollLeft}
+//       >
+//         <ChevronLeft />
+//       </IconButton>
+//       <div
+//         ref={scrollContainerRef}
+//         style={{
+//           display: 'flex',
+//           overflowX: 'auto',
+//           scrollbarWidth: 'none',
+//           msOverflowStyle: 'none',
+//           '&::-webkit-scrollbar': { display: 'none' },
+//           scrollBehavior: 'smooth',
+//         }}
+//       >
+//         {featuredRecipes && featuredRecipes.length > 0 ? featuredRecipes.map((recipe) => (
+//           <div key={recipe.id || recipe._id} style={{ minWidth: 300, maxWidth: 300, margin: '8px', flexShrink: 0 }}>
+//             <Card sx={{ height: 'auto' }}>
+//               <CardMedia
+//                 component="img"
+//                 height="200"
+//                 image={recipe.image}
+//                 alt={recipe.title}
+//               />
+//               <CardContent sx={{ p: 2 }}>
+//                 <Typography gutterBottom variant="h6" component="div" sx={{ mb: 1 }}>
+//                   {recipe.title}
+//                 </Typography>
+//                 <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+//                   Prep: {recipe.preptime} min | Cook: {recipe.cooktime} min | Serves: {recipe.servings}
+//                 </Typography>
+//                 <Button
+//                   variant="contained"
+//                   color="primary"
+//                   onClick={() => handleViewRecipe(recipe)}
+//                   fullWidth
+//                 >
+//                   VIEW RECIPE
+//                 </Button>
+//               </CardContent>
+//             </Card>
+//           </div>
+//         )) : (
+//           <Typography variant="body1" style={{ padding: '16px' }}>No recipes available.</Typography>
+//         )}
+//       </div>
+//       <IconButton
+//         sx={{
+//           position: 'absolute',
+//           right: 8,
+//           top: '50%',
+//           transform: 'translateY(-50%)',
+//           zIndex: 1,
+//           backgroundColor: 'background.paper',
+//           boxShadow: 2,
+//           '&:hover': { backgroundColor: 'action.hover' },
+//           display: canScrollRight ? 'flex' : 'none',
+//         }}
+//         onClick={() => scroll('right')}
+//         disabled={!canScrollRight}
+//       >
+//         <ChevronRight />
+//       </IconButton>
+//     </div>
+//   );
+// };
+
+// export default function MemberHome() {
+//   const [searchQuery, setSearchQuery] = useState("");
+//   const [featuredRecipes, setFeaturedRecipes] = useState([]);
+//   const [allRecipes, setAllRecipes] = useState([]);
+//   const [filteredRecipes, setFilteredRecipes] = useState([]);
+//   const [isLoading, setIsLoading] = useState(true);
+//   const [error, setError] = useState("");
+
+//   const navigate = useNavigate();
+
+//   useEffect(() => {
+//     const abortController = new AbortController();
+//     const signal = abortController.signal;
+//     const jwt = auth.isAuthenticated();
+
+//     if (jwt) {
+//       fetchRecipes(jwt, signal);
+//     }
+
+//     return function cleanup() {
+//       abortController.abort();
+//     }
+//   }, []);
+
+//   const fetchRecipes = async (jwt, signal) => {
+//     try {
+//       setIsLoading(true);
+//       const data = await list({ t: jwt.token }, signal);
+//       if (data && data.error) {
+//         setError(data.error);
+//       } else {
+//         // Construct full image URL for user-uploaded images, or use default image
+//         const dbRecipes = data.map(recipe => ({
+//           ...recipe,
+//           image: recipe.image
+//             ? `${process.env.REACT_APP_API_URL}/uploads/${recipe.image}`
+//             : defaultRecipeImage,
+//           isDefault: false
+//         }));
+//         const sortedRecipes = dbRecipes.sort((a, b) => new Date(b.created) - new Date(a.created));
+//         setFeaturedRecipes(sortedRecipes.slice(0, 8));
+//         setAllRecipes(sortedRecipes);
+//         setFilteredRecipes(sortedRecipes);
+//       }
+//     } catch (error) {
+//       setError("Could not load recipes");
+//     } finally {
+//       setIsLoading(false);
+//     }
+//   };
+
+//   const handleSearch = (e) => {
+//     e.preventDefault();
+//     const filtered = allRecipes.filter(recipe =>
+//       recipe.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+//       recipe.description?.toLowerCase().includes(searchQuery.toLowerCase())
+//     );
+//     setFilteredRecipes(filtered);
+//   };
+
+//   const handleSearchInputChange = (e) => {
+//     const query = e.target.value;
+//     setSearchQuery(query);
+//     if (query === "") {
+//       setFilteredRecipes(allRecipes);
+//     } else {
+//       handleSearch(e);
+//     }
+//   };
+
+//   const handleViewRecipe = (recipe) => {
+//     navigate(`/viewrecipe?id=${recipe._id}`);
+//   }
+
+//   if (isLoading) {
+//     return (
+//       <Container component="main" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+//         <CircularProgress />
+//       </Container>
+//     );
+//   }
+
+//   if (error) {
+//     return (
+//       <Container component="main">
+//         <Typography variant="h6" color="error" align="center">
+//           {error}
+//         </Typography>
+//       </Container>
+//     );
+//   }
+
+//   return (
+//     <Container component="main">
+//       <section>
+//         <Typography variant="h2" component="h1" gutterBottom>
+//           Discover Delicious Recipes
+//         </Typography>
+//         <Typography variant="h5" component="p" gutterBottom>
+//           Find and share the best recipes from around the world
+//         </Typography>
+//         <form onSubmit={handleSearch}>
+//           <TextField
+//             type="search"
+//             placeholder="Search recipes..."
+//             value={searchQuery}
+//             onChange={handleSearchInputChange}
+//             fullWidth
+//             margin="normal"
+//           />
+//           <Button type="submit" variant="contained" color="primary">
+//             Search
+//           </Button>
+//         </form>
+//       </section>
+
+//       <section>
+//         <Typography variant="h4" component="h2" gutterBottom>
+//           Recently Added Recipes
+//         </Typography>
+//         <RecipeCarousel featuredRecipes={featuredRecipes} handleViewRecipe={handleViewRecipe} />
+//       </section>
+
+//       <section style={{ marginTop: '2rem' }}>
+//         <Typography variant="h4" component="h2" gutterBottom>
+//           {searchQuery ? 'Search Results' : 'All Recipes'}
+//         </Typography>
+//         <Grid container spacing={3}>
+//           {filteredRecipes.map((recipe) => (
+//             <Grid item xs={12} sm={6} md={4} key={recipe.id || recipe._id}>
+//               <Card sx={{ height: 'auto' }}>
+//                 <CardMedia
+//                   component="img"
+//                   height="200"
+//                   image={recipe.image}
+//                   alt={recipe.title}
+//                 />
+//                 <CardContent sx={{ p: 2 }}>
+//                   <Typography gutterBottom variant="h6" component="div" sx={{ mb: 1 }}>
+//                     {recipe.title}
+//                   </Typography>
+//                   <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+//                     Prep: {recipe.preptime} min | Cook: {recipe.cooktime} min | Serves: {recipe.servings}
+//                   </Typography>
+//                   <Button
+//                     variant="contained"
+//                     color="primary"
+//                     onClick={() => handleViewRecipe(recipe)}
+//                     fullWidth
+//                   >
+//                     VIEW RECIPE
+//                   </Button>
+//                 </CardContent>
+//               </Card>
+//             </Grid>
+//           ))}
+//         </Grid>
+//         {filteredRecipes.length === 0 && (
+//           <Typography variant="body1" align="center" style={{ marginTop: '2rem' }}>
+//             No recipes found matching your search.
+//           </Typography>
+//         )}
+//       </section>
+//     </Container>
+//   );
+// }
 
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from 'react-router-dom';
-import { Button, Typography, TextField, Container, CircularProgress, IconButton, Grid, Card, CardContent, CardMedia } from "@mui/material";
-import { ChevronLeft, ChevronRight } from '@mui/icons-material';
+import { useNavigate } from "react-router-dom";
+import {
+  Button,
+  Typography,
+  TextField,
+  Container,
+  CircularProgress,
+  IconButton,
+  Grid,
+  Card,
+  CardContent,
+  CardMedia,
+} from "@mui/material";
+import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 import auth from "../lib/auth-helper";
 import defaultRecipeImage from "../src/assets/defaultFoodImage.png";
 
 const list = async (credentials, signal) => {
   try {
-    let response = await fetch('/api/recipes/', {
-      method: 'GET',
+    let response = await fetch("/api/recipes/", {
+      method: "GET",
       signal: signal,
       headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + credentials.t
-      }
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + credentials.t,
+      },
     });
     return await response.json();
   } catch (err) {
@@ -970,10 +1279,12 @@ const RecipeCarousel = ({ featuredRecipes, handleViewRecipe }) => {
   const scroll = (direction) => {
     const container = scrollContainerRef.current;
     if (container) {
-      const scrollAmount = direction === 'left' ? -300 : 300;
-      container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+      const scrollAmount = direction === "left" ? -300 : 300;
+      container.scrollBy({ left: scrollAmount, behavior: "smooth" });
       setScrollPosition(container.scrollLeft + scrollAmount);
-      setCanScrollRight(container.scrollLeft + container.clientWidth < container.scrollWidth);
+      setCanScrollRight(
+        container.scrollLeft + container.clientWidth < container.scrollWidth
+      );
     }
   };
 
@@ -983,8 +1294,8 @@ const RecipeCarousel = ({ featuredRecipes, handleViewRecipe }) => {
       const handleScroll = () => {
         setScrollPosition(container.scrollLeft);
       };
-      container.addEventListener('scroll', handleScroll);
-      return () => container.removeEventListener('scroll', handleScroll);
+      container.addEventListener("scroll", handleScroll);
+      return () => container.removeEventListener("scroll", handleScroll);
     }
   }, []);
 
@@ -998,20 +1309,22 @@ const RecipeCarousel = ({ featuredRecipes, handleViewRecipe }) => {
   const canScrollLeft = scrollPosition > 0;
 
   return (
-    <div style={{ position: 'relative', overflow: 'hidden', padding: '0 40px' }}>
+    <div
+      style={{ position: "relative", overflow: "hidden", padding: "0 40px" }}
+    >
       <IconButton
         sx={{
-          position: 'absolute',
+          position: "absolute",
           left: 8,
-          top: '50%',
-          transform: 'translateY(-50%)',
+          top: "50%",
+          transform: "translateY(-50%)",
           zIndex: 1,
-          backgroundColor: 'background.paper',
+          backgroundColor: "background.paper",
           boxShadow: 2,
-          '&:hover': { backgroundColor: 'action.hover' },
-          display: canScrollLeft ? 'flex' : 'none',
+          "&:hover": { backgroundColor: "action.hover" },
+          display: canScrollLeft ? "flex" : "none",
         }}
-        onClick={() => scroll('left')}
+        onClick={() => scroll("left")}
         disabled={!canScrollLeft}
       >
         <ChevronLeft />
@@ -1019,58 +1332,81 @@ const RecipeCarousel = ({ featuredRecipes, handleViewRecipe }) => {
       <div
         ref={scrollContainerRef}
         style={{
-          display: 'flex',
-          overflowX: 'auto',
-          scrollbarWidth: 'none',
-          msOverflowStyle: 'none',
-          '&::-webkit-scrollbar': { display: 'none' },
-          scrollBehavior: 'smooth',
+          display: "flex",
+          overflowX: "auto",
+          backgroundColor: "#f2f0ef",
+          scrollbarWidth: "none",
+          msOverflowStyle: "none",
+          "&::-webkit-scrollbar": { display: "none" },
+          scrollBehavior: "smooth",
         }}
       >
-        {featuredRecipes && featuredRecipes.length > 0 ? featuredRecipes.map((recipe) => (
-          <div key={recipe.id || recipe._id} style={{ minWidth: 300, maxWidth: 300, margin: '8px', flexShrink: 0 }}>
-            <Card sx={{ height: 'auto' }}>
-              <CardMedia
-                component="img"
-                height="200"
-                image={recipe.image}
-                alt={recipe.title}
-              />
-              <CardContent sx={{ p: 2 }}>
-                <Typography gutterBottom variant="h6" component="div" sx={{ mb: 1 }}>
-                  {recipe.title}
-                </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                  Prep: {recipe.preptime} min | Cook: {recipe.cooktime} min | Serves: {recipe.servings}
-                </Typography>
-                <Button 
-                  variant="contained" 
-                  color="primary" 
-                  onClick={() => handleViewRecipe(recipe)}
-                  fullWidth
-                >
-                  VIEW RECIPE
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-        )) : (
-          <Typography variant="body1" style={{ padding: '16px' }}>No recipes available.</Typography>
+        {featuredRecipes && featuredRecipes.length > 0 ? (
+          featuredRecipes.map((recipe) => (
+            <div
+              key={recipe.id || recipe._id}
+              style={{
+                minWidth: 300,
+                maxWidth: 300,
+                margin: "8px",
+                flexShrink: 0,
+              }}
+            >
+              <Card sx={{ height: "auto", backgroundColor: "#f2f0ef" }}>
+                <CardMedia
+                  component="img"
+                  height="200"
+                  image={recipe.image}
+                  alt={recipe.title}
+                />
+                <CardContent sx={{ p: 2 }}>
+                  <Typography
+                    gutterBottom
+                    variant="h6"
+                    component="div"
+                    sx={{ mb: 1 }}
+                  >
+                    {recipe.title}
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ mb: 1 }}
+                  >
+                    Prep: {recipe.preptime} min | Cook: {recipe.cooktime} min |
+                    Serves: {recipe.servings}
+                  </Typography>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => handleViewRecipe(recipe)}
+                    fullWidth
+                  >
+                    VIEW RECIPE
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+          ))
+        ) : (
+          <Typography variant="body1" style={{ padding: "16px" }}>
+            No recipes available.
+          </Typography>
         )}
       </div>
       <IconButton
         sx={{
-          position: 'absolute',
+          position: "absolute",
           right: 8,
-          top: '50%',
-          transform: 'translateY(-50%)',
+          top: "50%",
+          transform: "translateY(-50%)",
           zIndex: 1,
-          backgroundColor: 'background.paper',
+          backgroundColor: "background.paper",
           boxShadow: 2,
-          '&:hover': { backgroundColor: 'action.hover' },
-          display: canScrollRight ? 'flex' : 'none',
+          "&:hover": { backgroundColor: "action.hover" },
+          display: canScrollRight ? "flex" : "none",
         }}
-        onClick={() => scroll('right')}
+        onClick={() => scroll("right")}
         disabled={!canScrollRight}
       >
         <ChevronRight />
@@ -1086,6 +1422,7 @@ export default function MemberHome() {
   const [filteredRecipes, setFilteredRecipes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const [displayCount, setDisplayCount] = useState(8); // New state variable
 
   const navigate = useNavigate();
 
@@ -1100,7 +1437,7 @@ export default function MemberHome() {
 
     return function cleanup() {
       abortController.abort();
-    }
+    };
   }, []);
 
   const fetchRecipes = async (jwt, signal) => {
@@ -1111,20 +1448,24 @@ export default function MemberHome() {
         setError(data.error);
       } else {
         // Construct full image URL for user-uploaded images, or use default image
-        const dbRecipes = data.map(recipe => ({
+        const dbRecipes = data.map((recipe) => ({
           ...recipe,
-          image: recipe.image 
+          image: recipe.image
             ? `${process.env.REACT_APP_API_URL}/uploads/${recipe.image}`
             : defaultRecipeImage,
-          isDefault: false
+          isDefault: false,
         }));
-        const sortedRecipes = dbRecipes.sort((a, b) => new Date(b.created) - new Date(a.created));
+        console.log("Fetched recipes:", dbRecipes);
+        const sortedRecipes = dbRecipes.sort(
+          (a, b) => new Date(b.created) - new Date(a.created)
+        );
         setFeaturedRecipes(sortedRecipes.slice(0, 8));
         setAllRecipes(sortedRecipes);
         setFilteredRecipes(sortedRecipes);
       }
     } catch (error) {
-      setError("Could not load recipes");
+      console.error("Error fetching recipes:", error);
+      setError("Could not load recipes. Please try again later.");
     } finally {
       setIsLoading(false);
     }
@@ -1132,11 +1473,13 @@ export default function MemberHome() {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    const filtered = allRecipes.filter(recipe => 
-      recipe.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      recipe.description?.toLowerCase().includes(searchQuery.toLowerCase())
+    const filtered = allRecipes.filter(
+      (recipe) =>
+        recipe.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        recipe.description?.toLowerCase().includes(searchQuery.toLowerCase())
     );
     setFilteredRecipes(filtered);
+    setDisplayCount(8); // Reset display count when searching
   };
 
   const handleSearchInputChange = (e) => {
@@ -1144,6 +1487,7 @@ export default function MemberHome() {
     setSearchQuery(query);
     if (query === "") {
       setFilteredRecipes(allRecipes);
+      setDisplayCount(8); // Reset display count when clearing search
     } else {
       handleSearch(e);
     }
@@ -1151,17 +1495,26 @@ export default function MemberHome() {
 
   const handleViewRecipe = (recipe) => {
     navigate(`/viewrecipe?id=${recipe._id}`);
-  }
+  };
 
   if (isLoading) {
     return (
-      <Container component="main" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+      <Container
+        component="main"
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
         <CircularProgress />
       </Container>
     );
   }
 
   if (error) {
+    console.error("Error in MemberHome:", error);
     return (
       <Container component="main">
         <Typography variant="h6" color="error" align="center">
@@ -1171,77 +1524,141 @@ export default function MemberHome() {
     );
   }
 
+  if (!filteredRecipes || filteredRecipes.length === 0) {
+    console.log("No recipes available");
+    return (
+      <Container component="main">
+        <Typography variant="h6" align="center">
+          No recipes available. Try adding some!
+        </Typography>
+      </Container>
+    );
+  }
+
+  console.log("Rendering MemberHome. State:", {
+    searchQuery,
+    featuredRecipes: featuredRecipes.length,
+    allRecipes: allRecipes.length,
+    filteredRecipes: filteredRecipes.length,
+    isLoading,
+    error,
+    displayCount,
+  });
+
   return (
-    <Container component="main">
-      <section>
-        <Typography variant="h2" component="h1" gutterBottom>
-          Discover Delicious Recipes
-        </Typography>
-        <Typography variant="h5" component="p" gutterBottom>
-          Find and share the best recipes from around the world
-        </Typography>
-        <form onSubmit={handleSearch}>
-          <TextField
-            type="search"
-            placeholder="Search recipes..."
-            value={searchQuery}
-            onChange={handleSearchInputChange}
-            fullWidth
-            margin="normal"
-          />
-          <Button type="submit" variant="contained" color="primary">
-            Search
-          </Button>
-        </form>
-      </section>
-
-      <section>
-        <Typography variant="h4" component="h2" gutterBottom>
-          Recently Added Recipes
-        </Typography>
-        <RecipeCarousel featuredRecipes={featuredRecipes} handleViewRecipe={handleViewRecipe} />
-      </section>
-
-      <section style={{ marginTop: '2rem' }}>
-        <Typography variant="h4" component="h2" gutterBottom>
-          {searchQuery ? 'Search Results' : 'All Recipes'}
-        </Typography>
-        <Grid container spacing={3}>
-          {filteredRecipes.map((recipe) => (
-            <Grid item xs={12} sm={6} md={4} key={recipe.id || recipe._id}>
-              <Card sx={{ height: 'auto' }}>
-                <CardMedia
-                  component="img"
-                  height="200"
-                  image={recipe.image}
-                  alt={recipe.title}
-                />
-                <CardContent sx={{ p: 2 }}>
-                  <Typography gutterBottom variant="h6" component="div" sx={{ mb: 1 }}>
-                    {recipe.title}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                    Prep: {recipe.preptime} min | Cook: {recipe.cooktime} min | Serves: {recipe.servings}
-                  </Typography>
-                  <Button 
-                    variant="contained" 
-                    color="primary" 
-                    onClick={() => handleViewRecipe(recipe)}
-                    fullWidth
-                  >
-                    VIEW RECIPE
-                  </Button>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-        {filteredRecipes.length === 0 && (
-          <Typography variant="body1" align="center" style={{ marginTop: '2rem' }}>
-            No recipes found matching your search.
+    <div style={{backgroundColor: '#FFF4EA'}}>
+      <Container component="main">
+        <section>
+          <Typography variant="h2" component="h1" gutterBottom>
+            Discover Delicious Recipes
           </Typography>
-        )}
-      </section>
-    </Container>
+          <Typography variant="h5" component="p" gutterBottom>
+            Find and share the best recipes from around the world
+          </Typography>
+          <form onSubmit={handleSearch}>
+            <TextField
+              type="search"
+              placeholder="Search recipes..."
+              value={searchQuery}
+              onChange={handleSearchInputChange}
+              fullWidth
+              margin="normal"
+            />
+            <Button type="submit" variant="contained" color="primary">
+              Search
+            </Button>
+          </form>
+        </section>
+
+        <section>
+          <Typography variant="h4" component="h2" gutterBottom>
+            Recently Added Recipes
+          </Typography>
+          <RecipeCarousel
+            featuredRecipes={featuredRecipes}
+            handleViewRecipe={handleViewRecipe}
+          />
+        </section>
+
+        <section style={{ marginTop: "2rem" }}>
+          <Typography variant="h4" component="h2" gutterBottom>
+            {searchQuery ? "Search Results" : "All Recipes"}
+          </Typography>
+          <Grid container spacing={3}>
+            {filteredRecipes.slice(0, displayCount).map((recipe) => (
+              <Grid item xs={12} sm={6} md={4} key={recipe.id || recipe._id}>
+                <Card sx={{ height: "auto" }}>
+                  <CardMedia
+                    component="img"
+                    height="200"
+                    image={recipe.image}
+                    alt={recipe.title}
+                  />
+                  <CardContent sx={{ p: 2 }}>
+                    <Typography
+                      gutterBottom
+                      variant="h6"
+                      component="div"
+                      sx={{ mb: 1 }}
+                    >
+                      {recipe.title}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ mb: 1 }}
+                    >
+                      Prep: {recipe.preptime} min | Cook: {recipe.cooktime} min
+                      | Serves: {recipe.servings}
+                    </Typography>
+                    <Button
+                      variant="contained"
+                      color="#000000"
+                      onClick={() => handleViewRecipe(recipe)}
+                      fullWidth
+                      sx={{
+                        mt: 2,
+                        backgroundColor: "#ffc067",
+                        "&:hover": {
+                          backgroundColor: "#FF6E1C",
+                        },
+                      }}
+                    >
+                      VIEW RECIPE
+                    </Button>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+          {displayCount < filteredRecipes.length && ( // Load More button
+            <Button
+              variant="contained"
+              color="#000000"
+              onClick={() => setDisplayCount((prevCount) => prevCount + 8)}
+              fullWidth
+              sx={{
+                mt: 2,
+                backgroundColor: "#ffc067",
+                "&:hover": {
+                  backgroundColor: "#FF6E1C",
+                },
+              }}
+            >
+              Load More
+            </Button>
+          )}
+          {filteredRecipes.length === 0 && (
+            <Typography
+              variant="body1"
+              align="center"
+              style={{ marginTop: "2rem" }}
+            >
+              No recipes found matching your search.
+            </Typography>
+          )}
+        </section>
+      </Container>
+    </div>
   );
 }

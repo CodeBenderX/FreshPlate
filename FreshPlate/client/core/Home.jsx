@@ -141,8 +141,6 @@ export default function HomePage() {
                 width: "35%",
                 objectFit: "cover",
                 objectPosition: "center",
-                borderTopLeftRadius: "22% 70%",
-                borderBottomLeftRadius: "22% 70%",
                 transform: "scaleX(1.2)",
               }}
               image={burger}

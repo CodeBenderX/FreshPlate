@@ -1253,6 +1253,7 @@ import {
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 import auth from "../lib/auth-helper";
 import defaultRecipeImage from "../src/assets/defaultFoodImage.png";
+import burger from "../src/assets/BurgerHero1.png";
 
 const list = async (credentials, signal) => {
   try {
@@ -1606,7 +1607,7 @@ export default function MemberHome() {
           <Grid container spacing={3}>
             {filteredRecipes.slice(0, displayCount).map((recipe) => (
               <Grid item xs={12} sm={6} md={3} key={recipe.id || recipe._id}>
-                <Card sx={{ height: 400 }}>
+                <Card sx={{ height: 350 }}>
                   <CardMedia
                     component="img"
                     height="200"
@@ -1678,6 +1679,53 @@ export default function MemberHome() {
               No recipes found matching your search.
             </Typography>
           )}
+        </section>
+        <section style={{paddingTop: 20, paddingBottom: 20}}>
+        <Card
+            sx={{
+              display: "flex",
+              maxWidth: "100%",
+              borderRadius: "16px",
+              overflow: "hidden",
+              backgroundColor: "#FFFFFF",
+            }}
+          >
+            <CardContent
+              sx={{
+                flex: "1 0 50%",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                padding: "32px",
+              }}
+            >
+              <Typography
+                variant="h4"
+                component="h1"
+                gutterBottom
+                sx={{
+                  fontWeight: "bold",
+                  color: "#1A1A1A",
+                }}
+              >
+                Ready to get started?
+              </Typography>
+              <Typography variant="body1" sx={{ color: "#4A4A4A" }}>
+              Whether you're looking to find new recipes, share your own, or connect with fellow food lovers, FreshPlate is here to make your culinary journey more exciting and accessible.
+              </Typography>
+            </CardContent>
+            <CardMedia
+              component="img"
+              sx={{
+                width: "35%",
+                objectFit: "cover",
+                objectPosition: "center",
+                transform: "scaleX(1.2)",
+              }}
+              image={burger}
+              alt="Delicious burger with fresh vegetables"
+            />
+          </Card>
         </section>
       </Container>
     </div>

@@ -3,19 +3,21 @@ import mongoose from 'mongoose';
 const recipeSchema = new mongoose.Schema({
   title: {
     type: String,
+    trim: true,
     required: 'Title is required'
   },
   ingredients: {
     type: String,
+    trim: true,
     required: 'At least one ingredient is required'
   },
   instructions: {
     type: String,
+    trim: true,
     required: 'Instructions are required'
   },
   creator: {
     type: String,
-    required: 'Creator is required'
   },
   preptime: {
     type: Number,
@@ -27,7 +29,8 @@ const recipeSchema = new mongoose.Schema({
     type: Number,
   },
   image: {
-    type: String
+    data: Buffer,
+    contentType: String,
   },
   created: {
     type: Date,

@@ -9,31 +9,8 @@ import userRoutes from './Routes/user.routes.js'
 import authRoutes from './Routes/auth.routes.js'
 import recipeRoutes from './Routes/recipe.routes.js'
 import contactRoutes from './Routes/contact.routes.js'
-import multer from 'multer';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
     const app = express()
-   /*... configure express ... */  
-
-   const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, path.join(__dirname, 'public', 'uploads'))
-    },
-    filename: function (req, file, cb) {
-        const recipeId = req.body.recipeId;
-        cb(null, `${recipeId}${path.extname(file.originalname)}`)
-    }
-  });
-  
-  const upload = multer({ storage: storage });
-  
-  // Serve static files from the 'public' directory
-  app.use(express.static(path.join(__dirname, 'public')));
-  app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));  
 
    app.use(express.json());
    app.use(express.urlencoded({ extended: true }));

@@ -21,6 +21,8 @@ import {
 } from "@mui/material";
 import { Add, Edit, Delete, ChevronRight, BrokenImage } from "@mui/icons-material";
 import auth from "../lib/auth-helper";
+import { remove } from './api-recipe';
+import defaultRecipeImage from "../src/assets/defaultFoodImage.png";
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -60,7 +62,11 @@ export default function RecipeList() {
     open: false,
     recipeId: null,
   });
-  const [debug, setDebug] = useState(true);
+  const [confirmationDialog, setConfirmationDialog] = useState({
+    open: false,
+    message: "",
+    title: "",
+  });
   const itemsPerPage = 5;
 
   const navigate = useNavigate();
@@ -95,7 +101,7 @@ export default function RecipeList() {
 
       const data = await response.json()
       const userRecipes = data.filter(recipe => recipe.creator === jwt.user.name) //this is to filter the recipes that will show what the signed user created
-      console.log('Fetched recipes:', data)
+      //console.log('Fetched recipes:', data)
       setRecipes(userRecipes)
       setTotalPages(Math.ceil(userRecipes.length / itemsPerPage))
       setError(null)
@@ -111,34 +117,39 @@ export default function RecipeList() {
     fetchRecipes()
   }, [fetchRecipes])
 
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const added = params.get('added');
+    if (added === 'true') {
+      setConfirmationDialog({
+        open: true,
+        title: "Recipe Added",
+        message: "Your recipe has been successfully added.",
+      });
+    }
+  }, [location]);
+
   const handleDeleteRecipe = useCallback(async () => {
     const recipeId = deleteDialog?.recipeId;
+    if (!recipeId) return;
 
     const jwt = auth.isAuthenticated()
     try {
-      const response = await fetch(`/api/recipes/${recipeId}`, {
-        method: 'DELETE',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + jwt.token
-        }
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || 'Failed to delete recipe')
-      }
-
-      setSnackbar({ open: true, message: 'Recipe deleted successfully', severity: 'success' })
-      await fetchRecipes() // Refresh the recipe list
+      await remove({ recipeId: recipeId }, { t: jwt.token });
+      setDeleteDialog({ open: false, recipeId: null });
+      setConfirmationDialog({
+        open: true,
+        title: "Recipe Deleted",
+        message: "Your recipe has been successfully deleted.",
+      });
+      await fetchRecipes();
     } catch (error) {
-      console.error("Error deleting recipe:", error)
-      setSnackbar({ open: true, message: "Could not delete recipe. Please try again later.", severity: 'error' })
+      console.error("Error deleting recipe:", error);
+      setSnackbar({ open: true, message: "Could not delete recipe. Please try again later.", severity: 'error' });
     } finally {
-      setDeleteDialog({ open: false, recipeId: null })
+      setDeleteDialog({ open: false, recipeId: null });
     }
-  }, [deleteDialog, auth, fetchRecipes, setSnackbar, setDeleteDialog])
+  }, [deleteDialog.recipeId, fetchRecipes]);
 
   const handlePageChange = (event, value) => {
     setCurrentPage(value)
@@ -159,36 +170,31 @@ export default function RecipeList() {
     setDeleteDialog({ open: false, recipeId: null })
   }
 
+  const handleCloseConfirmationDialog = () => {
+    setConfirmationDialog({ open: false, message: "", title: "" });
+  }
+
   const indexOfLastRecipe = currentPage * itemsPerPage
   const indexOfFirstRecipe = indexOfLastRecipe - itemsPerPage
   const currentRecipes = recipes.slice(indexOfFirstRecipe, indexOfLastRecipe)
 
   const getImageUrl = useCallback((recipe) => {
-    if (debug) console.log('Getting image URL for recipe:', recipe.title, recipe._id);
-    
-    let imageUrl;
-    if (recipe.image && recipe.image.startsWith('http')) {
-      imageUrl = recipe.image;
-    } else if (recipe.image) {
-      imageUrl = `http://localhost:3000/uploads/${recipe.image}`;
-    } else {
-      imageUrl = `http://localhost:3000/uploads/${recipe._id}.jpg`;
+    if (recipe.image && recipe.image.data && recipe.image.contentType) {
+      return `data:${recipe.image.contentType};base64,${recipe.image.data}`;
     }
-  
-    if (debug) console.log('Using image URL:', imageUrl);
-    return imageUrl;
-  }, [debug]);
+    return defaultRecipeImage;
+  }, []);
 
-  const handleImageError = (recipeId) => {
-    console.error(`Failed to load image for recipe: ${recipeId}`);
-    setRecipes(prevRecipes => 
-      prevRecipes.map(recipe => 
-        recipe._id === recipeId 
-          ? { ...recipe, imageError: true } 
-          : recipe
-      )
-    );
-  };
+  // const handleImageError = (recipeId) => {
+  //   console.error(`Failed to load image for recipe: ${recipeId}`);
+  //   setRecipes(prevRecipes => 
+  //     prevRecipes.map(recipe => 
+  //       recipe._id === recipeId 
+  //         ? { ...recipe, imageError: true } 
+  //         : recipe
+  //     )
+  //   );
+  // };
 
   if (loading) {
     return (
@@ -257,14 +263,7 @@ export default function RecipeList() {
               }}
             >
               <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                {recipe.imageError ? (
-                  <Avatar
-                    sx={{ width: 60, height: 60, bgcolor: 'grey.300' }}
-                    variant="rounded"
-                  >
-                    <BrokenImage />
-                  </Avatar>
-                ) : (
+                {recipe.image && recipe.image.data ? (
                   <Avatar
                     src={getImageUrl(recipe)}
                     alt={recipe.title}
@@ -274,6 +273,13 @@ export default function RecipeList() {
                       onError: () => handleImageError(recipe._id)
                     }}
                   />
+                ) : (
+                  <Avatar
+                    src={defaultRecipeImage}
+                    sx={{ width: 60, height: 60, bgcolor: 'grey.300' }}
+                    variant="rounded"
+                  >
+                  </Avatar>
                 )}
               <Typography variant="h6" component="h2">
                 {recipe.title}
@@ -361,6 +367,26 @@ export default function RecipeList() {
           <Button onClick={handleCloseDeleteDialog}>Cancel</Button>
           <Button onClick={handleDeleteRecipe} color="error" autoFocus>
             Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={confirmationDialog.open}
+        onClose={handleCloseConfirmationDialog}
+        aria-labelledby="confirmation-dialog-title"
+        aria-describedby="confirmation-dialog-description"
+      >
+        <DialogTitle id="confirmation-dialog-title">
+          {confirmationDialog.title}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="confirmation-dialog-description">
+            {confirmationDialog.message}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseConfirmationDialog} color="primary" autoFocus>
+            OK
           </Button>
         </DialogActions>
       </Dialog>

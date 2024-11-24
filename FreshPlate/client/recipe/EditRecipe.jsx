@@ -9,10 +9,14 @@ import {
   Snackbar,
   Alert,
   CircularProgress,
-  styled
+  styled,
+  IconButton
 } from '@mui/material';
-import { Upload } from 'lucide-react';
+import { Upload, Delete, Edit } from 'lucide-react';
 import auth from "../lib/auth-helper";
+import { read, update } from './api-recipe';
+import defaultRecipeImage from "../src/assets/defaultFoodImage.png";
+
 
 const StyledTextField = styled(TextField)({
   '& .MuiOutlinedInput-root': {
@@ -38,6 +42,8 @@ export default function EditRecipe() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [notification, setNotification] = useState({ open: false, message: '', severity: 'info' });
+  const [imagePreview, setImagePreview] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   const navigate = useNavigate();
   const location = useLocation();
@@ -57,21 +63,19 @@ export default function EditRecipe() {
           throw new Error("User not authenticated");
         }
 
-        const response = await fetch(`/api/recipes/${recipeId}`, {
-          method: 'GET',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + jwt.token
-          }
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch recipe');
+        const data = await read({ recipeId: recipeId }, { t: jwt.token });
+        if (!data) {
+          throw new Error("Failed to fetch recipe data");
         }
-
-        const data = await response.json();
         setRecipe(data);
+        if (data.image && data.image.data) {
+          const imageData = typeof data.image.data === 'string' 
+            ? data.image.data 
+            : btoa(String.fromCharCode.apply(null, new Uint8Array(data.image.data.data)));
+          setImagePreview(`data:${data.image.contentType};base64,${imageData}`);
+        } else {
+          setImagePreview(defaultRecipeImage)
+        }
       } catch (err) {
         console.error('Error fetching recipe:', err);
         setError("Failed to load recipe. Please try again later.");
@@ -91,33 +95,64 @@ export default function EditRecipe() {
     }));
   };
 
+  const handleImageChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setRecipe(prevRecipe => ({
+        ...prevRecipe,
+        image: file
+      }));
+      setImagePreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handleImageDelete = () => {
+    setRecipe(prevRecipe => ({
+      ...prevRecipe,
+      image: null
+    }));
+    setImagePreview(null);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
     try {
       const jwt = auth.isAuthenticated();
       if (!jwt) {
         throw new Error("User not authenticated");
       }
 
-      const response = await fetch(`/api/recipes/${recipeId}`, {
-        method: 'PUT',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + jwt.token
-        },
-        body: JSON.stringify(recipe)
+      const formData = new FormData();
+      Object.keys(recipe).forEach(key => {
+        if (key === 'image') {
+          if (recipe[key] instanceof File) {
+            formData.append('image', recipe[key]);
+          } else if (recipe[key] === null) {
+            formData.append('deleteImage', 'true');
+          }
+        } else {
+          formData.append(key, recipe[key]);
+        }
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to update recipe');
+      const updatedRecipe = await update(
+        { recipeId: recipeId },
+        { t: jwt.token },
+        formData
+      );
+
+      if (updatedRecipe.error) {
+        throw new Error(updatedRecipe.error);
       }
 
       setNotification({ open: true, message: 'Recipe updated successfully', severity: 'success' });
       setTimeout(() => navigate('/recipelist'), 2000);
     } catch (error) {
       console.error('Error updating recipe:', error);
-      setNotification({ open: true, message: 'Failed to update recipe', severity: 'error' });
+      setNotification({ open: true, message: error.message || 'Failed to update recipe', severity: 'error' });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -167,6 +202,72 @@ export default function EditRecipe() {
 
         <form onSubmit={handleSubmit}>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
+
+          <Box sx={{ mb: 2 }}>
+              <Typography sx={{ mb: 1, color: '#666' }}>Recipe Image</Typography>
+              <Box
+                sx={{
+                  width: '100%',
+                  height: 200,
+                  border: '1px dashed #ccc',
+                  borderRadius: 1,
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  position: 'relative',
+                  overflow: 'hidden'
+                }}
+              >
+                {imagePreview ? (
+                  <>
+                    <img
+                      src={imagePreview}
+                      alt="Recipe"
+                      style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                    />
+                    <Box
+                      sx={{
+                        position: 'absolute',
+                        top: 0,
+                        right: 0,
+                        p: 1,
+                        backgroundColor: 'rgba(255, 255, 255, 0.7)'
+                      }}
+                    >
+                      <IconButton
+                        component="label"
+                        sx={{ mr: 1 }}
+                      >
+                        <input
+                          type="file"
+                          hidden
+                          accept="image/*"
+                          onChange={handleImageChange}
+                        />
+                        <Edit size={20} />
+                      </IconButton>
+                      <IconButton onClick={handleImageDelete}>
+                        <Delete size={20} />
+                      </IconButton>
+                    </Box>
+                  </>
+                ) : (
+                  <Button
+                    component="label"
+                    startIcon={<Upload />}
+                  >
+                    Upload Image
+                    <input
+                      type="file"
+                      hidden
+                      accept="image/*"
+                      onChange={handleImageChange}
+                    />
+                  </Button>
+                )}
+              </Box>
+            </Box>
+
             <Box>
               <Typography sx={{ mb: 1, color: '#666' }}>Recipe Title*</Typography>
               <StyledTextField

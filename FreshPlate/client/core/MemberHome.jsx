@@ -1252,155 +1252,30 @@ import {
 } from "@mui/material";
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 import auth from "../lib/auth-helper";
+import { list } from '../recipe/api-recipe';
 import defaultRecipeImage from "../src/assets/defaultFoodImage.png";
 import burger from "../src/assets/BurgerHero1.png";
 
-const list = async (credentials, signal) => {
-  try {
-    let response = await fetch("/api/recipes/", {
-      method: "GET",
-      signal: signal,
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + credentials.t,
-      },
-    });
-    return await response.json();
-  } catch (err) {
-    console.log(err);
-  }
-};
+// const list = async (credentials, signal) => {
+//   try {
+//     let response = await fetch("/api/recipes/", {
+//       method: "GET",
+//       signal: signal,
+//       headers: {
+//         Accept: "application/json",
+//         "Content-Type": "application/json",
+//         Authorization: "Bearer " + credentials.t,
+//       },
+//     });
+//     return await response.json();
+//   } catch (err) {
+//     console.log(err);
+//   }
+// };
 
 
-export default function MemberHome() {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [featuredRecipes, setFeaturedRecipes] = useState([]);
-  const [allRecipes, setAllRecipes] = useState([]);
-  const [filteredRecipes, setFilteredRecipes] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [displayCount, setDisplayCount] = useState(8); // New state variable
-  const [debug, setDebug] = useState(true);
 
-  const navigate = useNavigate();
-
-  const getImageUrl = useCallback((recipe) => {
-    if (debug) console.log('Getting image URL for recipe:', recipe.title, recipe._id);
-    
-    let imageUrl;
-    if (recipe.image && recipe.image.startsWith('http')) {
-      imageUrl = recipe.image;
-    } else if (recipe.image) {
-      imageUrl = `http://localhost:3000/uploads/${recipe._id}.jpg`;
-    } else {
-      //imageUrl = `http://localhost:3000/uploads/${recipe._id}.jpg`;
-      imageUrl = defaultRecipeImage;
-    }
-    if (debug) console.log('Final image URL:', imageUrl);
-    return imageUrl;
-   
-  }, [debug]);
-
-  useEffect(() => {
-    const abortController = new AbortController();
-    const signal = abortController.signal;
-    const jwt = auth.isAuthenticated();
-
-    if (jwt) {
-      fetchRecipes(jwt, signal);
-    }
-
-    return function cleanup() {
-      abortController.abort();
-    };
-  }, []);
-
-  const fetchRecipes = async (jwt, signal) => {
-    try {
-      setIsLoading(true);
-      const data = await list({ t: jwt.token }, signal);
-      if (data && data.error) {
-        setError(data.error);
-      } else {
-        // Construct full image URL for user-uploaded images, or use default image
-        const dbRecipes = data.map((recipe) => ({
-          ...recipe,
-          image: recipe.image
-            ? `${process.env.REACT_APP_API_URL}/uploads/${recipe.image}`
-            : defaultRecipeImage,
-          isDefault: false,
-        }));
-        console.log("Fetched recipes:", dbRecipes);
-        const sortedRecipes = dbRecipes.sort(
-          (a, b) => new Date(b.created) - new Date(a.created)
-        );
-        setFeaturedRecipes(sortedRecipes.slice(0, 8));
-        setAllRecipes(sortedRecipes);
-        setFilteredRecipes(sortedRecipes);
-      }
-    } catch (error) {
-      console.error("Error fetching recipes:", error);
-      setError("Could not load recipes. Please try again later.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleSearch = (e) => {
-    e.preventDefault();
-    const filtered = allRecipes.filter(
-      (recipe) =>
-        recipe.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        recipe.description?.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-    setFilteredRecipes(filtered);
-    setDisplayCount(8); // Reset display count when searching
-  };
-
-  const handleSearchInputChange = (e) => {
-    const query = e.target.value;
-    setSearchQuery(query);
-    if (query === "") {
-      setFilteredRecipes(allRecipes);
-      setDisplayCount(8); // Reset display count when clearing search
-    } else {
-      handleSearch(e);
-    }
-  };
-
-  const handleViewRecipe = (recipe) => {
-    navigate(`/viewrecipe?id=${recipe._id}`);
-  };
-
-  if (isLoading) {
-    return (
-      <Container
-        component="main"
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-        }}
-      >
-        <CircularProgress />
-      </Container>
-    );
-  }
-
-  if (error) {
-    console.error("Error in MemberHome:", error);
-    return (
-      <Container component="main">
-        <Typography variant="h6" color="error" align="center">
-          {error}
-        </Typography>
-      </Container>
-    );
-  }
-
-const RecipeCarousel = ({ featuredRecipes, handleViewRecipe }) => {
+const RecipeCarousel = ({ featuredRecipes, handleViewRecipe, getImageUrl }) => {
   const [scrollPosition, setScrollPosition] = useState(0);
   const [canScrollRight, setCanScrollRight] = useState(true);
   const scrollContainerRef = useRef(null);
@@ -1552,6 +1427,134 @@ const RecipeCarousel = ({ featuredRecipes, handleViewRecipe }) => {
   );
 };
 
+export default function MemberHome() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [featuredRecipes, setFeaturedRecipes] = useState([]);
+  const [allRecipes, setAllRecipes] = useState([]);
+  const [filteredRecipes, setFilteredRecipes] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [displayCount, setDisplayCount] = useState(8); // New state variable
+  const [debug, setDebug] = useState(true);
+
+  const navigate = useNavigate();
+
+  const getImageUrl = useCallback((recipe) => {
+    if (recipe.image && recipe.image.data && recipe.image.contentType) {
+      let imageData;
+      if (typeof recipe.image.data === 'string') {
+        imageData = recipe.image.data;
+      } else if (typeof recipe.image.data === 'object' && recipe.image.data.type === 'Buffer') {
+        // Convert Buffer data to base64 string
+        imageData = btoa(String.fromCharCode.apply(null, recipe.image.data.data));
+      } else {
+        console.error('Unexpected image data format:', recipe.image.data);
+        return defaultRecipeImage;
+      }
+      return `data:${recipe.image.contentType};base64,${imageData}`;
+    }
+    return defaultRecipeImage;
+  }, []);
+
+  useEffect(() => {
+    const abortController = new AbortController();
+    const signal = abortController.signal;
+    const jwt = auth.isAuthenticated();
+
+    if (jwt) {
+      fetchRecipes(jwt, signal);
+    }
+
+    return function cleanup() {
+      abortController.abort();
+    };
+  }, []);
+
+  const fetchRecipes = async (jwt, signal) => {
+    try {
+      setIsLoading(true);
+      const data = await list({ t: jwt.token }, signal);
+      if (data && data.error) {
+        setError(data.error);
+      } else {
+        // Construct full image URL for user-uploaded images, or use default image
+        const dbRecipes = data.map((recipe) => ({
+          ...recipe,
+          image: getImageUrl(recipe),
+          //isDefault: false,
+        }));
+        const sortedRecipes = dbRecipes.sort(
+          (a, b) => new Date(b.created) - new Date(a.created)
+        );
+        setFeaturedRecipes(sortedRecipes.slice(0, 8));
+        setAllRecipes(sortedRecipes);
+        setFilteredRecipes(sortedRecipes);
+      }
+    } catch (error) {
+      console.error("Error fetching recipes:", error);
+      setError("Could not load recipes. Please try again later.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    const filtered = allRecipes.filter(
+      (recipe) =>
+        recipe.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        recipe.description?.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setFilteredRecipes(filtered);
+    setDisplayCount(8); // Reset display count when searching
+  };
+
+  const handleSearchInputChange = (e) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+    if (query === "") {
+      setFilteredRecipes(allRecipes);
+      setDisplayCount(8); // Reset display count when clearing search
+    } else {
+      handleSearch(e);
+    }
+  };
+
+  const handleViewRecipe = (recipe) => {
+    navigate(`/viewrecipe?id=${recipe._id}`);
+  };
+
+  if (isLoading) {
+    return (
+      <Container
+        component="main"
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
+        <CircularProgress />
+      </Container>
+    );
+  }
+
+  if (error) {
+    console.error("Error in MemberHome:", error);
+    return (
+      <Container component="main">
+        <Typography variant="h6" color="error" align="center">
+          {error}
+        </Typography>
+      </Container>
+    );
+  }
+
+
+
+ 
+
   if (!filteredRecipes || filteredRecipes.length === 0) {
     console.log("No recipes available");
     return (
@@ -1617,6 +1620,8 @@ const RecipeCarousel = ({ featuredRecipes, handleViewRecipe }) => {
           <RecipeCarousel
             featuredRecipes={featuredRecipes}
             handleViewRecipe={handleViewRecipe}
+            getImageUrl={getImageUrl}
+            
           />
         </section>
 

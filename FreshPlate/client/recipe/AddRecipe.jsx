@@ -19,6 +19,21 @@ import { create } from './api-recipe';
 import auth from '../lib/auth-helper.js';
 import imageCompression from 'browser-image-compression';
 
+const compressImage = async (file) => {
+  const options = {
+    maxSizeMB: 1,
+    maxWidthOrHeight: 1920,
+    useWebWorker: true
+  };
+  
+  try {
+    return await imageCompression(file, options);
+  } catch (error) {
+    console.error("Error compressing image:", error);
+    throw error;
+  }
+};
+
 const AddRecipePage = () => {
   const navigate = useNavigate();
   const [values, setValues] = useState({
@@ -28,7 +43,7 @@ const AddRecipePage = () => {
     preptime: "",
     cooktime: "",
     servings: "",
-    image: null,
+    image: "",
   });
   const [errors, setErrors] = useState({});
   const [error, setError] = useState("");
@@ -72,21 +87,6 @@ const AddRecipePage = () => {
     }
   };
 
-  const compressImage = async (imageFile) => {
-    const options = {
-      maxSizeMB: 5, // Compress to 100KB
-      maxWidthOrHeight: 1920,
-      useWebWorker: true
-    }
-    try {
-      const compressedFile = await imageCompression(imageFile, options);
-      return compressedFile;
-    } catch (error) {
-      console.log(error);
-      throw new Error("Image compression failed");
-    }
-  }
-
   const validateForm = () => {
     const newErrors = {};
     if (!values.title.trim()) newErrors.title = "Title is required";
@@ -119,32 +119,23 @@ const AddRecipePage = () => {
         throw new Error('You must be logged in to create a recipe.');
       }
 
-      let imageData = null;
-      if (values.image) {
-        const reader = new FileReader();
-        imageData = await new Promise((resolve, reject) => {
-          reader.onload = (event) => resolve(event.target.result);
-          reader.onerror = (error) => reject(error);
-          reader.readAsDataURL(values.image);
-        });
-      }
+      const formData = new FormData();
+      Object.keys(values).forEach(key => {
+        if (key === 'image' && values[key]) {
+          formData.append('image', values[key], values[key].name);
+        } else {
+          formData.append(key, values[key]);
+        }
+      });
 
-      const recipeData = {
-        title: values.title,
-        ingredients: values.ingredients,
-        instructions: values.instructions,
-        preptime: parseInt(values.preptime, 10),
-        cooktime: parseInt(values.cooktime, 10),
-        servings: parseInt(values.servings, 10),
-        image: imageData,
-      };
+      
 
-      const result = await create({ t: jwt.token }, recipeData);
+      const result = await create({ t: jwt.token }, formData);
       if (result.error) {
         throw new Error(result.error);
       }
 
-      navigate('/recipelist');
+      navigate('/recipelist?added=true');
     } catch (err) {
       setError(err.message || 'An error occurred. Please try again.');
     } finally {
@@ -282,7 +273,11 @@ const AddRecipePage = () => {
                 <input type="file" hidden onChange={handleChange("image")} />
               </Button>
             </Box>
-
+            {values.image && (
+            <Typography variant="body2" align="center" sx={{ mb: 2 }}>
+              Selected file: {values.image.name}
+            </Typography>
+            )}
             <Grid2 container spacing={2}>
               <Grid2 xs={6}>
                 <Button
@@ -295,11 +290,7 @@ const AddRecipePage = () => {
                   {loading ? <CircularProgress size={24} /> : "Add Recipe"}
                 </Button>
               </Grid2>
-              {values.image && (
-        <Typography variant="body2" align="center" sx={{ mb: 2 }}>
-          Selected file: {values.image.name} (Compressed size: {(values.image.size / 1024).toFixed(2)} KB)
-        </Typography>
-      )}
+              
               <Grid2 xs={6}>
                 <Button variant="outlined" color="secondary" fullWidth onClick={() => navigate("/recipelist")}>
                   Cancel

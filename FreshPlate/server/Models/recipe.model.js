@@ -42,7 +42,6 @@ const recipeSchema = new mongoose.Schema({
   }
 });
 
-// Update the 'updated' field before saving
 recipeSchema.pre('save', function(next) {
   this.updated = new Date();
   next();

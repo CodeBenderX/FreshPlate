@@ -48,7 +48,6 @@ const createRecipe = async (req, res) => {
         return recipeObj;
       });
   
-      console.log('Sending recipes:', recipes.map(r => ({ ...r, image: r.image ? 'present' : 'not present' })));
       res.json(recipes);
     } catch (err) {
       console.error('Error in getAllRecipes:', err);
@@ -76,21 +75,45 @@ const recipeByID = async (req, res, next, id) => {
 }
 
 const updateRecipe = async (req, res) => {
-  let form = new formidable.IncomingForm();
-  form.keepExtensions = true;
-form.parse(req, async (err, fields, files) => {
+  const form = formidable({
+    keepExtensions: true,
+    multiples: true,
+  });
+
+  form.parse(req, async (err, fields, files) => {
     if (err) {
       return res.status(400).json({
         error: "Image could not be uploaded"
       });
     }
+
     let recipe = req.recipe;
-    recipe = Object.assign(recipe, fields);
+
+    Object.keys(fields).forEach(key => {
+      let value = fields[key];
+   
+      if (Array.isArray(value) && value.length === 1) {
+        value = value[0];
+      }
+  
+      if (['preptime', 'cooktime', 'servings'].includes(key) && value === 'null') {
+        value = null;
+      }
+
+      if (['preptime', 'cooktime', 'servings'].includes(key) && value !== null) {
+        value = Number(value);
+      }
+      recipe[key] = value;
+    });
+
     recipe.updated = Date.now();
-    if (files.image) {
-      recipe.image.data = fs.readFileSync(files.image.path);
-      recipe.image.contentType = files.image.type;
+
+    if (files.image && files.image.length > 0) {
+      const file = files.image[0];
+      recipe.image.data = fs.readFileSync(file.filepath);
+      recipe.image.contentType = file.mimetype;
     }
+
     try {
       let result = await recipe.save();
       res.json(result);
@@ -101,6 +124,7 @@ form.parse(req, async (err, fields, files) => {
     }
   });
 };
+
 
 const deleteRecipe = async (req, res) => {
   try {

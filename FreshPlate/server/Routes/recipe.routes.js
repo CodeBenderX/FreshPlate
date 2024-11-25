@@ -13,11 +13,6 @@ router.route('/api/recipes/:recipeId')
   .put(authCtrl.requireSignin, authCtrl.hasAuthorization, recipeCtrl.updateRecipe)
   .delete(authCtrl.requireSignin, authCtrl.hasAuthorization, recipeCtrl.deleteRecipe)
 
-  // router
-  // .route("/api/recipes/image/:recipeId")
-  // .get(recipeCtrl.photo, recipeCtrl.defaultPhoto);
-  // router.route("/api/product/defaultphoto").get(recipeCtrl.defaultPhoto)
-
 router.param('recipeId', recipeCtrl.recipeByID)
 
 export default router

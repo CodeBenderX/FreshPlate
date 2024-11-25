@@ -58,10 +58,8 @@ const update = async (params, credentials, recipe) => {
       method: 'PUT',
       headers: {
         'Accept': 'application/json',
-        //'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + credentials.t
       },
-      // body: JSON.stringify(recipe)
       body: recipe
 
     })
@@ -90,21 +88,5 @@ const remove = async (params, credentials) => {
     throw err;
   }
 };
-
-
-// const uploadImage = async (credentials, formData) => {
-//   try {
-//     let response = await fetch('/api/upload', {
-//       method: 'POST',
-//       headers: {
-//         'Authorization': 'Bearer ' + credentials.t
-//       },
-//       body: formData
-//     });
-//     return await response.json();
-//   } catch(err) {
-//     console.log(err);
-//   }
-// };
 
 export { create, list, read, update, remove }

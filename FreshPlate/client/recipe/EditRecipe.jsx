@@ -142,6 +142,10 @@ export default function EditRecipe() {
         formData
       );
 
+      if (!updatedRecipe) {
+        throw new Error('Failed to update recipe');
+      }
+
       if (updatedRecipe.error) {
         throw new Error(updatedRecipe.error);
       }
@@ -246,9 +250,9 @@ export default function EditRecipe() {
                         />
                         <Edit size={20} />
                       </IconButton>
-                      <IconButton onClick={handleImageDelete}>
+                      {/* <IconButton onClick={handleImageDelete}>
                         <Delete size={20} />
-                      </IconButton>
+                      </IconButton> */}
                     </Box>
                   </>
                 ) : (
@@ -357,32 +361,7 @@ export default function EditRecipe() {
                 />
               </Box>
             </Box>
-
-            <Box>
-              <Typography sx={{ mb: 1, color: '#666' }}>Upload</Typography>
-              <Box
-                sx={{
-                  border: '1px dashed #ccc',
-                  borderRadius: 1,
-                  p: 3,
-                  textAlign: 'center',
-                  cursor: 'pointer',
-                  '&:hover': { bgcolor: '#f5f5f5' }
-                }}
-              >
-                <input
-                  accept="image/*"
-                  style={{ display: 'none' }}
-                  id="recipe-image-upload"
-                  type="file"
-                />
-                <label htmlFor="recipe-image-upload" style={{ cursor: 'pointer' }}>
-                  <Upload size={24} style={{ marginBottom: 8 }} />
-                  <Typography color="#666">Upload an image</Typography>
-                </label>
-              </Box>
-            </Box>
-
+            
             <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
               <Button
                 fullWidth

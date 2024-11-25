@@ -10,9 +10,8 @@ import authRoutes from './Routes/auth.routes.js'
 import recipeRoutes from './Routes/recipe.routes.js'
 import contactRoutes from './Routes/contact.routes.js'
 
-
     const app = express()
-   /*... configure express ... */  
+
    app.use(express.json());
    app.use(express.urlencoded({ extended: true }));
    app.use('/', userRoutes)

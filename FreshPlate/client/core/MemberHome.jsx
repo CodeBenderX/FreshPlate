@@ -1236,7 +1236,7 @@
 //   );
 // }
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Button,
@@ -1252,27 +1252,11 @@ import {
 } from "@mui/material";
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 import auth from "../lib/auth-helper";
+import { list } from '../recipe/api-recipe';
 import defaultRecipeImage from "../src/assets/defaultFoodImage.png";
 import burger from "../src/assets/BurgerHero1.png";
 
-const list = async (credentials, signal) => {
-  try {
-    let response = await fetch("/api/recipes/", {
-      method: "GET",
-      signal: signal,
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + credentials.t,
-      },
-    });
-    return await response.json();
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-const RecipeCarousel = ({ featuredRecipes, handleViewRecipe }) => {
+const RecipeCarousel = ({ featuredRecipes, handleViewRecipe, getImageUrl }) => {
   const [scrollPosition, setScrollPosition] = useState(0);
   const [canScrollRight, setCanScrollRight] = useState(true);
   const scrollContainerRef = useRef(null);
@@ -1355,9 +1339,16 @@ const RecipeCarousel = ({ featuredRecipes, handleViewRecipe }) => {
               <Card sx={{ height: "auto", backgroundColor: "#f2f0ef" }}>
                 <CardMedia
                   component="img"
-                  height="200"
+                  height="250"
                   image={recipe.image}
                   alt={recipe.title}
+                  onError={() => handleImageError(recipe._id)}
+                  sx={{
+                    objectFit: 'cover',
+                    objectPosition: 'center',
+                    width: '100%',
+                    flexGrow: 1
+                  }}
                 />
                 <CardContent sx={{ p: 2 }}>
                   <Typography
@@ -1431,8 +1422,26 @@ export default function MemberHome() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [displayCount, setDisplayCount] = useState(8); // New state variable
+  const [debug, setDebug] = useState(true);
 
   const navigate = useNavigate();
+
+  const getImageUrl = useCallback((recipe) => {
+    if (recipe.image && recipe.image.data && recipe.image.contentType) {
+      let imageData;
+      if (typeof recipe.image.data === 'string') {
+        imageData = recipe.image.data;
+      } else if (typeof recipe.image.data === 'object' && recipe.image.data.type === 'Buffer') {
+        // Convert Buffer data to base64 string
+        imageData = btoa(String.fromCharCode.apply(null, recipe.image.data.data));
+      } else {
+        console.error('Unexpected image data format:', recipe.image.data);
+        return defaultRecipeImage;
+      }
+      return `data:${recipe.image.contentType};base64,${imageData}`;
+    }
+    return defaultRecipeImage;
+  }, []);
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -1457,13 +1466,10 @@ export default function MemberHome() {
       } else {
         // Construct full image URL for user-uploaded images, or use default image
         const dbRecipes = data.map((recipe) => ({
-          ...recipe,
-          image: recipe.image
-            ? `${process.env.REACT_APP_API_URL}/uploads/${recipe.image}`
-            : defaultRecipeImage,
-          isDefault: false,
+          ...recipe,   
+          image: getImageUrl(recipe),
+          //isDefault: false,
         }));
-        console.log("Fetched recipes:", dbRecipes);
         const sortedRecipes = dbRecipes.sort(
           (a, b) => new Date(b.created) - new Date(a.created)
         );
@@ -1532,6 +1538,10 @@ export default function MemberHome() {
     );
   }
 
+
+
+ 
+
   if (!filteredRecipes || filteredRecipes.length === 0) {
     console.log("No recipes available");
     return (
@@ -1597,6 +1607,8 @@ export default function MemberHome() {
           <RecipeCarousel
             featuredRecipes={featuredRecipes}
             handleViewRecipe={handleViewRecipe}
+            getImageUrl={getImageUrl}
+            
           />
         </section>
 

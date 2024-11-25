@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
   ThemeProvider,
@@ -20,6 +20,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import auth from "../lib/auth-helper";
+import defaultRecipeImage from "../src/assets/defaultFoodImage.png";
 
 const theme = createTheme({
   typography: {
@@ -45,6 +46,23 @@ export default function ViewRecipe() {
   const navigate = useNavigate();
   const location = useLocation();
   const recipeId = new URLSearchParams(location.search).get('id');
+
+  const getImageUrl = useCallback((recipe) => {
+    if (recipe.image && recipe.image.data && recipe.image.contentType) {
+      let imageData;
+      if (typeof recipe.image.data === 'string') {
+        imageData = recipe.image.data;
+      } else if (typeof recipe.image.data === 'object' && recipe.image.data.type === 'Buffer') {
+        // Convert Buffer data to base64 string
+        imageData = btoa(String.fromCharCode.apply(null, recipe.image.data.data));
+      } else {
+        console.error('Unexpected image data format:', recipe.image.data);
+        return null;
+      }
+      return `data:${recipe.image.contentType};base64,${imageData}`;
+    }
+    return defaultRecipeImage;
+  }, []);
 
   useEffect(() => {
     const fetchRecipe = async () => {
@@ -122,6 +140,23 @@ export default function ViewRecipe() {
     setDeleteDialog(false);
   };
 
+  // const getImageUrl = (recipe) => {
+  //   if (recipe.image && recipe.image.data && recipe.image.contentType) {
+  //     return `data:${recipe.image.contentType};base64,${recipe.image.data}`;
+  //   }
+  //   return null;
+  // };
+
+//   const getImageUrl = useCallback((recipe) => {
+//     if (recipe.image && recipe.image.data && recipe.image.contentType) {
+//       const imageData = typeof recipe.image.data === 'string' 
+//       ? recipe.image.data 
+//       : Buffer.from(recipe.image.data).toString('base64');
+//     return `data:${recipe.image.contentType};base64,${imageData}`;
+//   }
+//   return null;
+// }, []);
+
   if (loading) {
     return (
       <ThemeProvider theme={theme}>
@@ -141,6 +176,8 @@ export default function ViewRecipe() {
   }
 
   if (!recipe) return null;
+
+  const imageUrl = getImageUrl(recipe);
 
   return (
     <Box sx={{ maxWidth: '100%', bgcolor: '#fff1e7', minHeight: '100vh', py: 4 }}>
@@ -167,6 +204,51 @@ export default function ViewRecipe() {
           p: 3
         }}
       >
+        
+        <Box
+          sx={{
+            width: '100%',
+            position: 'relative',
+            mb: 3,
+            aspectRatio: '16 / 9',
+            maxHeight: '400px',
+            overflow: 'hidden',
+          }}
+        >
+          {imageUrl ? (
+            <Box
+              component="img"
+              src={imageUrl}
+              alt={recipe.title}
+              sx={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'contain',
+                backgroundColor: '#f0f0f0',
+              }}
+              onError={(e) => {
+                console.error('Error loading image:', e);
+                e.target.onerror = null;
+                e.target.src = '/placeholder.svg?height=400&width=800';
+              }}
+            />
+          ) : (
+            <Box
+              sx={{
+                width: '100%',
+                height: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                bgcolor: '#f0f0f0',
+                color: '#999',
+              }}
+            >
+              No Image Available
+            </Box>
+          )}
+        </Box>
+
         <IconButton
           onClick={handleClose}
           sx={{

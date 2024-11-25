@@ -1256,25 +1256,6 @@ import { list } from '../recipe/api-recipe';
 import defaultRecipeImage from "../src/assets/defaultFoodImage.png";
 import burger from "../src/assets/BurgerHero1.png";
 
-// const list = async (credentials, signal) => {
-//   try {
-//     let response = await fetch("/api/recipes/", {
-//       method: "GET",
-//       signal: signal,
-//       headers: {
-//         Accept: "application/json",
-//         "Content-Type": "application/json",
-//         Authorization: "Bearer " + credentials.t,
-//       },
-//     });
-//     return await response.json();
-//   } catch (err) {
-//     console.log(err);
-//   }
-// };
-
-
-
 const RecipeCarousel = ({ featuredRecipes, handleViewRecipe, getImageUrl }) => {
   const [scrollPosition, setScrollPosition] = useState(0);
   const [canScrollRight, setCanScrollRight] = useState(true);
@@ -1358,10 +1339,16 @@ const RecipeCarousel = ({ featuredRecipes, handleViewRecipe, getImageUrl }) => {
               <Card sx={{ height: "auto", backgroundColor: "#f2f0ef" }}>
                 <CardMedia
                   component="img"
-                  height="200"
-                  image={getImageUrl(recipe)}
+                  height="250"
+                  image={recipe.image}
                   alt={recipe.title}
                   onError={() => handleImageError(recipe._id)}
+                  sx={{
+                    objectFit: 'cover',
+                    objectPosition: 'center',
+                    width: '100%',
+                    flexGrow: 1
+                  }}
                 />
                 <CardContent sx={{ p: 2 }}>
                   <Typography
@@ -1479,7 +1466,7 @@ export default function MemberHome() {
       } else {
         // Construct full image URL for user-uploaded images, or use default image
         const dbRecipes = data.map((recipe) => ({
-          ...recipe,
+          ...recipe,   
           image: getImageUrl(recipe),
           //isDefault: false,
         }));

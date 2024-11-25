@@ -50,6 +50,7 @@ const AddRecipePage = () => {
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [imagePreview, setImagePreview] = useState(null);
 
   useEffect(() => {
     checkAuthentication();
@@ -73,6 +74,7 @@ const AddRecipePage = () => {
         try {
           const compressedFile = await compressImage(file);
           setValues({ ...values, [name]: compressedFile });
+          setImagePreview(URL.createObjectURL(compressedFile));
         } catch (err) {
           console.error("Error compressing image:", err);
           setError("Error processing image. Please try a different file.");
@@ -266,11 +268,34 @@ const AddRecipePage = () => {
         />
       </Box>
     </Box>
-
             <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", mb: 3 }}>
-              <Button variant="outlined" component="label" startIcon={<CloudUpload />} fullWidth>
-                Upload an image
-                <input type="file" hidden onChange={handleChange("image")} />
+            {imagePreview && (
+                <Box sx={{ 
+                  mb: 2, 
+                  width: '100%', 
+                  height: '200px', 
+                  display: 'flex', 
+                  justifyContent: 'center', 
+                  alignItems: 'center', 
+                  overflow: 'hidden',
+                  border: '1px solid #ccc',
+                  borderRadius: '4px'
+                }}>
+                  <img src={imagePreview} alt="Recipe preview" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+                </Box>
+              )}
+               <Button 
+                variant="outlined" 
+                component="label" 
+                //startIcon={<CloudUpload />} 
+                //fullWidth
+                //sx={{ mt: imagePreview ? 40 : 0 }}
+                sx={{ 
+                  width: imagePreview ? '30%' : '100%',
+                  }}
+              >
+                {imagePreview ? "Change" : "Upload an image"}
+                <input type="file" hidden onChange={handleChange("image")} accept="image/*" />
               </Button>
             </Box>
             {values.image && (
@@ -278,8 +303,8 @@ const AddRecipePage = () => {
               Selected file: {values.image.name}
             </Typography>
             )}
-            <Grid2 container spacing={2}>
-              <Grid2 xs={6}>
+            <Grid2 container spacing={2} justifyContent="center">
+              <Grid2 item xs={12} sm={6} md={5}>
                 <Button
                   type="submit"
                   variant="contained"
@@ -290,9 +315,13 @@ const AddRecipePage = () => {
                   {loading ? <CircularProgress size={24} /> : "Add Recipe"}
                 </Button>
               </Grid2>
-              
-              <Grid2 xs={6}>
-                <Button variant="outlined" color="secondary" fullWidth onClick={() => navigate("/recipelist")}>
+              <Grid2 item xs={12} sm={6} md={5}>
+                <Button 
+                  variant="outlined" 
+                  color="secondary" 
+                  fullWidth 
+                  onClick={() => navigate("/recipelist")}
+                >
                   Cancel
                 </Button>
               </Grid2>

@@ -1,6 +1,6 @@
 import Recipe from '../Models/recipe.model.js'
 import errorHandler from '../Controllers/error.controller.js'
-import formidable from "formidable";
+import formidable from 'formidable';
 import fs from 'fs'
 
 const createRecipe = async (req, res) => {

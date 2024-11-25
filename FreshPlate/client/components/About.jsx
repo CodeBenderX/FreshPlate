@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React from 'react';
 
 const About = () => (
@@ -15,7 +14,6 @@ const About = () => (
 );
 
 export default About;
-=======
 import React from "react";
 import { Typography, Grid, Box, colors, emphasize } from "@mui/material";
 import CardMedia from "@mui/material/CardMedia";
@@ -249,4 +247,3 @@ export default function AboutPage() {
     </div>
   );
 }
->>>>>>> backupwDB

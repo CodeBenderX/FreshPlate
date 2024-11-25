@@ -20,7 +20,7 @@ export default function Footer() {
           align="center"
           gutterBottom
         >
-          &copy; {new Date().getFullYear()} Tasty Recipes. All rights reserved.
+          &copy; {new Date().getFullYear()} FreshPlate. All rights reserved.
         </Typography>
         <Box>
           <Typography

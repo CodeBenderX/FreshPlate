@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import React, { useState, useEffect, useCallback } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Box,
   Typography,
@@ -41,110 +41,120 @@ export default function RecipeList() {
   const navigate = useNavigate();
 
   const handleEditRecipe = (recipeId) => {
-    navigate(`/editrecipe?id=${recipeId}`)
-  }
+    navigate(`/editrecipe?id=${recipeId}`);
+  };
 
   const handleViewRecipe = (recipeId) => {
-    navigate(`/viewrecipe?id=${recipeId}`)
-  }
+    navigate(`/viewrecipe?id=${recipeId}`);
+  };
 
   const fetchRecipes = useCallback(async () => {
     try {
-      setLoading(true)
-      const jwt = auth.isAuthenticated()
+      setLoading(true);
+      const jwt = auth.isAuthenticated();
       if (!jwt) {
-        throw new Error('User not authenticated')
+        throw new Error("User not authenticated");
       }
-      const response = await fetch('/api/recipes', {
-        method: 'GET',
+      const response = await fetch("/api/recipes", {
+        method: "GET",
         headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + jwt.token
-        }
-      })
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + jwt.token,
+        },
+      });
 
       if (!response.ok) {
-        throw new Error('Failed to fetch recipes')
+        throw new Error("Failed to fetch recipes");
       }
 
-      const data = await response.json()
-      const userRecipes = data.filter(recipe => recipe.creator === jwt.user.name) //this is to filter the recipes that will show what the signed user created
-      console.log('Fetched recipes:', data)
-      setRecipes(userRecipes)
-      setTotalPages(Math.ceil(userRecipes.length / itemsPerPage))
-      setError(null)
+      const data = await response.json();
+      const userRecipes = data.filter(
+        (recipe) => recipe.creator === jwt.user.name
+      ); //this is to filter the recipes that will show what the signed user created
+      console.log("Fetched recipes:", data);
+      setRecipes(userRecipes);
+      setTotalPages(Math.ceil(userRecipes.length / itemsPerPage));
+      setError(null);
     } catch (err) {
-      setError('Failed to load recipes. Please try again later.')
-      console.error('Error fetching recipes:', err)
+      setError("Failed to load recipes. Please try again later.");
+      console.error("Error fetching recipes:", err);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }, [itemsPerPage])
+  }, [itemsPerPage]);
 
   useEffect(() => {
-    fetchRecipes()
-  }, [fetchRecipes])
+    fetchRecipes();
+  }, [fetchRecipes]);
 
   const handleDeleteRecipe = useCallback(async () => {
     const recipeId = deleteDialog?.recipeId;
 
-    const jwt = auth.isAuthenticated()
+    const jwt = auth.isAuthenticated();
     try {
       const response = await fetch(`/api/recipes/${recipeId}`, {
-        method: 'DELETE',
+        method: "DELETE",
         headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + jwt.token
-        }
-      })
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + jwt.token,
+        },
+      });
 
       if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || 'Failed to delete recipe')
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to delete recipe");
       }
 
-      setSnackbar({ open: true, message: 'Recipe deleted successfully', severity: 'success' })
-      await fetchRecipes() // Refresh the recipe list
+      setSnackbar({
+        open: true,
+        message: "Recipe deleted successfully",
+        severity: "success",
+      });
+      await fetchRecipes(); // Refresh the recipe list
     } catch (error) {
-      console.error("Error deleting recipe:", error)
-      setSnackbar({ open: true, message: "Could not delete recipe. Please try again later.", severity: 'error' })
+      console.error("Error deleting recipe:", error);
+      setSnackbar({
+        open: true,
+        message: "Could not delete recipe. Please try again later.",
+        severity: "error",
+      });
     } finally {
-      setDeleteDialog({ open: false, recipeId: null })
+      setDeleteDialog({ open: false, recipeId: null });
     }
-  }, [deleteDialog, auth, fetchRecipes, setSnackbar, setDeleteDialog])
+  }, [deleteDialog, auth, fetchRecipes, setSnackbar, setDeleteDialog]);
 
   const handlePageChange = (event, value) => {
-    setCurrentPage(value)
-  }
+    setCurrentPage(value);
+  };
 
   const handleCloseSnackbar = (event, reason) => {
-    if (reason === 'clickaway') {
-      return
+    if (reason === "clickaway") {
+      return;
     }
-    setSnackbar({ ...snackbar, open: false })
-  }
+    setSnackbar({ ...snackbar, open: false });
+  };
 
   const handleOpenDeleteDialog = (recipe) => {
     setDeleteDialog({ open: true, recipeId: recipe._id });
-  }
+  };
 
   const handleCloseDeleteDialog = () => {
-    setDeleteDialog({ open: false, recipeId: null })
-  }
+    setDeleteDialog({ open: false, recipeId: null });
+  };
 
-  const indexOfLastRecipe = currentPage * itemsPerPage
-  const indexOfFirstRecipe = indexOfLastRecipe - itemsPerPage
-  const currentRecipes = recipes.slice(indexOfFirstRecipe, indexOfLastRecipe)
+  const indexOfLastRecipe = currentPage * itemsPerPage;
+  const indexOfFirstRecipe = indexOfLastRecipe - itemsPerPage;
+  const currentRecipes = recipes.slice(indexOfFirstRecipe, indexOfLastRecipe);
 
   if (loading) {
     return (
-      <Container maxWidth="md" sx={{ py: 4, textAlign: 'center' }}>
+      <Container maxWidth="md" sx={{ py: 4, textAlign: "center" }}>
         <CircularProgress />
         <Typography sx={{ mt: 2 }}>Loading recipes...</Typography>
       </Container>
-    )
+    );
   }
 
   if (error) {
@@ -152,147 +162,156 @@ export default function RecipeList() {
       <Container maxWidth="md" sx={{ py: 4 }}>
         <Alert severity="error">{error}</Alert>
       </Container>
-    )
+    );
   }
 
   return (
-    <Container maxWidth="md" sx={{ py: 4 }}>
-      <Typography
-        variant="h2"
-        component="h1"
-        sx={{
-          textAlign: 'center',
-          color: '#FF5722',
-          mb: 4,
-          fontWeight: 'bold',
-        }}
-      >
-        Recipes
-      </Typography>
-
-      <Link to="/addrecipe" style={{ textDecoration: 'none' }}>
-        <Button
-          variant="contained"
-          startIcon={<Add />}
+    <div style={{ height: "100vh", backgroundColor: "#FFF4EA" }}>
+      <Container maxWidth="md" sx={{ py: 4 }}>
+        <Typography
+          variant="h2"
+          component="h1"
           sx={{
-            mb: 3,
-            backgroundColor: '#333',
-            '&:hover': {
-              backgroundColor: '#444',
-            },
+            textAlign: "center",
+            color: "#FF5722",
+            mb: 4,
+            fontWeight: "bold",
           }}
         >
-          Add New Recipe
-        </Button> 
-      </Link>  
-
-      {recipes.length === 0 ? (
-        <Typography variant="body1" sx={{ textAlign: 'center', mt: 4 }}>
-          You haven't created any recipes yet. Click 'Add New Recipe' to get started!
+          Recipes
         </Typography>
-      ) : (
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-          {currentRecipes.map((recipe) => (
-            <Card
-              key={recipe._id}
+
+        <Card sx={{height: "auto", padding: 2, borderRadius:"8px"}}>
+          <Link to="/addrecipe" style={{ textDecoration: "none" }}>
+            <Button
+              variant="contained"
+              startIcon={<Add />}
               sx={{
-                p: 2,
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                border: "1px solid #e0e0e0",
-                boxShadow: "none",
+                mb: 3,
+                backgroundColor: "#333",
+                "&:hover": {
+                  backgroundColor: "#FFFFFF",
+                  border: "1px solid #000000"
+                },
               }}
             >
-              <Typography variant="h6" component="h2">
-                {recipe.title}
-              </Typography>
-              <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-                <Button
-                  variant="outlined"
-                  endIcon={<ChevronRight />}
-                  sx={{ borderRadius: "4px" }}
-                  onClick={() => handleViewRecipe(recipe._id)}
+              Add New Recipe
+            </Button>
+          </Link>
+
+          {recipes.length === 0 ? (
+            <Typography variant="body1" sx={{ textAlign: "center", mt: 4 }}>
+              You haven't created any recipes yet. Click 'Add New Recipe' to get
+              started!
+            </Typography>
+          ) : (
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+              {currentRecipes.map((recipe) => (
+                <Card
+                  key={recipe._id}
+                  sx={{
+                    p: 2,
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center", borderRadius: "8px",
+                    border: "1px solid #e0e0e0",
+                    boxShadow: "none",
+                  }}
                 >
-                  View Recipe
-                </Button>
-                {" "}
-                <IconButton
-                  size="small"
-                  sx={{ border: "1px solid #e0e0e0", borderRadius: "4px" }}
-                  onClick={() => handleEditRecipe(recipe._id)}
-                >
-                  <Edit fontSize="small" />
-                </IconButton>
-                
-                <IconButton
-                  size="small"
-                  sx={{ border: "1px solid #e0e0e0", borderRadius: "4px" }}
-                  onClick={() => handleOpenDeleteDialog(recipe)}
-                >
-                  <Delete fontSize="small" />
-                </IconButton>
-              </Box>
-            </Card>
-          ))}
-        </Box>
-      )}
-      {recipes.length > itemsPerPage && (
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-          <Pagination
-            count={totalPages}
-            page={currentPage}
-            onChange={handlePageChange}
-            shape="rounded"
-            renderItem={(item) => (
-              <PaginationItem
-                {...item}
-                sx={{
-                  '&.Mui-selected': {
-                    backgroundColor: '#333',
-                    color: 'white',
-                    '&:hover': {
-                      backgroundColor: '#444',
-                    },
-                  },
-                }}
+                  <Typography variant="h6" component="h2">
+                    {recipe.title}
+                  </Typography>
+                  <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+                    <Button
+                      variant="outlined"
+                      endIcon={<ChevronRight />}
+                      sx={{ border:"#5px solid #000000",borderRadius: "8px", color: "#000000",  "&:hover": {backgroundColor:"#000000", color:"#FFFFFF"} }}
+                      onClick={() => handleViewRecipe(recipe._id)}
+                    >
+                      View Recipe
+                    </Button>{" "}
+                    <IconButton
+                      size="small"
+                      sx={{ border: "1px solid #e0e0e0", borderRadius: "4px" }}
+                      onClick={() => handleEditRecipe(recipe._id)}
+                    >
+                      <Edit fontSize="small" />
+                    </IconButton>
+                    <IconButton
+                      size="small"
+                      sx={{ border: "1px solid #e0e0e0", borderRadius: "4px" }}
+                      onClick={() => handleOpenDeleteDialog(recipe)}
+                    >
+                      <Delete fontSize="small" />
+                    </IconButton>
+                  </Box>
+                </Card>
+              ))}
+            </Box>
+          )}
+          {recipes.length > itemsPerPage && (
+            <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+              <Pagination
+                count={totalPages}
+                page={currentPage}
+                onChange={handlePageChange}
+                shape="rounded"
+                renderItem={(item) => (
+                  <PaginationItem
+                    {...item}
+                    sx={{
+                      "&.Mui-selected": {
+                        backgroundColor: "#333",
+                        color: "white",
+                        "&:hover": {
+                          backgroundColor: "#444",
+                        },
+                      },
+                    }}
+                  />
+                )}
               />
-            )}
-          />
-        </Box>
-      )}
+            </Box>
+          )}
 
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
-      >
-        <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} sx={{ width: '100%' }}>
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
+          <Snackbar
+            open={snackbar.open}
+            autoHideDuration={6000}
+            onClose={handleCloseSnackbar}
+          >
+            <Alert
+              onClose={handleCloseSnackbar}
+              severity={snackbar.severity}
+              sx={{ width: "100%" }}
+            >
+              {snackbar.message}
+            </Alert>
+          </Snackbar>
 
-      <Dialog
-        open={deleteDialog.open}
-        onClose={handleCloseDeleteDialog}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-          {"Confirm Delete"}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Are you sure you want to delete this recipe? This action cannot be undone.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDeleteDialog}>Cancel</Button>
-          <Button onClick={handleDeleteRecipe} color="error" autoFocus>
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </Container>
-  )
+          <Dialog
+            open={deleteDialog.open}
+            onClose={handleCloseDeleteDialog}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">
+              {"Confirm Delete"}
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                Are you sure you want to delete this recipe? This action cannot
+                be undone.
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleCloseDeleteDialog}>Cancel</Button>
+              <Button onClick={handleDeleteRecipe} color="error" autoFocus>
+                Delete
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </Card>
+      </Container>
+    </div>
+  );
 }

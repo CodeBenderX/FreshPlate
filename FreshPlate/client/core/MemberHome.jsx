@@ -1620,14 +1620,14 @@ export default function MemberHome() {
           <Grid container spacing={3}>
             {filteredRecipes.slice(0, displayCount).map((recipe) => (
               <Grid item xs={12} sm={6} md={3} key={recipe.id || recipe._id}>
-                <Card sx={{ height: 350 }}>
+                <Card sx={{ height: 350, display: 'flex', flexDirection: 'column'}}>
                   <CardMedia
                     component="img"
                     height="200"
                     image={recipe.image}
                     alt={recipe.title}
                   />
-                  <CardContent sx={{ p: 2, background: "#FFFFFF" }}>
+                  <CardContent sx={{ p: 2, background: "#f2f0ef", display: 'flex', flexGrow: 1, flexDirection: 'column'  }}>
                     <Typography
                       gutterBottom
                       variant="h6"
@@ -1639,7 +1639,17 @@ export default function MemberHome() {
                     <Typography
                       variant="body2"
                       color="text.secondary"
-                      sx={{ mb: 1 }}
+                      sx={{ 
+                        mb: 1, 
+                        flexGrow: 1, 
+                        fontSize: 'clamp(0.65rem, 2vw, 0.85rem)',
+                        lineHeight: 1.2,
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        display: '-webkit-box',
+                        WebkitLineClamp: 3,
+                        WebkitBoxOrient: 'vertical',
+                      }}
                     >
                       Prep: {recipe.preptime} min | Cook: {recipe.cooktime} min
                       | Serves: {recipe.servings}
@@ -1650,7 +1660,7 @@ export default function MemberHome() {
                       onClick={() => handleViewRecipe(recipe)}
                       fullWidth
                       sx={{
-                        mt: 2,
+                        mt: 'auto',
                         border: "1px solid #000000",
                         backgroundColor: "#000000",
                         "&:hover": {

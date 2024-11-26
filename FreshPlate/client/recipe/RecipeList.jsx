@@ -143,13 +143,18 @@ export default function RecipeList() {
         message: "Your recipe has been successfully deleted.",
       });
       await fetchRecipes();
+      const remainingRecipes = recipes.filter(recipe => recipe._id !== recipeId);
+      const newTotalPages = Math.ceil(remainingRecipes.length / itemsPerPage);
+      if (currentPage > newTotalPages) {
+        setCurrentPage(newTotalPages || 1);
+      }
     } catch (error) {
       console.error("Error deleting recipe:", error);
       setSnackbar({ open: true, message: "Could not delete recipe. Please try again later.", severity: 'error' });
     } finally {
       setDeleteDialog({ open: false, recipeId: null });
     }
-  }, [deleteDialog.recipeId, fetchRecipes]);
+  }, [deleteDialog.recipeId, fetchRecipes, recipes, currentPage, itemsPerPage]);
 
   const handlePageChange = (event, value) => {
     setCurrentPage(value)
@@ -174,16 +179,16 @@ export default function RecipeList() {
     setConfirmationDialog({ open: false, message: "", title: "" });
   }
 
-  const indexOfLastRecipe = currentPage * itemsPerPage
-  const indexOfFirstRecipe = indexOfLastRecipe - itemsPerPage
-  const currentRecipes = recipes.slice(indexOfFirstRecipe, indexOfLastRecipe)
-
   const getImageUrl = useCallback((recipe) => {
     if (recipe.image && recipe.image.data && recipe.image.contentType) {
       return `data:${recipe.image.contentType};base64,${recipe.image.data}`;
     }
     return defaultRecipeImage;
   }, []);
+
+  const indexOfLastRecipe = currentPage * itemsPerPage
+  const indexOfFirstRecipe = indexOfLastRecipe - itemsPerPage
+  const currentRecipes = recipes.slice(indexOfFirstRecipe, indexOfLastRecipe)
 
   if (loading) {
     return (

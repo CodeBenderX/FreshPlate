@@ -1237,7 +1237,7 @@
 // }
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   Button,
   Typography,
@@ -1423,9 +1423,9 @@ export default function MemberHome() {
   const [error, setError] = useState("");
   const [displayCount, setDisplayCount] = useState(8); // New state variable
   const [debug, setDebug] = useState(true);
-  const [showLatestRecipes, setShowLatestRecipes] = useState(true);
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   const getImageUrl = useCallback((recipe) => {
     if (recipe.image && recipe.image.data && recipe.image.contentType) {
@@ -1495,7 +1495,6 @@ export default function MemberHome() {
     );
     setFilteredRecipes(filtered);
     setDisplayCount(8); // Reset display count when searching
-    setShowLatestRecipes(false);
   };
 
   const handleSearchInputChange = (e) => {
@@ -1504,15 +1503,14 @@ export default function MemberHome() {
     if (query === "") {
       setFilteredRecipes(allRecipes);
       setDisplayCount(8); // Reset display count when clearing search
-      setShowLatestRecipes(false);
     } else {
       handleSearch(e);
     }
   };
 
   const handleViewRecipe = (recipe) => {
-    navigate(`/viewrecipe?id=${recipe._id}`);
-  };
+    navigate(`/viewrecipe?id=${recipe._id}`, { state: { from: location.pathname } });
+  }
 
   if (isLoading) {
     return (
@@ -1603,18 +1601,17 @@ export default function MemberHome() {
           </form>
         </section>
 
-        {showLatestRecipes && (
-          <section>
-            <Typography variant="h4" component="h2" gutterBottom>
-              Latest Recipes
-            </Typography>
-            <RecipeCarousel
-              featuredRecipes={featuredRecipes}
-              handleViewRecipe={handleViewRecipe}
-              getImageUrl={getImageUrl}
-            />
-          </section>
-        )}
+        <section>
+          <Typography variant="h4" component="h2" gutterBottom>
+            Latest Recipes
+          </Typography>
+          <RecipeCarousel
+            featuredRecipes={featuredRecipes}
+            handleViewRecipe={handleViewRecipe}
+            getImageUrl={getImageUrl}
+            
+          />
+        </section>
 
         <section style={{ marginTop: "2rem" }}>
           <Typography variant="h4" component="h2" gutterBottom>
@@ -1672,7 +1669,7 @@ export default function MemberHome() {
             <Button
               variant="contained"
               color="primary"
-              onClick={() => handleViewRecipe(recipe)}
+              onClick={() => handleViewRecipe(recipe._id)}
               fullWidth
               sx={{
                 mt: 2,

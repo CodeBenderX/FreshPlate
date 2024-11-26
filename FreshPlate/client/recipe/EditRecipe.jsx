@@ -465,21 +465,40 @@ export default function EditRecipe() {
   const navigate = useNavigate();
   const location = useLocation();
   const recipeId = new URLSearchParams(location.search).get('id');
+  const { from } = location.state || { from: '/recipelist' };
 
-  const getImageUrl = useCallback((recipeData, maxDepth = 5) => {
-    if (maxDepth <= 0) {
-      console.error('Max recursion depth reached in getImageUrl');
-      return defaultRecipeImage;
-    }
+  // const getImageUrl = useCallback((recipeData, maxDepth = 5) => {
+  //   if (maxDepth <= 0) {
+  //     console.error('Max recursion depth reached in getImageUrl');
+  //     return defaultRecipeImage;
+  //   }
 
+  //   if (recipeData?.image?.data && recipeData.image.contentType) {
+  //     let imageData;
+  //     if (typeof recipeData.image.data === 'string') {
+  //       imageData = recipeData.image.data;
+  //     } else if (Array.isArray(recipeData.image.data)) {
+  //       imageData = btoa(String.fromCharCode.apply(null, recipeData.image.data));
+  //     } else if (typeof recipeData.image.data === 'object' && recipeData.image.data.type === 'Buffer') {
+  //       imageData = btoa(String.fromCharCode.apply(null, new Uint8Array(recipeData.image.data.data)));
+  //     } else {
+  //       console.error('Unexpected image data format:', recipeData.image.data);
+  //       return defaultRecipeImage;
+  //     }
+  //     return `data:${recipeData.image.contentType};base64,${imageData}`;
+  //   }
+  //   return defaultRecipeImage;
+  // }, []);
+
+  const getImageUrl = useCallback((recipeData) => {
     if (recipeData?.image?.data && recipeData.image.contentType) {
       let imageData;
       if (typeof recipeData.image.data === 'string') {
         imageData = recipeData.image.data;
       } else if (Array.isArray(recipeData.image.data)) {
-        imageData = btoa(String.fromCharCode.apply(null, recipeData.image.data));
+        imageData = arrayBufferToBase64(recipeData.image.data);
       } else if (typeof recipeData.image.data === 'object' && recipeData.image.data.type === 'Buffer') {
-        imageData = btoa(String.fromCharCode.apply(null, new Uint8Array(recipeData.image.data.data)));
+        imageData = arrayBufferToBase64(new Uint8Array(recipeData.image.data.data));
       } else {
         console.error('Unexpected image data format:', recipeData.image.data);
         return defaultRecipeImage;
@@ -489,12 +508,18 @@ export default function EditRecipe() {
     return defaultRecipeImage;
   }, []);
 
-  const fetchRecipe = useCallback(async (attempts = 0, maxAttempts = 3) => {
-    if (attempts >= maxAttempts) {
-      setError("Failed to fetch recipe after multiple attempts");
-      setLoading(false);
-      return;
+  // Helper function to convert ArrayBuffer to Base64
+  const arrayBufferToBase64 = (buffer) => {
+    let binary = '';
+    const bytes = new Uint8Array(buffer);
+    const len = bytes.byteLength;
+    for (let i = 0; i < len; i++) {
+      binary += String.fromCharCode(bytes[i]);
     }
+    return btoa(binary);
+  };
+
+  const fetchRecipe = useCallback(async () => {
 
     if (!recipeId) {
       setError("No recipe ID provided");
@@ -590,7 +615,9 @@ export default function EditRecipe() {
       }
 
       setNotification({ open: true, message: 'Recipe updated successfully', severity: 'success' });
-      setTimeout(() => navigate('/recipelist'), 2000);
+      setTimeout(() => {
+        navigate(from);
+      }, 2000);
     } catch (error) {
       console.error('Error updating recipe:', error);
       setNotification({ open: true, message: error.message || 'Failed to update recipe', severity: 'error' });
@@ -815,7 +842,7 @@ export default function EditRecipe() {
               </Button>
               <Button
                 fullWidth
-                onClick={() => navigate('/recipelist')}
+                onClick={() => navigate(from)}
                 sx={{
                   border: '1px solid #ddd',
                   color: '#666',

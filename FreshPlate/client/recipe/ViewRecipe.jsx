@@ -667,10 +667,11 @@ const getImageUrl = useCallback((recipeData) => {
               startIcon={<EditIcon />}
               onClick={handleEdit}
               sx={{
-                bgcolor: '#333',
+                bgcolor: '#000000',
                 color: 'white',
                 '&:hover': {
-                  bgcolor: '#444'
+                  bgcolor: '#FFFFFF',
+                  border: '1px solid #000000'
                 }
               }}
             >
@@ -681,10 +682,11 @@ const getImageUrl = useCallback((recipeData) => {
               startIcon={<DeleteIcon />}
               onClick={handleDelete}
               sx={{
-                color: '#666',
+                color: '#000000',
                 borderColor: '#ddd',
                 '&:hover': {
-                  bgcolor: '#f5f5f5'
+                  bgcolor: '#000000', 
+                  color: '#FFFFFF'
                 }
               }}
             >

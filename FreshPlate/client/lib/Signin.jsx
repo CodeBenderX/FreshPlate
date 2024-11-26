@@ -5,8 +5,8 @@ import {
   TextField,
   Typography,
   Button,
-  Grid, 
-  Box
+  Grid,
+  Box,
 } from "@mui/material";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { signin } from "./api-auth.js";
@@ -30,10 +30,6 @@ const useStyles = {
     marginLeft: 1,
     marginRight: 1,
     width: 300,
-  },
-  submit: {
-    margin: "auto",
-    marginBottom: 2,
   },
 };
 
@@ -90,7 +86,7 @@ export default function Signin() {
 
   return (
     <div style={{ backgroundColor: "#FFF4EA", height: "100vh" }}>
-      <Grid container spacing={0} sx={{ maxWidth: '100%'}}>
+      <Grid container spacing={0} sx={{ maxWidth: "100%" }}>
         <Card sx={useStyles.card}>
           <CardContent>
             <Typography variant="h6" sx={useStyles.title}>
@@ -123,10 +119,20 @@ export default function Signin() {
             )}
             <br />
             <Button
-              color="#000000"
+              color="#FFFFFF"
               variant="contained"
               onClick={clickSubmit}
-              sx={useStyles.submit}
+              sx={{
+                margin: "auto",
+                marginBottom: 2,
+                marginRight:1,
+                bgcolor: "#000000",
+                color: "white",
+                "&:hover": {
+                  bgcolor: "#FFFFFF",
+                  border: "1px solid #000000",
+                },
+              }}
             >
               Login
             </Button>
@@ -134,7 +140,16 @@ export default function Signin() {
               color="#000000"
               variant="contained"
               onClick={clickRegister}
-              sx={useStyles.submit}
+              sx={{
+                margin: "auto",
+                marginBottom: 2,
+                marginLeft:1,
+                border: "1px solid #000000",
+                '&:hover': {
+                  bgcolor: '#000000', 
+                  color: '#FFFFFF'
+                }
+              }}
             >
               Register
             </Button>
@@ -143,14 +158,23 @@ export default function Signin() {
             </Typography>
           </CardContent>
         </Card>
-        <Grid item xs={12} md={6} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <Grid
+          item
+          xs={12}
+          md={6}
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
           <Box
             component="img"
             sx={{
-              maxWidth: '100%',
-              width: '100%',
-              height: '100vh',
-              objectFit: 'cover',
+              maxWidth: "100%",
+              width: "100%",
+              height: "100vh",
+              objectFit: "cover",
             }}
             alt="Healthy food"
             src="../src/assets/login-signup.jpeg"

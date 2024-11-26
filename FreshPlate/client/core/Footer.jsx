@@ -7,7 +7,7 @@ export default function Footer() {
       component="footer"
       sx={{
         height:"auto",
-        bgcolor: "#FFFFFF",
+        bgcolor: "#fdfdfd",
         py: 4,
         borderTop: "1px solid",
         borderColor: "divider",

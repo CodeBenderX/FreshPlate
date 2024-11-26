@@ -191,7 +191,7 @@ export default function AboutPage() {
                 image: "Aboutus-Bianca.jpeg",
               },
               {
-                name: "Ovovwere Umavwodo",
+                name: "Ovovwero Unuavwodo",
                 role: "Frontend Developer",
                 image: "Aboutus-Ovo.jpeg",
               },

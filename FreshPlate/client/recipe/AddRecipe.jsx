@@ -14,7 +14,7 @@ import {
   CircularProgress,
   Grid2,
 } from "@mui/material";
-import { CloudUpload } from "@mui/icons-material";
+import { CloudUpload, Cancel } from "@mui/icons-material";
 import { create } from './api-recipe'; 
 import auth from '../lib/auth-helper.js';
 import imageCompression from 'browser-image-compression';
@@ -87,6 +87,11 @@ const AddRecipePage = () => {
     if (errors[name]) {
       setErrors({ ...errors, [name]: "" });
     }
+  };
+
+  const handleCancelImage = () => {
+    setValues({ ...values, image: "" });
+    setImagePreview(null);
   };
 
   const validateForm = () => {
@@ -268,7 +273,7 @@ const AddRecipePage = () => {
         />
       </Box>
     </Box>
-            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", mb: 3 }}>
+            <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", mb: 3 }}>
             {imagePreview && (
                 <Box sx={{ 
                   mb: 2, 
@@ -284,12 +289,11 @@ const AddRecipePage = () => {
                   <img src={imagePreview} alt="Recipe preview" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
                 </Box>
               )}
+              <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, alignItems: 'center', width: '100%' }}>
                <Button 
                 variant="outlined" 
                 component="label" 
-                //startIcon={<CloudUpload />} 
-                //fullWidth
-                //sx={{ mt: imagePreview ? 40 : 0 }}
+                startIcon={<CloudUpload />} 
                 sx={{ 
                   width: imagePreview ? '30%' : '100%',
                   }}
@@ -297,6 +301,18 @@ const AddRecipePage = () => {
                 {imagePreview ? "Change" : "Upload an image"}
                 <input type="file" hidden onChange={handleChange("image")} accept="image/*" />
               </Button>
+                {imagePreview && (
+                  <Button
+                    variant="outlined"
+                    color="secondary"
+                    onClick={handleCancelImage}
+                    startIcon={<Cancel />}
+                    sx={{ width: '30%' }}
+                  >
+                    Cancel
+                  </Button>
+                )}
+              </Box>
             </Box>
             {values.image && (
             <Typography variant="body2" align="center" sx={{ mb: 2 }}>

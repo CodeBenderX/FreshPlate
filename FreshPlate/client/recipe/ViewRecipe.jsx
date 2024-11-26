@@ -47,76 +47,82 @@ export default function ViewRecipe() {
   const location = useLocation();
   const recipeId = new URLSearchParams(location.search).get('id');
 
-  const getImageUrl = useCallback((recipe) => {
-    if (recipe.image && recipe.image.data && recipe.image.contentType) {
+  const getImageUrl = useCallback((recipeData) => {
+    if (recipeData?.image?.data && recipeData.image.contentType) {
       let imageData;
-      if (typeof recipe.image.data === 'string') {
-        imageData = recipe.image.data;
-      } else if (typeof recipe.image.data === 'object' && recipe.image.data.type === 'Buffer') {
-        // Convert Buffer data to base64 string
-        imageData = btoa(String.fromCharCode.apply(null, recipe.image.data.data));
+      if (typeof recipeData.image.data === 'string') {
+        imageData = recipeData.image.data;
+      } else if (Array.isArray(recipeData.image.data)) {
+        imageData = btoa(String.fromCharCode.apply(null, recipeData.image.data));
+      } else if (typeof recipeData.image.data === 'object' && recipeData.image.data.type === 'Buffer') {
+        imageData = btoa(String.fromCharCode.apply(null, new Uint8Array(recipeData.image.data.data)));
       } else {
-        console.error('Unexpected image data format:', recipe.image.data);
-        return null;
+        console.error('Unexpected image data format:', recipeData.image.data);
+        return defaultRecipeImage;
       }
-      return `data:${recipe.image.contentType};base64,${imageData}`;
+      return `data:${recipeData.image.contentType};base64,${imageData}`;
     }
     return defaultRecipeImage;
   }, []);
 
-  useEffect(() => {
-    const fetchRecipe = async () => {
-      if (!recipeId) {
-        setError("No recipe ID provided");
-        setLoading(false);
-        return;
+  const fetchRecipe = useCallback(async () => {
+    if (!recipeId) {
+      setError("No recipe ID provided");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const jwt = auth.isAuthenticated();
+      if (!jwt) {
+        throw new Error("User not authenticated");
       }
 
-      try {
-        const jwt = auth.isAuthenticated();
-        if (!jwt) {
-          throw new Error("User not authenticated");
+      const response = await fetch(`/api/recipes/${recipeId}`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + jwt.token
         }
+      });
 
-        const response = await fetch(`/api/recipes/${recipeId}`, {
-          method: 'GET',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + jwt.token
-          }
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch recipe');
-        }
-
-        const data = await response.json();
-        setRecipe(data);
-      } catch (err) {
-        console.error('Error fetching recipe:', err);
-        setError("Failed to load recipe. Please try again later.");
-      } finally {
-        setLoading(false);
+      if (!response.ok) {
+        throw new Error('Failed to fetch recipe');
       }
-    };
 
-    fetchRecipe();
+      const data = await response.json();
+      setRecipe(data);
+    } catch (err) {
+      console.error('Error fetching recipe:', err);
+      setError("Failed to load recipe. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
   }, [recipeId]);
 
-  const handleClose = () => {
+  useEffect(() => {
+    fetchRecipe();
+  }, [fetchRecipe]);
+
+  const handleClose = useCallback(() => {
     navigate('/recipelist');
-  };
+  }, [navigate]);
 
-  const handleEdit = () => {
-    navigate(`/editrecipe?id=${recipeId}`);
-  };
+  const handleBack = useCallback(() => {
+    const fromPath = location.state?.from || '/';
+    navigate(fromPath);
+  }, [navigate, location.state]);
 
-  const handleDelete = () => {
+  const handleEdit = useCallback(() => {
+    navigate(`/editrecipe?id=${recipeId}`, { state: { from: location.state?.from } });
+  }, [navigate, recipeId, location.state]);
+
+  const handleDelete = useCallback(() => {
     setDeleteDialog(true);
-  };
+  }, []);
 
-  const confirmDelete = async () => {
+  const confirmDelete = useCallback(async () => {
     try {
       const jwt = auth.isAuthenticated();
       const response = await fetch(`/api/recipes/${recipeId}`, {
@@ -138,40 +144,25 @@ export default function ViewRecipe() {
       setError("Failed to delete recipe. Please try again later.");
     }
     setDeleteDialog(false);
-  };
-
-  // const getImageUrl = (recipe) => {
-  //   if (recipe.image && recipe.image.data && recipe.image.contentType) {
-  //     return `data:${recipe.image.contentType};base64,${recipe.image.data}`;
-  //   }
-  //   return null;
-  // };
-
-//   const getImageUrl = useCallback((recipe) => {
-//     if (recipe.image && recipe.image.data && recipe.image.contentType) {
-//       const imageData = typeof recipe.image.data === 'string' 
-//       ? recipe.image.data 
-//       : Buffer.from(recipe.image.data).toString('base64');
-//     return `data:${recipe.image.contentType};base64,${imageData}`;
-//   }
-//   return null;
-// }, []);
+  }, [recipeId, navigate]);
 
   if (loading) {
     return (
       <ThemeProvider theme={theme}>
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-        <CircularProgress />
-      </Box>
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+          <CircularProgress />
+        </Box>
       </ThemeProvider>
     );
   }
 
   if (error) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-        <Alert severity="error">{error}</Alert>
-      </Box>
+      <ThemeProvider theme={theme}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+          <Alert severity="error">{error}</Alert>
+        </Box>
+      </ThemeProvider>
     );
   }
 
@@ -180,42 +171,41 @@ export default function ViewRecipe() {
   const imageUrl = getImageUrl(recipe);
 
   return (
-    <Box sx={{ maxWidth: '100%', bgcolor: '#fff1e7', minHeight: '100vh', py: 4 }}>
-      <Typography
-        variant="h1"
-        sx={{
-          textAlign: 'center',
-          color: '#ff4400',
-          fontSize: '2.5rem',
-          mb: 4
-        }}
-      >
-        Recipes
-      </Typography>
-
-      <Box
-        sx={{
-          maxWidth: 800,
-          mx: 'auto',
-          bgcolor: 'white',
-          borderRadius: '8px',
-          border: '1px solid #e0e0e0',
-          position: 'relative',
-          p: 3
-        }}
-      >
-        
-        <Box
+    <ThemeProvider theme={theme}>
+      <Box sx={{ maxWidth: '100%', bgcolor: '#fff1e7', minHeight: '100vh', py: 4 }}>
+        <Typography
+          variant="h1"
           sx={{
-            width: '100%',
-            position: 'relative',
-            mb: 3,
-            aspectRatio: '16 / 9',
-            maxHeight: '400px',
-            overflow: 'hidden',
+            textAlign: 'center',
+            color: '#ff4400',
+            fontSize: '2.5rem',
+            mb: 4
           }}
         >
-          {imageUrl ? (
+          Recipes
+        </Typography>
+
+        <Box
+          sx={{
+            maxWidth: 800,
+            mx: 'auto',
+            bgcolor: 'white',
+            borderRadius: '8px',
+            border: '1px solid #e0e0e0',
+            position: 'relative',
+            p: 3
+          }}
+        >
+          <Box
+            sx={{
+              width: '100%',
+              position: 'relative',
+              mb: 3,
+              aspectRatio: '16 / 9',
+              maxHeight: '400px',
+              overflow: 'hidden',
+            }}
+          >
             <Box
               component="img"
               src={imageUrl}
@@ -232,134 +222,121 @@ export default function ViewRecipe() {
                 e.target.src = '/placeholder.svg?height=400&width=800';
               }}
             />
-          ) : (
-            <Box
-              sx={{
-                width: '100%',
-                height: '100%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                bgcolor: '#f0f0f0',
-                color: '#999',
-              }}
-            >
-              No Image Available
-            </Box>
-          )}
-        </Box>
-
-        <IconButton
-          onClick={handleClose}
-          sx={{
-            position: 'absolute',
-            right: 8,
-            top: 8
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
-
-        <Typography variant="h4" sx={{ mb: 2, pr: 4 }}>
-          {recipe.title}
-        </Typography>
-
-        <Box sx={{ mb: 3 }}>
-          <Typography color="text.secondary" sx={{ mb: 2 }}>
-            Posted by: {recipe.creator}
-          </Typography>
-
-          <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
-            <Typography color="text.secondary">
-              Prep: {recipe.preptime || '-'} mins
-            </Typography>
-            <Typography color="text.secondary" >
-              Cook: {recipe.cooktime || '-'} mins
-            </Typography>
-            <Typography color="text.secondary" >
-              Serves: {recipe.servings || '-'}
-            </Typography>
           </Box>
 
-          <Chip
-            label="Medium"
+          <IconButton
+            onClick={handleClose}
             sx={{
-              bgcolor: '#ffd700',
-              color: '#000',
-              fontWeight: 500
-            }}
-          />
-        </Box>
-
-        <Box sx={{ mb: 4 }}>
-          <Typography variant="h6" sx={{ mb: 2}}>Ingredients</Typography>
-          {recipe.ingredients ? (
-            <Box sx={{ pl: 2 }}>
-              <RenderTextWithLineBreaks text={recipe.ingredients} />
-            </Box>
-          ) : (
-            <Typography>No ingredients available</Typography>
-          )}
-        </Box>
-
-        <Box sx={{ mb: 4 }}>
-          <Typography variant="h6" sx={{ mb: 2}}>Instructions</Typography>
-          {recipe.instructions ? (
-            <Box sx={{ pl: 2 }}>
-              <RenderTextWithLineBreaks text={recipe.instructions} />
-            </Box>
-          ) : (
-            <Typography>No instructions available</Typography>
-          )}
-        </Box>
-
-        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
-          <Button
-            variant="contained"
-            startIcon={<EditIcon />}
-            onClick={handleEdit}
-            sx={{
-              bgcolor: '#333',
-              color: 'white',
-              '&:hover': {
-                bgcolor: '#444'
-              }
+              position: 'absolute',
+              right: 8,
+              top: 8
             }}
           >
-            Edit Recipe
-          </Button>
-          <Button
-            variant="outlined"
-            startIcon={<DeleteIcon />}
-            onClick={handleDelete}
-            sx={{
-              color: '#666',
-              borderColor: '#ddd',
-              '&:hover': {
-                bgcolor: '#f5f5f5'
-              }
-            }}
-          >
-            Delete Recipe
-          </Button>
+            <CloseIcon />
+          </IconButton>
+
+          <Typography variant="h4" sx={{ mb: 2, pr: 4 }}>
+            {recipe.title}
+          </Typography>
+
+          <Box sx={{ mb: 3 }}>
+            <Typography color="text.secondary" sx={{ mb: 2 }}>
+              Posted by: {recipe.creator}
+            </Typography>
+
+            <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+              <Typography color="text.secondary">
+                Prep: {recipe.preptime || '-'} mins
+              </Typography>
+              <Typography color="text.secondary" >
+                Cook: {recipe.cooktime || '-'} mins
+              </Typography>
+              <Typography color="text.secondary" >
+                Serves: {recipe.servings || '-'}
+              </Typography>
+            </Box>
+
+            <Chip
+              label="Medium"
+              sx={{
+                bgcolor: '#ffd700',
+                color: '#000',
+                fontWeight: 500
+              }}
+            />
+          </Box>
+
+          <Box sx={{ mb: 4 }}>
+            <Typography variant="h6" sx={{ mb: 2}}>Ingredients</Typography>
+            {recipe.ingredients ? (
+              <Box sx={{ pl: 2 }}>
+                <RenderTextWithLineBreaks text={recipe.ingredients} />
+              </Box>
+            ) : (
+              <Typography>No ingredients available</Typography>
+            )}
+          </Box>
+
+          <Box sx={{ mb: 4 }}>
+            <Typography variant="h6" sx={{ mb: 2}}>Instructions</Typography>
+            {recipe.instructions ? (
+              <Box sx={{ pl: 2 }}>
+                <RenderTextWithLineBreaks text={recipe.instructions} />
+              </Box>
+            ) : (
+              <Typography>No instructions available</Typography>
+            )}
+          </Box>
+
+          <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
+            <Button
+              variant="contained"
+              startIcon={<EditIcon />}
+              onClick={handleEdit}
+              sx={{
+                bgcolor: '#333',
+                color: 'white',
+                '&:hover': {
+                  bgcolor: '#444'
+                }
+              }}
+            >
+              Edit Recipe
+            </Button>
+            <Button
+              variant="outlined"
+              startIcon={<DeleteIcon />}
+              onClick={handleDelete}
+              sx={{
+                color: '#666',
+                borderColor: '#ddd',
+                '&:hover': {
+                  bgcolor: '#f5f5f5'
+                }
+              }}
+            >
+              Delete Recipe
+            </Button>
+          </Box>
         </Box>
+
+        <Dialog
+          open={deleteDialog}
+          onClose={() => setDeleteDialog(false)}
+        >
+          <DialogTitle>Delete Recipe</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Are you sure you want to delete this recipe? This action cannot be undone.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setDeleteDialog(false)}>Cancel</Button>
+            <Button onClick={confirmDelete} color="error">Delete</Button>
+          </DialogActions>
+        </Dialog>
       </Box>
-
-      <Dialog
-        open={deleteDialog}
-        onClose={() => setDeleteDialog(false)}
-      >
-        <DialogTitle>Delete Recipe</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Are you sure you want to delete this recipe? This action cannot be undone.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setDeleteDialog(false)}>Cancel</Button>
-          <Button onClick={confirmDelete} color="error">Delete</Button>
-        </DialogActions>
-      </Dialog>
-    </Box>
+    </ThemeProvider>
   );
 }
+

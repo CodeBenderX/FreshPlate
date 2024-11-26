@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { 
   Box,
@@ -49,6 +49,25 @@ export default function EditRecipe() {
   const location = useLocation();
   const recipeId = new URLSearchParams(location.search).get('id');
 
+  const getImageUrl = useCallback((recipeData) => {
+    if (recipeData?.image?.data && recipeData.image.contentType) {
+      let imageData;
+      if (typeof recipeData.image.data === 'string') {
+        imageData = recipeData.image.data;
+      } else if (Array.isArray(recipeData.image.data)) {
+        imageData = btoa(String.fromCharCode.apply(null, recipeData.image.data));
+      } else if (typeof recipeData.image.data === 'object' && recipeData.image.data.type === 'Buffer') {
+        imageData = btoa(String.fromCharCode.apply(null, new Uint8Array(recipeData.image.data.data)));
+      } else {
+        console.error('Unexpected image data format:', recipeData.image.data);
+        return defaultRecipeImage;
+      }
+      return `data:${recipeData.image.contentType};base64,${imageData}`;
+    }
+    return defaultRecipeImage;
+  }, []);
+
+
   useEffect(() => {
     const fetchRecipe = async () => {
       if (!recipeId) {
@@ -68,14 +87,7 @@ export default function EditRecipe() {
           throw new Error("Failed to fetch recipe data");
         }
         setRecipe(data);
-        if (data.image && data.image.data) {
-          const imageData = typeof data.image.data === 'string' 
-            ? data.image.data 
-            : btoa(String.fromCharCode.apply(null, new Uint8Array(data.image.data.data)));
-          setImagePreview(`data:${data.image.contentType};base64,${imageData}`);
-        } else {
-          setImagePreview(defaultRecipeImage)
-        }
+        setImagePreview(getImageUrl(data));
       } catch (err) {
         console.error('Error fetching recipe:', err);
         setError("Failed to load recipe. Please try again later.");
@@ -104,14 +116,6 @@ export default function EditRecipe() {
       }));
       setImagePreview(URL.createObjectURL(file));
     }
-  };
-
-  const handleImageDelete = () => {
-    setRecipe(prevRecipe => ({
-      ...prevRecipe,
-      image: null
-    }));
-    setImagePreview(null);
   };
 
   const handleSubmit = async (e) => {

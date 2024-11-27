@@ -278,7 +278,11 @@ const UserAccount = () => {
             color="error"
             fullWidth
             onClick={handleDelete}
-            sx={{ marginTop: 2 }}
+            sx={{ marginTop: 1,
+                      backgroundColor: "#000000",
+                      "&:hover": {
+                        backgroundColor: "#FFFFFF", border:"1px solid #000000"
+                      },}}
           >
             Delete Account
           </Button>

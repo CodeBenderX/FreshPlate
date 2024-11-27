@@ -1499,7 +1499,7 @@ export default function MemberHome() {
         recipe.description?.toLowerCase().includes(searchQuery.toLowerCase())
     );
     setFilteredRecipes(filtered);
-    setDisplayCount(8); // Reset display count when searching
+    setDisplayCount(8);
     setIsSearching(true);
   };
 
@@ -1550,30 +1550,6 @@ export default function MemberHome() {
     );
   }
 
-
-
- 
-
-  if (!filteredRecipes || filteredRecipes.length === 0) {
-    console.log("No recipes available");
-    return (
-      <Container component="main">
-        <Typography variant="h6" align="center">
-          No recipes available. Try adding some!
-        </Typography>
-      </Container>
-    );
-  }
-
-  console.log("Rendering MemberHome. State:", {
-    searchQuery,
-    featuredRecipes: featuredRecipes.length,
-    allRecipes: allRecipes.length,
-    filteredRecipes: filteredRecipes.length,
-    isLoading,
-    error,
-    displayCount,
-  });
 
   return (
     <div style={{ backgroundColor: "#FFF4EA" }}>
@@ -1711,7 +1687,9 @@ export default function MemberHome() {
               align="center"
               style={{ marginTop: "2rem" }}
             >
-              No recipes found matching your search.
+              {isSearching 
+                ? "No recipes found matching your search." 
+                : "No recipes available. Try adding some!"}
             </Typography>
           )}
         </section>

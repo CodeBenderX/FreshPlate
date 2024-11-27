@@ -1423,6 +1423,7 @@ export default function MemberHome() {
   const [error, setError] = useState("");
   const [displayCount, setDisplayCount] = useState(8); // New state variable
   const [debug, setDebug] = useState(true);
+  const [isSearching, setIsSearching] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -1495,6 +1496,7 @@ export default function MemberHome() {
     );
     setFilteredRecipes(filtered);
     setDisplayCount(8); // Reset display count when searching
+    setIsSearching(true);
   };
 
   const handleSearchInputChange = (e) => {
@@ -1505,6 +1507,7 @@ export default function MemberHome() {
       setDisplayCount(8); // Reset display count when clearing search
     } else {
       handleSearch(e);
+      setIsSearching(true);
     }
   };
 
@@ -1601,21 +1604,22 @@ export default function MemberHome() {
           </form>
         </section>
 
-        <section>
-          <Typography variant="h4" component="h2" gutterBottom>
-            Latest Recipes
-          </Typography>
-          <RecipeCarousel
-            featuredRecipes={featuredRecipes}
-            handleViewRecipe={handleViewRecipe}
-            getImageUrl={getImageUrl}
-            
-          />
-        </section>
+        {!isSearching && (
+          <section>
+            <Typography variant="h4" component="h2" gutterBottom>
+              Latest Recipes
+            </Typography>
+            <RecipeCarousel
+              featuredRecipes={featuredRecipes}
+              handleViewRecipe={handleViewRecipe}
+              getImageUrl={getImageUrl}
+            />
+          </section>
+        )}
 
         <section style={{ marginTop: "2rem" }}>
           <Typography variant="h4" component="h2" gutterBottom>
-            {searchQuery ? "Search Results" : "All Recipes"}
+            {isSearching ? "Search Results" : "All Recipes"}
           </Typography>
           <Grid container spacing={3}>
             {filteredRecipes.slice(0, displayCount).map((recipe) => (

@@ -1508,10 +1508,10 @@ export default function MemberHome() {
     setSearchQuery(query);
     if (query === "") {
       setFilteredRecipes(allRecipes);
-      setDisplayCount(8); // Reset display count when clearing search
+      setDisplayCount(8);
+      setIsSearching(false);
     } else {
       handleSearch(e);
-      setIsSearching(true);
     }
   };
 

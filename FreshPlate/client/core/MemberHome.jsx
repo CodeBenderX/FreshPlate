@@ -1388,9 +1388,13 @@ const RecipeCarousel = ({ featuredRecipes, handleViewRecipe, getImageUrl }) => {
             </div>
           ))
         ) : (
-          <Typography variant="body1" style={{ padding: "16px" }}>
-            No recipes available.
-          </Typography>
+          <Typography
+          variant="h6"
+          align="center"
+          style={{ marginTop: "2rem", marginBottom: "2rem" }}
+        >
+          No recipes available. Try adding some!
+        </Typography>
         )}
       </div>
       <IconButton
@@ -1514,6 +1518,10 @@ export default function MemberHome() {
   const handleViewRecipe = (recipe) => {
     navigate(`/viewrecipe?id=${recipe._id}`, { state: { from: location.pathname } });
   }
+
+  const handleLoadMore = () => {
+    setDisplayCount(prevCount => prevCount + 8);
+  };
 
   if (isLoading) {
     return (
@@ -1683,7 +1691,7 @@ export default function MemberHome() {
             <Button
               variant="contained"
               color="primary"
-              onClick={() => handleViewRecipe(recipe._id)}
+              onClick={handleLoadMore}
               fullWidth
               sx={{
                 mt: 2,

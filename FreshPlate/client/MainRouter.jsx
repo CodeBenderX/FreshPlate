@@ -1,8 +1,13 @@
-import React from "react";
-import { Routes, Route } from "react-router-dom";
+// import React from "react";
+// import { Routes, Route } from "react-router-dom";
+import React from 'react';
+import { Route, Routes } from 'react-router-dom';
+
 import Layout from "../client/core/Layout.jsx";
-import HomePage from "../client/core/Home.jsx";
 import Footer from "../client/core/Footer.jsx";
+
+
+import HomePage from "../client/core/Home.jsx";
 import Signin from "./lib/Signin.jsx";
 import Signup from "./user/Signup.jsx";
 import MemberHome from "./core/MemberHome.jsx";

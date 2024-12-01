@@ -11,6 +11,7 @@ import {
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { signin } from "./api-auth.js";
 import auth from "./auth-helper";
+import loginpage from "../src/assets/login-signup.jpeg"
 
 const useStyles = {
   card: {
@@ -177,7 +178,7 @@ export default function Signin() {
               objectFit: "cover",
             }}
             alt="Healthy food"
-            src="/assets/login-signup.jpeg"
+            src={loginpage}
           />
         </Grid>
       </Grid>

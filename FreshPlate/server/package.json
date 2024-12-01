@@ -2,8 +2,8 @@
    "name": "mern_skeleton",
    "version": "1.0.0",
    "type": "module",
-   "main": "index.js",
-   "author": "Blessing",
+   "main": "server.js",
+   "author": "Pseudo Squad",
    "license": "MIT",
    "devDependencies": {
       "@babel/core": "^7.25.7",

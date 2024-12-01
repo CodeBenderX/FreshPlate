@@ -3,7 +3,7 @@ import app from '../server/express.js'
 import mongoose from 'mongoose' 
 
 	mongoose.Promise = global.Promise
-	mongoose.connect(config.mongoUri, { useNewUrlParser: true,
+	mongoose.connect(config.mongoUri, { 
   } 
   )
   .then(() => {

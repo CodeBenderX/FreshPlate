@@ -177,7 +177,7 @@ export default function Signin() {
               objectFit: "cover",
             }}
             alt="Healthy food"
-            src="../src/assets/login-signup.jpeg"
+            src="/assets/login-signup.jpeg"
           />
         </Grid>
       </Grid>

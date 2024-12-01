@@ -5,8 +5,8 @@ import {
   TextField,
   Typography,
   Button,
-  Grid,
-  Box,
+  Grid2, 
+  Box
 } from "@mui/material";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { signin } from "./api-auth.js";
@@ -87,7 +87,7 @@ export default function Signin() {
 
   return (
     <div style={{ backgroundColor: "#FFF4EA", height: "100vh" }}>
-      <Grid container spacing={0} sx={{ maxWidth: "100%" }}>
+      <Grid container spacing={0} sx={{ maxWidth: '100%'}}>
         <Card sx={useStyles.card}>
           <CardContent>
             <Typography variant="h6" sx={useStyles.title}>
@@ -159,16 +159,7 @@ export default function Signin() {
             </Typography>
           </CardContent>
         </Card>
-        <Grid
-          item
-          xs={12}
-          md={6}
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
+        <Grid item xs={12} md={6} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
           <Box
             component="img"
             sx={{
@@ -180,8 +171,8 @@ export default function Signin() {
             alt="Healthy food"
             src={loginpage}
           />
-        </Grid>
-      </Grid>
+        </Grid2>
+      </Grid2>
     </div>
   );
 }

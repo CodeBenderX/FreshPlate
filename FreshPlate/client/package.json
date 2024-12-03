@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "license":"ISC",
+  "license": "ISC",
   "scripts": {
     "dev": "concurrently 'vite' \"nodemon ../server/server.js\"",
     "build": "vite build",
@@ -40,7 +40,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
     "nodemon": "^3.0.2",
-    "vite": "^5.4.10"
+    "vite": "^6.0.1"
   },
   "dev": "concurrently 'vite' 'nodemon server.js'"
 }

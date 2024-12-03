@@ -187,6 +187,7 @@ import React, { useState } from 'react';
 import { Card, CardContent, TextField, Typography, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, Box } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import { create } from './api-user';
+import loginpage from '../src/assets/login-signup.jpeg'
 
 const useStyles = {
   card: {
@@ -345,7 +346,7 @@ export default function Signup() {
               objectFit: 'cover',
             }}
             alt="Healthy food"
-            src="../src/assets/login-signup.jpeg"
+            src={loginpage}
           />
         </Grid>
       </Grid>

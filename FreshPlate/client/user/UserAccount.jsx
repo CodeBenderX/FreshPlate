@@ -12,8 +12,14 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from "@mui/material";
 import { read, update, remove } from "./api-user.js";
+import {updateRecipeCreators, deleteUserRecipes, transferRecipesToAdmin} from "../recipe/api-recipe.js";
 
 const UserAccount = () => {
   const [user, setUser] = useState(null); // Initialize user as null
@@ -27,6 +33,10 @@ const UserAccount = () => {
   }); // State for update form
   const [updateType, setUpdateType] = useState(""); // Update form selector
   const [isUpdating, setIsUpdating] = useState(false); // State to manage update button state
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deleteConfirmDialogOpen, setDeleteConfirmDialogOpen] = useState(false);
+  const [deleteOption, setDeleteOption] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -35,6 +45,7 @@ const UserAccount = () => {
         try {
           const data = await read({ userId: jwt.user._id }, { t: jwt.token });
           setUser(data);
+          setIsAdmin(jwt.user.name === "Admin");
         } catch (err) {
           console.error("Error fetching user data:", err);
           setError("Could not load user data. Please try again later.");
@@ -81,10 +92,30 @@ const UserAccount = () => {
     }
 
     setIsUpdating(true); // Disable the button during update
+    setError(null);
     const jwt = auth.isAuthenticated();
     try {
       let updatedUser;
-      if (updateType === "password") {
+      if (updateType === "name") {
+        const oldName = user?.name;
+        const newName = updateData.name;
+        updatedUser = await update(
+          { userId: jwt.user._id },
+          { t: jwt.token },
+          { name: newName }
+        );
+        console.log("User name updated successfully");
+
+        try {
+          const updateResult = await updateRecipeCreators(
+            { oldName, newName },
+            { t: jwt.token }
+          );
+        } catch (recipeUpdateError) {
+          console.error('Error updating recipe creators:', recipeUpdateError);
+          throw new Error(`User name updated, but failed to update recipe creators: ${recipeUpdateError.message}`);
+        }
+      } else if (updateType === "password") {
         updatedUser = await update(
           { userId: jwt.user._id },
           { t: jwt.token },
@@ -101,14 +132,9 @@ const UserAccount = () => {
       setUpdateData({ name: "", email: "", password: "", confirmPassword: "" });
       setUpdateType(""); // Reset the selection
 
-      if (updateType === "password") {
-        alert("Password updated successfully. Please log in again.");
-        auth.clearJWT(() => {
-          window.location.href = "/signin"; // Redirect to login page
-        });
-      } else {
-        alert("User updated successfully");
-      }
+      alert(`${updateType.charAt(0).toUpperCase() + updateType.slice(1)} updated successfully. Please log in again.`);
+      auth.clearJWT();
+      window.location.href = "/signin";
     } catch (err) {
       console.error("Error updating user data:", err);
       setError("Could not update user data. Please try again later.");
@@ -117,24 +143,43 @@ const UserAccount = () => {
     }
   };
 
-  // Handle deleting the user
-  const handleDelete = async () => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete your account? This action cannot be undone."
-    );
-    if (confirmDelete) {
-      const jwt = auth.isAuthenticated();
-      try {
-        await remove({ userId: jwt.user._id }, { t: jwt.token });
-        setUser(null);
-        alert("User account deleted successfully");
-        auth.clearJWT(() => {
-          window.location.href = "/";
-        });
-      } catch (error) {
-        console.error("Error deleting user data:", error);
-        setError("Could not delete user data. Please try again later.");
+  const handleDeleteAccount = () => {
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteOption = (option) => {
+    setDeleteOption(option);
+    setDeleteDialogOpen(false);
+    setDeleteConfirmDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    const jwt = auth.isAuthenticated();
+    try {
+      if (deleteOption === "deleteAll") {
+        await deleteUserRecipes({ name: jwt.user.name }, { t: jwt.token });
+      } else if (deleteOption === "transfer") {
+        const oldName = user?.name;
+        const newName = 'Admin';
+        try {
+          const updateResult = await updateRecipeCreators(
+            { oldName, newName },
+            { t: jwt.token }
+          );
+          
+        } catch (recipeUpdateError) {
+          console.error('Error updating recipe creators:', recipeUpdateError);
+          throw new Error(`User name updated, but failed to update recipe creators: ${recipeUpdateError.message}`);
+        }
       }
+      await remove({ userId: jwt.user._id }, { t: jwt.token });
+      auth.clearJWT();
+      window.location.href = "/signin";
+    } catch (err) {
+      console.error("Error deleting account:", err);
+      setError("Could not delete account. Please try again later.");
+    } finally {
+      setDeleteConfirmDialogOpen(false);
     }
   };
 
@@ -207,8 +252,8 @@ const UserAccount = () => {
               displayEmpty
             >
               <MenuItem value="">Select Information to Update</MenuItem>
-              <MenuItem value="name">Name</MenuItem>
-              <MenuItem value="email">Email</MenuItem>
+              {!isAdmin && <MenuItem value="name">Name</MenuItem>}
+              {!isAdmin && <MenuItem value="email">Email</MenuItem>}
               <MenuItem value="password">Password</MenuItem>
             </Select>
           </FormControl>
@@ -271,13 +316,14 @@ const UserAccount = () => {
       </Card>
 
       {/* Delete Account */}
+      {!isAdmin && (
       <Card sx={{ maxWidth: 500, width: "100%" }}>
         <CardContent>
           <Button
             variant="contained"
             color="error"
             fullWidth
-            onClick={handleDelete}
+            onClick={handleDeleteAccount}
             sx={{ marginTop: 1,
                       backgroundColor: "#000000",
                       "&:hover": {
@@ -288,6 +334,36 @@ const UserAccount = () => {
           </Button>
         </CardContent>
       </Card>
+       )}
+      <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
+        <DialogTitle>Delete Account</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            What would you like to do with your recipes?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => handleDeleteOption("deleteAll")}>Delete All Recipes</Button>
+          <Button onClick={() => handleDeleteOption("transfer")}>Transfer Recipes to Admin</Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={deleteConfirmDialogOpen} onClose={() => setDeleteConfirmDialogOpen(false)}>
+        <DialogTitle>Confirm Delete Account</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            {deleteOption === "deleteAll"
+              ? "This will permanently delete your account and all your recipes. Are you sure?"
+              : "This will delete your account and transfer your recipes to the admin. Are you sure?"}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteConfirmDialogOpen(false)}>Cancel</Button>
+          <Button onClick={handleDeleteConfirm} color="error">
+            Confirm Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

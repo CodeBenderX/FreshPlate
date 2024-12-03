@@ -43,6 +43,7 @@ export default function ViewRecipe() {
   const [error, setError] = useState(null);
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [isCreator, setIsCreator] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   
 
   const navigate = useNavigate();
@@ -109,6 +110,7 @@ const getImageUrl = useCallback((recipeData) => {
       setRecipe(data);
 
       setIsCreator(jwt.user.name === data.creator);
+      setIsAdmin(jwt.user.role === 'admin');
       
 
     } catch (err) {
@@ -305,7 +307,7 @@ const getImageUrl = useCallback((recipeData) => {
             )}
           </Box>
 
-          {isCreator && (
+          {(isCreator || isAdmin) && (
             <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
               <Button
                 variant="contained"

@@ -11,14 +11,16 @@ import recipeRoutes from './Routes/recipe.routes.js'
 import contactRoutes from './Routes/contact.routes.js'
 import path from "path";
 
+    const port = process.env.PORT || 3000;
     const app = express()
     const CURRENT_WORKING_DIR = process.cwd();
     const corsOptions = {
-        origin: 'https://prefreshplate.onrender.com',
+        origin: ['https://prefreshplate.onrender.com', 'http://localhost:3000'],
+        method: ["GET", "POST", "PUT", "DELETE"],
         credentials: true,
         optionsSuccessStatus: 204
       }
-      const port = process.env.PORT || 3000;
+      
 
    // Serve static files from the build directory
    app.use(express.static(path.join(CURRENT_WORKING_DIR, "../dist/app")))
@@ -33,8 +35,19 @@ import path from "path";
    app.use(cookieParser())
    app.use(compress())
    app.use(helmet({
-    crossOriginResourcePolicy: { policy: "cross-origin" },
-    crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" }
+    contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "blob:"],
+          workerSrc: ["'self'", "blob:"],
+          imgSrc: ["'self'", "data:", "blob:"],
+          connectSrc: ["'self'", "https://prefreshplate.onrender.com"],
+          styleSrc: ["'self'", "'unsafe-inline'"],
+          fontSrc: ["'self'", "data:"],
+        },
+      },
+      crossOriginResourcePolicy: { policy: "cross-origin" },
+      crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" }
   }))
    app.use(cors(corsOptions))
    app.get('/', (req, res) => {

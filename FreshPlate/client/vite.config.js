@@ -19,7 +19,7 @@ export default defineConfig({
         },
     },
     build: {
-        outDir: 'dist/app',
+        outDir: '../dist/app',
         assetsDir: 'assets',
         chunkSizeWarningLimit: 1000, // Increase the warning limit to 1000 kB
         rollupOptions: {

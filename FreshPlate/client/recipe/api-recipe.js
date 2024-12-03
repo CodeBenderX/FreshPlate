@@ -89,4 +89,62 @@ const remove = async (params, credentials) => {
   }
 };
 
-export { create, list, read, update, remove }
+const updateRecipeCreators = async (data, credentials) => {
+  try {
+    let response = await fetch('/api/recipes/updateCreator', {
+      method: 'PUT',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + credentials.t
+      },
+      body: JSON.stringify(data)
+    });
+    const result = await response.json();
+    if (!response.ok) {
+      throw new Error(result.message || 'Server responded with an error');
+    }
+    return result;
+  } catch (err) {
+    console.error('Error in updateRecipeCreators:', err);
+    throw new Error(`Failed to update recipe creators: ${err.message}`);
+  }
+};
+
+const deleteUserRecipes = async (params, credentials) => {
+  try {
+    let response = await fetch(`/api/recipes/user/${params.name}`, {
+      method: 'DELETE',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + credentials.t
+      }
+    });
+    return await response.json();
+  } catch (err) {
+    console.error('Error in deleteUserRecipes:', err);
+    throw err;
+  }
+};
+
+const transferRecipesToAdmin = async (params, credentials) => {
+  try {
+    let response = await fetch(`/api/recipes/transfer/${params.name}`, {
+      method: 'PUT',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + credentials.t
+      }
+    });
+    return await response.json();
+  } catch (err) {
+    console.error('Error in transferRecipesToAdmin:', err);
+    throw err;
+  }
+};
+
+
+
+export { create, list, read, update, remove, updateRecipeCreators, deleteUserRecipes, transferRecipesToAdmin }

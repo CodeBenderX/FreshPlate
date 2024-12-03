@@ -87,7 +87,7 @@ export default function Signin() {
 
   return (
     <div style={{ backgroundColor: "#FFF4EA", height: "100vh" }}>
-      <Grid container spacing={0} sx={{ maxWidth: '100%'}}>
+      <Grid2 container spacing={0} sx={{ maxWidth: '100%'}}>
         <Card sx={useStyles.card}>
           <CardContent>
             <Typography variant="h6" sx={useStyles.title}>
@@ -159,7 +159,7 @@ export default function Signin() {
             </Typography>
           </CardContent>
         </Card>
-        <Grid item xs={12} md={6} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <Grid2 item xs={12} md={6} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
           <Box
             component="img"
             sx={{

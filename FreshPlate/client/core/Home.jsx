@@ -81,13 +81,6 @@ export default function HomePage() {
   };
 
   return (
-    <>
-      <Head>
-        <title>Discover Delicious Recipes | Your Recipe Website</title>
-        <meta name="description" content="Explore a world of delicious recipes. Join our community to share your culinary creations, get inspired, and connect with food lovers." />
-        <meta name="keywords" content="recipes, cooking, food, culinary, community" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-      </Head>
     <div style={{backgroundColor:'#fff4ea'}}>
       <Container component="main" >
         <section>
@@ -256,6 +249,5 @@ export default function HomePage() {
         </section>
       </Container>
     </div>
-    </>
   );
 }

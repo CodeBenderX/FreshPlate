@@ -4,9 +4,13 @@
   "version": "0.0.0",
   "type": "module",
   "license": "ISC",
+  "engines": {
+    "node": ">=14.0.0"
+  },
   "scripts": {
     "dev": "concurrently 'vite' \"nodemon ../server/server.js\"",
-    "build": "vite build",
+    "start": "cd server && node server",
+    "build": "cd client && npm install && npm run build && cd ../server && npm install",
     "copy-assets": "cp -R src/assets dist/app/assets",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"

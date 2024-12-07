@@ -15,7 +15,7 @@ import path from "path";
     const app = express()
     const CURRENT_WORKING_DIR = process.cwd();
     const corsOptions = {
-        origin: ['https://prefreshplate.onrender.com', 'http://localhost:3000'],
+        origin: ['https://freshplate-milb.onrender.com', 'http://localhost:3000'],
         method: ["GET", "POST", "PUT", "DELETE"],
         credentials: true,
         optionsSuccessStatus: 204

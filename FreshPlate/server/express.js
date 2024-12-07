@@ -41,7 +41,7 @@ import path from "path";
           scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "blob:"],
           workerSrc: ["'self'", "blob:"],
           imgSrc: ["'self'", "data:", "blob:"],
-          connectSrc: ["'self'", "https://prefreshplate.onrender.com"],
+          connectSrc: ["'self'", "https://freshplate-milb.onrender.com"],
           styleSrc: ["'self'", "'unsafe-inline'"],
           fontSrc: ["'self'", "data:"],
         },

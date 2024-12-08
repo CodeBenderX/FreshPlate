@@ -9,7 +9,7 @@
   },
   "scripts": {
     "dev": "concurrently 'vite' \"nodemon ../server/server.js\"",
-    "build": "Vite",
+    "build": "vite build",
     "copy-assets": "cp -R src/assets dist/app/assets",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"

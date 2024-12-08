@@ -9,8 +9,7 @@
   },
   "scripts": {
     "dev": "concurrently 'vite' \"nodemon ../server/server.js\"",
-    "start": "cd server && node server",
-    "build": "cd client && npm install && npm run build && cd ../server && npm install",
+    "build": "Vite",
     "copy-assets": "cp -R src/assets dist/app/assets",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"

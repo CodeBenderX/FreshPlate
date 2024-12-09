@@ -15,7 +15,7 @@ import path from "path";
     const app = express()
     const CURRENT_WORKING_DIR = process.cwd();
     const corsOptions = {
-        origin: ['https://prefreshplate.onrender.com', 'http://localhost:3000'],
+        origin: ['https://freshplate-production.up.railway.app', 'http://localhost:3000'],
         method: ["GET", "POST", "PUT", "DELETE"],
         credentials: true,
         optionsSuccessStatus: 204
@@ -41,7 +41,7 @@ import path from "path";
           scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "blob:"],
           workerSrc: ["'self'", "blob:"],
           imgSrc: ["'self'", "data:", "blob:"],
-          connectSrc: ["'self'", "https://prefreshplate.onrender.com"],
+          connectSrc: ["'self'", "https://prefreshplate-production.up.railway.app"],
           styleSrc: ["'self'", "'unsafe-inline'"],
           fontSrc: ["'self'", "data:"],
         },
